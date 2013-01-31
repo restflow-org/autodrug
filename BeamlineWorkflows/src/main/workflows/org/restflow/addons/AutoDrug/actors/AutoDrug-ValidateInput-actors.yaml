@@ -1,0 +1,174 @@
+namespace:
+
+  module: AutoDrug-ValidateInput
+  
+components:
+
+- id: Actor.ReadSampleSpreadsheetByGroup
+  type: GroovyActor
+  properties: 
+    inputs:
+      spreadsheetId:
+      beamline:
+      currentDewarPort: 
+    settings:
+      spreadsheet: !ref __SpreadsheetUtils
+    step: |
+      import edu.stanford.slac.smb.samples.ProjectList;
+      println "Spreadsheet id $spreadsheetId"
+      
+      cassettePosition = spreadsheet.beamlinePositionAssignedToSil( beamline, spreadsheetId.toString());
+      if (  cassettePosition == "" ) {
+        throw new Exception("Spreadsheet " + spreadsheetId + " is not assigned to beam line " + beamline);
+      }
+      
+      ProjectList projects = spreadsheet.sortSilByProtein(spreadsheetId);
+      projects.alphabetize();
+      projects.moveCurrentlyMountedProjectToFirstPosition(cassettePosition, currentDewarPort);
+      groups = projects.proteinProjects;
+    outputs:
+      groups:
+      cassettePosition:
+
+- id: Actor.AddStrategyToGroups
+  type: GroovyActor
+  properties: 
+    inputs:
+      strategyPath:
+      groups:
+      currentDewarPort:
+      cassettePosition:
+    step: |
+      import org.yaml.snakeyaml.*;
+      import org.yaml.snakeyaml.constructor.Constructor;
+      import org.restflow.addons.samples.project.*;
+      import edu.stanford.slac.smb.samples.*; 
+      
+      strategyText = new File(strategyPath).text
+      Yaml y = new Yaml(new Constructor( ProteinList.class ) );
+      strategy = y.load(strategyText);
+      strategy.validate();
+      
+      y.setBeanAccess(org.yaml.snakeyaml.introspector.BeanAccess.FIELD);
+      //println y.dump(strategy);
+      
+      groupsWithStrategy = groups;
+      
+      groupsWithStrategy.each { proteinName, project -> 
+        println "$proteinName $project"
+        ProteinSpecification groupStrategy = strategy.groups[proteinName];
+        println "$groupStrategy"
+        if (groupStrategy == null ) throw new Exception ("could not find strategy for group $proteinName"); 
+        project.addStrategy(groupStrategy);
+      }
+    outputs:
+      groupsWithStrategy:
+      strategyText:
+
+
+- id: Actor.ReadSampleData
+  type: GroovyActor
+  properties:
+    settings:
+      spreadsheet: !ref SpreadsheetUtils 
+    inputs:
+      spreadsheetId:
+    step: |
+      println "Spreadsheet id $spreadsheetId"
+      ssrl.Samples g = spreadsheet.readSilSamples(spreadsheetId);
+      groups = g;
+    outputs:
+      groups:
+
+- id: Actor.AddStrategyToSamples
+  type: GroovyActor
+  properties:
+    inputs:
+      samples:
+      strategyPath:
+    step: |
+      import org.yaml.snakeyaml.*;
+      import org.yaml.snakeyaml.constructor.Constructor;
+      import org.restflow.addons.samples.project.*;
+      
+      strategyText = new File(strategyPath).text
+      Yaml y = new Yaml(new Constructor(ProteinList.class) );
+      strategy = y.load(strategyText);
+      strategy.validate();
+      
+      y.setBeanAccess(org.yaml.snakeyaml.introspector.BeanAccess.FIELD);
+      println y.dump(strategy);
+      
+      samplesWithStrategy = samples;
+      samplesWithStrategy.addStrategy(strategy);
+    outputs:
+      samplesWithStrategy:
+      strategyText:
+
+
+- id: Actor.ValidateGroupMotorRanges
+  type: GroovyActor
+  properties:
+    inputs:
+      groupsWithStrategy:
+      beamlineValues:
+    step: |
+      import org.restflow.addons.samples.project.*;
+      import org.restflow.addons.crystallography.calculator.CrystallographyCalculator
+      
+      groupsWithStrategy.each { groupName, group ->
+        group.samples.each { sampleName, sample ->
+          
+          def screenParams = sample.strategy.screening_parameters;
+          def screenEnergy = screenParams.energy_ev;
+          def screenRes = screenParams.detector_resolution_angstroms;
+          
+          beamlineValues.energy.assertLimits( screenEnergy);
+          
+          sample.strategy.spacegroups.collection_parameters.each { collectParams -> 
+            beamlineValues.energy.assertLimits(collectionParams.energy_ev);                 
+          };
+          
+          
+          def distance_z =
+            CrystallographyCalculator.calcDistanceFromResolution(screenRes, screenEnergy, beamlineValues.detectorRingSize.toDouble());
+            beamlineValues.detector_z.assertLimits(distance_z);
+            
+            //sample.beamlineDependent.screening_distance_z = distance_z; 
+             
+        }
+      }
+      pass = true;
+    outputs:
+      pass:
+
+- id: Actor.ValidateMotorRangesSamples
+  type: GroovyActor
+  properties:
+    inputs:
+      groupsWithStrategy:
+      beamlineValues:
+    step: |
+      import org.restflow.addons.samples.project.*;
+      import org.restflow.addons.crystallography.calculator.CrystallographyCalculator
+
+      groupsWithStrategy.samples.each { sampleName, sample ->
+        def screenParams = sample.strategy.screening_parameters;
+        def screenEnergy = screenParams.energy_ev;
+        def screenRes = screenParams.detector_resolution_angstroms;
+
+        beamlineValues.energy.assertLimits(screenEnergy);
+
+        sample.strategy.spacegroups.collection_parameters.each { collectParams -> 
+          beamlineValues.energy.assertLimits(collectionParams.energy_ev); 
+        };
+        def distance_z =
+          CrystallographyCalculator.calcDistanceFromResolution(screenRes, screenEnergy, beamlineValues.detectorRingSize.toDouble());
+          beamlineValues.detector_z.assertLimits(distance_z);
+          //sample.beamlineDependent.screening_distance_z = distance_z; 
+      }
+      pass = true;
+    outputs:
+      pass:
+
+

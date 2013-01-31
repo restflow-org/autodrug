@@ -1,0 +1,63 @@
+namespace:
+
+  module: CollectSample
+  route: A
+
+imports:
+
+- classpath:/org/restflow/addons/CollectRun/workflows/CollectRun.yaml
+
+components:
+
+- id: Workflow
+  type: Workflow
+  properties: 
+    director: !ref PublishSubscribeDirector
+    inputs:
+      sample:
+      sampleName:
+      beamlineValues:
+      runDefinition:
+    outputs:
+      firstImageFullPath:
+      lastImage: 
+      firstImage: 
+      collectedSample:
+    nodes:
+    - !lref Inputs
+    - !lref CollectRun
+    - !lref Outputs
+
+- id: Inputs
+  type: InPortal
+  properties:
+    outflows:
+      sample: /sample
+      sampleName: /sampleName
+      beamlineValues: /beamlineValues
+      runDefinition: /runDefinition
+
+- id: CollectRun
+  type: Step
+  properties: 
+    stepsOnce: true  
+    nestedUriPrefix: /collect/
+    inflows:
+      beamlineValues: /beamlineValues
+      sampleName: /sampleName
+      runDefinition: /runDefinition
+    actor: !ref CollectRun.A.Workflow
+    outflows: 
+      directory: file:/dataset
+      firstImageFullPath: /firstImageFullPath      
+      lastImage: /lastImageNum
+      firstImage: /firstImageNum
+
+- id: Outputs
+  type: OutPortal
+  properties:
+    inflows: 
+      firstImageFullPath: /firstImageFullPath      
+      lastImage: /lastImageNum
+      firstImage: /firstImageNum
+      collectedSample: /sample

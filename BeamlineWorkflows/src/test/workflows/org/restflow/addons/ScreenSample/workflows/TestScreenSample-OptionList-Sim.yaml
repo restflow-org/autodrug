@@ -1,0 +1,46 @@
+#Fill in global __ variables with beamline
+
+imports:
+
+- classpath:/org/restflow/addons/ScreenSample/workflows/TestScreenSample.yaml
+- classpath:/org/restflow/addons/BeamlineControl/actors/Mock-actors.yaml
+
+types:
+
+- id: GroovyActorStep
+  type: GroovyActorNode
+  properties:
+    stepsOnce: true
+
+components:
+
+- id: __MountNextSample
+  type: BeamlineControl.Mock.Actor.MountNextSample
+
+- id: __UnselectSamples
+  type: BeamlineControl.Mock.Actor.UnselectSamples
+
+- id: __LoopCenterAndRaster
+  type: BeamlineControl.Mock.Actor.LoopCenterAndRaster
+
+- id: __CollectTwoImages
+  type: BeamlineControl.Mock.Actor.CollectTwoImages
+
+- id: __CollectRun
+  type: BeamlineControl.Mock.Actor.CollectRun
+
+
+#define global objects
+#special global hashmap for passing test data through system unawares
+- id: __TestData
+  className: java.util.HashMap
+  singleton: true
+
+- id: __SpreadsheetUtils
+  className: edu.stanford.slac.smb.samples.SpreadsheetUtils
+  properties:
+    sampleInfoManager: !inline
+      className: edu.stanford.slac.smb.samples.MockCrystalServerClient
+      properties:
+        sampledb: !resource classpath:/org/restflow/addons/AutoDrug/inputs/1/sample-db.yaml
+        sildb: !resource classpath:/org/restflow/addons/AutoDrug/inputs/1/sil-db.yaml

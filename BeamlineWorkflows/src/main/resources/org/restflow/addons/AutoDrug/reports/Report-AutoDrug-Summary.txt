@@ -1,0 +1,140 @@
+    <%
+     
+    import org.springframework.web.util.UriTemplate;
+    import static org.restflow.addons.reporting.ReportHelper.*
+   
+    def samples = returnProductsMatchingUriTemplate(products, "/{spreadsheet}/sample/{sampleName}");
+    
+    def reportData = [:];
+  
+    samples.each() {uri1,product->
+  
+    def sample = product.value
+    def spreadsheet = product.uriVariables.spreadsheet
+    def sampleName = product.uriVariables.sampleName
+  
+    reportData[sampleName] = [:];
+    reportData[sampleName]["sample_information"] = sample
+  
+    score = products["/${spreadsheet}/${sampleName}/screen/final/score"];
+  
+    reportData[sampleName]["screen"] = [:]
+    reportData[sampleName]["screen"]["score"] = score
+    reportData[sampleName]["screen"]["index"] = [:]
+    reportData[sampleName]["screen"]["index"]["firstImage"] = products["/${spreadsheet}/${sampleName}/screen/index/images/img/ImgOne"]
+    reportData[sampleName]["screen"]["index"]["flux"] = products["/${spreadsheet}/${sampleName}/screen/index/flux"]
+
+    reportData[sampleName]["screen"]["spacegroup"] = products["/${spreadsheet}/${sampleName}/screen/index/score/strategy/labelit/spacegroup"]
+    reportData[sampleName]["screen"]["resolution"] = products["/${spreadsheet}/${sampleName}/screen/index/score/strategy/labelit/res"]
+    reportData[sampleName]["screen"]["mosaicity"] = products["/${spreadsheet}/${sampleName}/screen/index/score/strategy/labelit/mosaic"]
+    reportData[sampleName]["screen"]["unitcell"] = [:]
+    reportData[sampleName]["screen"]["unitcell"] = products["/${spreadsheet}/${sampleName}/screen/index/score/strategy/labelit/unitcell_text"]
+    
+    if ( score != null && score.toFloat() > 0 ) {
+    
+      reportData[sampleName]["collect"] = [:]
+    
+      def imageOne = products["/${spreadsheet}/${sampleName}/collect/firstImageFullPath"]
+      def lastImageNum = products["/${spreadsheet}/${sampleName}/collect/lastImageNum"]
+      def sg = products["/${spreadsheet}/${sampleName}/collect/strategy/scoreSample/labelit/sg"]
+    
+      reportData[sampleName]["collect"]["first_image"] = imageOne;
+      reportData[sampleName]["collect"]["last_image_num"] = lastImageNum;
+      //reportData[sampleName]["collect"]["spacegroup"] = sg;
+    
+      def collectException = products ["/exceptions/collect/${spreadsheet}/${sampleName}"]
+      def processingException = products ["/exceptions/processing/${spreadsheet}/${sampleName}"]
+    
+      if ( collectException == null ) {
+    
+        reportData[sampleName]["process"] = [:]
+        
+        //reportData[sampleName]["process"]["labelit"] = [:]
+        //reportData[sampleName]["process"]["labelit"]["resolution"] = products["/${spreadsheet}/${sampleName}/processing/dataProcessing/img/highres"]
+        //reportData[sampleName]["process"]["labelit"]["space_group"] = products["/${spreadsheet}/${sampleName}/processing/dataProcessing/img/labelit/spaceGroup"]
+        //reportData[sampleName]["process"]["labelit"]["unit_cell"] = [:]
+        //reportData[sampleName]["process"]["labelit"]["unit_cell"]["a"] = products["/${spreadsheet}/${sampleName}/processing/dataProcessing/img/labelit/unitcell/a"]
+        //reportData[sampleName]["process"]["labelit"]["unit_cell"]["b"] = products["/${spreadsheet}/${sampleName}/processing/dataProcessing/img/labelit/unitcell/b"]
+        //reportData[sampleName]["process"]["labelit"]["unit_cell"]["c"] = products["/${spreadsheet}/${sampleName}/processing/dataProcessing/img/labelit/unitcell/c"]
+        //reportData[sampleName]["process"]["labelit"]["unit_cell"]["alpha"] = products["/${spreadsheet}/${sampleName}/processing/dataProcessing/img/labelit/unitcell/alpha"]
+        //reportData[sampleName]["process"]["labelit"]["unit_cell"]["beta"] = products["/${spreadsheet}/${sampleName}/processing/dataProcessing/img/labelit/unitcell/beta"]
+        //reportData[sampleName]["process"]["labelit"]["unit_cell"]["gamma"] = products["/${spreadsheet}/${sampleName}/processing/dataProcessing/img/labelit/unitcell/gamma"]
+    
+        reportData[sampleName]["process"]["xds"] = [:]
+        reportData[sampleName]["process"]["xds"]["high_resolution"] = products["/${spreadsheet}/${sampleName}/processing/dataProcessing/xds/highres"]
+        reportData[sampleName]["process"]["xds"]["mosaicity"] = products["/${spreadsheet}/${sampleName}/processing/dataProcessing/xds/mosaicity"]
+        reportData[sampleName]["process"]["xds"]["space_group"] = products["/${spreadsheet}/${sampleName}/processing/dataProcessing/xds/spacegroupOut/num"]
+        reportData[sampleName]["process"]["xds"]["unit_cell"] = products["/${spreadsheet}/${sampleName}/processing/dataProcessing/xds/unitcell"]
+    
+        reportData[sampleName]["process"]["pointless"] = [:]
+        reportData[sampleName]["process"]["pointless"]["space_group"] = products["/${spreadsheet}/${sampleName}/processing/dataProcessing/pointless/sg"]
+    
+        def rmeas_overall = products["/${spreadsheet}/${sampleName}/processing/dataProcessing/scala/Rmeas_overall"]
+        def rmeas_final = products["/${spreadsheet}/${sampleName}/processing/dataProcessing/scala/Rmeas_finalshell"]
+    
+        reportData[sampleName]["process"]["scala"] = [:]
+        reportData[sampleName]["process"]["scala"]["resolution"] = products["/${spreadsheet}/${sampleName}/processing/dataProcessing/scala/resolution"]
+        reportData[sampleName]["process"]["scala"]["overall"] = [:]
+        reportData[sampleName]["process"]["scala"]["overall"]["I_Sigma"] = products["/${spreadsheet}/${sampleName}/processing/dataProcessing/scala/isig_overall"]
+        reportData[sampleName]["process"]["scala"]["overall"]["completeness"] = products["/${spreadsheet}/${sampleName}/processing/dataProcessing/scala/complet_overall"]
+        reportData[sampleName]["process"]["scala"]["overall"]["R_measure"] = rmeas_overall
+        reportData[sampleName]["process"]["scala"]["overall"]["multiplicity"] = products["/${spreadsheet}/${sampleName}/processing/dataProcessing/scala/mult_overall"]
+        reportData[sampleName]["process"]["scala"]["final_shell"] = [:]
+        reportData[sampleName]["process"]["scala"]["final_shell"]["I_Sigma"] = products["/${spreadsheet}/${sampleName}/processing/dataProcessing/scala/isig_finalshell"]
+        reportData[sampleName]["process"]["scala"]["final_shell"]["completeness"] = products["/${spreadsheet}/${sampleName}/processing/dataProcessing/scala/complet_finalshell"]
+        reportData[sampleName]["process"]["scala"]["final_shell"]["R_measure"] = rmeas_final
+    
+        reportData[sampleName]["molecular_replacement"] = [:]
+    
+        molwarning = products["/${spreadsheet}/${sampleName}/processing/molReplacement/molrep/warning"]
+         
+        if ( molwarning != null ) {
+          reportData[sampleName]["molecular_replacement"]["molrep"] = [:]
+          reportData[sampleName]["molecular_replacement"]["molrep"]["warning"] = molwarning
+        }
+    
+        def rfree_initial = products["/${spreadsheet}/${sampleName}/processing/MolecularReplacement/refmac/run/rfree_inital"]
+        def r_final = products["/${spreadsheet}/${sampleName}/processing/MolecularReplacement/refmac/run/r_final"]
+        def r_initial = products["/${spreadsheet}/${sampleName}/processing/MolecularReplacement/refmac/run/r_initial"]
+        def rfree_final = products["/${spreadsheet}/${sampleName}/processing/MolecularReplacement/refmac/run/rfree_final"]
+    
+        reportData[sampleName]["molecular_replacement"]["refmac"] = [:]
+        reportData[sampleName]["molecular_replacement"]["refmac"]["space_group"] = products["/${spreadsheet}/${sampleName}/processing/MolecularReplacement/refmac/run/sg"]
+        reportData[sampleName]["molecular_replacement"]["refmac"]["initial"] = [:]
+        reportData[sampleName]["molecular_replacement"]["refmac"]["initial"]["R"] = r_initial
+        reportData[sampleName]["molecular_replacement"]["refmac"]["initial"]["R_free"] = rfree_initial
+        reportData[sampleName]["molecular_replacement"]["refmac"]["final"] = [:]
+        reportData[sampleName]["molecular_replacement"]["refmac"]["final"]["R"] = r_final
+        reportData[sampleName]["molecular_replacement"]["refmac"]["final"]["R_free"] = rfree_final
+     
+        reportData[sampleName]["molecular_replacement"]["peakmax"] = [:]
+        reportData[sampleName]["molecular_replacement"]["peakmax"]["peaks_above_3.0_sigma"] = products["/${spreadsheet}/${sampleName}/processing/MolecularReplacement/peakmax/numpeaks/3.0"]
+        reportData[sampleName]["molecular_replacement"]["peakmax"]["peaks_above_5.0_sigma"] = products["/${spreadsheet}/${sampleName}/processing/MolecularReplacement/peakmax/numpeaks/5.0"]
+      
+        if ( processingException != null ) {
+          reportData[sampleName]["process"]["error"] = processingException;
+        }
+      } else {
+        reportData[sampleName]["collect"]["error"] = collectException;
+      }
+    } else {
+      def exception1 = products ["/${spreadsheet}/${sampleName}/screen/scoreFailed"]
+      def exception2 = products["/exceptions/screening/${spreadsheet}/${sampleName}"]
+      if ( exception1 == null && exception2 != null) {
+        reportData[sampleName]["screen"]["error"] = exception2;
+      } else if ( exception1 != null && exception2 != null ) {
+        reportData[sampleName]["screen"]["error"] = exception1;
+      }
+    }
+    return
+    }
+
+    import org.yaml.snakeyaml.*;
+    
+    DumperOptions options = new DumperOptions();
+    options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+    Yaml yaml = new Yaml(options);
+    
+    println yaml.dump(reportData);
+    
+    %>

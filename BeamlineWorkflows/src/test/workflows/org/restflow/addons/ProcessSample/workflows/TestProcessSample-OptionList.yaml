@@ -1,0 +1,30 @@
+#Top level file to load all AutoDrug Components
+#Fill in global __ variables with beamline
+
+imports:
+
+- classpath:/org/restflow/addons/ProcessSample/workflows/TestProcessSample.yaml
+
+types:
+
+- id: GroovyActorStep
+  type: GroovyActorNode
+  properties:
+    stepsOnce: true
+
+components:
+
+#define global objects
+- id: __SpreadsheetUtils
+  className: edu.stanford.slac.smb.samples.SpreadsheetUtils
+  properties:
+    sampleInfoManager: !inline
+      className: edu.stanford.slac.smb.samples.MockCrystalServerClient
+      properties:
+        sampledb: !resource classpath:/org/restflow/addons/ProcessSample/inputs/1/sample-db.yaml
+        sildb: !resource classpath:/org/restflow/addons/ProcessSample/inputs/1/sil-db.yaml
+
+#special global hashmap for passing test data through system unawares
+- id: __TestData
+  className: java.util.HashMap
+  singleton: true

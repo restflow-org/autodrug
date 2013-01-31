@@ -1,0 +1,18 @@
+index:
+  B1:
+    extension: cbf
+    path: /TestIndex/cbf/B1
+collect:
+  B1:
+    extension: cbf
+    path: /TestCollect/cbf/B1
+  B2:
+    extension: cbf
+    path: /TestCollect/cbf/B2
+  B3:
+    extension: cbf
+    path: /TestCollect/cbf/B3
+  B4:
+    extension: cbf
+    path: /TestCollect/cbf/B4
+

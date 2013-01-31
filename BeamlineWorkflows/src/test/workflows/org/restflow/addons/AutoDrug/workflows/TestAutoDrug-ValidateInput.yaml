@@ -1,0 +1,49 @@
+namespace:
+
+  module: AutoDrug-ValidateInput
+  route: Test
+
+imports:
+
+- classpath:/org/restflow/addons/AutoDrug/workflows/AutoDrug-ValidateInput.yaml
+
+components:
+
+- id: Workflow
+  type: Workflow
+  properties:
+    director: !ref PublishSubscribeDirector
+    inputs:
+      spreadsheetId:
+      strategy-file:
+      beamline:
+    nodes:
+    - !lref Inputs
+    - !lref LoadAndValidateJobs
+    reports:
+      status: !inline
+        type: UnixProcessStatusReporter
+#      report: !ref AutodrugReports.GreenReport
+
+- id: Inputs
+  type: InPortal
+  properties:
+    outflows:
+      spreadsheetId: /spreadsheet
+      strategy-file: /strategyInputFilePath
+      beamline: /beamline
+
+- id: LoadAndValidateJobs
+  type: Step
+  properties:
+    inflows:
+      spreadsheetId: /spreadsheet
+      strategy-file: /strategyInputFilePath
+      beamline: /beamline
+    actor: !ref AutoDrug-ValidateInput.A.Workflow 
+    nestedUriPrefix: /validate/{spreadsheetId}/{beamline}
+    outflows:
+      beamlineValues: /beamlineValues/{beamline}
+      groupsWithStrategy: /{spreadsheetId}/groupsWithStrategy 
+
+

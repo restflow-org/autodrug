@@ -1,0 +1,84 @@
+
+#calling workflow should set the __ReadBeamlineValues type
+
+namespace:
+
+  module: ReadBeamlineValues
+
+
+imports:
+- classpath:/org/restflow/addons/BeamlineControl/actors/Beamline-actors.yaml
+- classpath:/common/scriptActors.yaml
+- classpath:/common/groovy/actors.yaml
+- classpath:/common/directors.yaml
+- classpath:/common/types.yaml 
+- classpath:/common/support.yaml
+
+components:
+
+- id: Workflow
+  type: Workflow
+  properties: 
+    director: !ref PublishSubscribeDirector
+    inputs:
+      beamline:
+    nodes:
+    - !lref Inputs
+    - !lref ReadBeamlineValues
+    - !lref ConsolidateBeamlineValues
+    - !lref Outputs
+    outputs:
+      beamlineValues:
+      currentDewarPort:
+
+- id: Inputs
+  type: InPortal
+  properties:
+    outflows:
+      beamline: /beamline/name
+
+
+- id: ReadBeamlineValues
+  type: Step
+  properties:
+    inflows:
+      beamline: /beamline/name
+    actor: !lref __ReadBeamlineValues
+    outflows:
+      currentDewarPort: /currentMountedSampleDewarPort/
+      detectorRingSize: /detectorRingSize/mm
+      phiSpeedDegPerSec: /phi/speed/degPerSec
+      energyUpperLimitEv: /energy/upperLimit/ev
+      energyLowerLimitEv: /energy/lowerLimit/ev  
+      distanceUpperLimitmm: /distance/upperLimit/mm
+      distanceLowerLimitmm: /distance/lowerLimit/mm  
+      minimumExposure_seconds: /minimumExposure/seconds
+      detectorGain_countsPerPhoton: /detectorGain_countsPerPhoton
+      activeKey: /activeKey 
+ 
+- id: ConsolidateBeamlineValues
+  type: Step
+  properties:
+    inflows:
+      detectorRingSize: /detectorRingSize/mm
+      phiSpeedDegPerSec: /phi/speed/degPerSec
+      energyUpperLimitEv: /energy/upperLimit/ev
+      energyLowerLimitEv: /energy/lowerLimit/ev      
+      distanceUpperLimitmm: /distance/upperLimit/mm
+      distanceLowerLimitmm: /distance/lowerLimit/mm
+      minimumExposure_seconds: /minimumExposure/seconds    
+      detectorGain_countsPerPhoton: /detectorGain_countsPerPhoton
+      beamline: /beamline/name
+      activeKey: /activeKey
+    actor: !ref Beamline.Actor.ConsolidateBeamlineValues
+    outflows:
+      beamlineValues: /beamlineValues
+ 
+ 
+- id: Outputs
+  type: OutPortal
+  properties:
+    inflows:
+      beamlineValues: /beamlineValues
+      currentDewarPort: /currentMountedSampleDewarPort/
+      

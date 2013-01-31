@@ -1,0 +1,38 @@
+namespace:
+
+  module: CollectRun
+
+components:
+  
+- id: Actor.ExtractRunDefinition
+  type: GroovyActor
+  properties: 
+    inputs:
+      runDefinition:
+    step: |
+      r = runDefinition;
+      energy_ev = r.energy_ev;
+      beamstop_position_mm = r.beamstop_position_mm;
+      phi_delta_degrees = r.phi_delta_degrees;
+      wedge = r.wedge;
+      startAngle = r.startAngle;
+      endAngle = r.endAngle;
+      exposureTime = r.exposureTime;
+      attenuation_percent = r.attenuation;
+      distance = r.distance;
+      inverse = r.inverse;
+      beam_size_width_mm = r.beam_size_width_mm;
+      beam_size_height_mm = r.beam_size_height_mm;
+    outputs:
+      energy_ev:
+      beamstop_position_mm:
+      phi_delta_degrees:
+      wedge:
+      startAngle:
+      endAngle:
+      exposureTime:
+      attenuation_percent:
+      distance:
+      inverse:
+      beam_size_width_mm:
+      beam_size_height_mm:

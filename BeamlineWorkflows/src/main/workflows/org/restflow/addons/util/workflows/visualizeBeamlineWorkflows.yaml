@@ -1,0 +1,127 @@
+namespace:
+
+  module: BeamlineWorkflowsUtils
+
+imports:
+
+- classpath:/common/java/actors.yaml
+- classpath:/common/directors.yaml
+- classpath:/common/types.yaml 
+- classpath:/common/support.yaml
+- classpath:/common/bash/bashActor.yaml
+- classpath:/tools/visualize.yaml
+
+types:
+
+- id: GroovyActorLogNode
+  type: GroovyActorNode
+  properties:
+    enableLog: true  
+
+components:
+
+- id: Workflow
+  type: Workflow
+  properties: 
+    director: !ref PublishSubscribeDirector
+    nodes:
+    - !lref WorkflowSolutions
+    - !lref ExtractSolutions       
+    - !lref VisualizingWorkflow
+
+
+- id: WorkflowSolutions
+  type: Step
+  properties:
+    constants:
+      value:
+        AutoDrug-A:
+          file: classpath:org/restflow/addons/AutoDrug/workflows/TestAutoDrug-OptionList.yaml
+          workflows:
+          - AutoDrug.A.Workflow
+          - AutoDrug-ValidateInput.A.Workflow
+          - ScreenSample.A.Workflow
+          - IndexSample.A.Workflow
+          - CollectTwoImages.A.Workflow
+          - CollectSample.A.Workflow
+          - CollectRun.A.Workflow
+          - ProcessSample.A.Workflow
+
+    actor: !ref ConstantSource
+    outflows:
+      value: /allSolutions
+
+- id: ExtractSolutions
+  type: Node
+  properties:
+    inflows:
+      map: /allSolutions/
+    actor: !ref MapDisassembler
+    outflows:
+      item: /solution/{key}/
+      key: /solutionName/{key}/
+
+- id: VisualizingWorkflow
+  type: Node
+  properties:
+    inflows:
+      solutionName: /solutionName/{key_a}/
+      solution: /solution/{key_b}/
+    nestedUriPrefix: /{key_a}/   
+    actor: !lref VisualizeSubWorkflows
+    exceptions:
+      java.lang.Exception: stderr:/visualization/exception/{solutionName}/{solution}
+
+- id: VisualizeSubWorkflows
+  type: Workflow
+  properties: 
+    director: !ref PublishSubscribeDirector
+    nodes:
+    - !lref WorkflowNameInPortal
+    - !lref ExtractDetails
+    - !lref WorkflowNames    
+    - !lref Visualize
+    inputs:
+      solution:
+      solutionName:
+      
+- id: WorkflowNameInPortal
+  type: InPortal
+  properties:
+    outflows:
+      solution: /solution/
+      solutionName: /solutionName/
+
+
+- id: ExtractDetails
+  type: GroovyActorStep
+  properties:
+    inflows:
+      solution: /solution/
+    actor.step: |
+      fullFileName = solution.file;
+      workflows = solution.workflows;
+    outflows:
+      fullFileName: /fullFileName/
+      workflows: /workflows/
+
+- id: WorkflowNames
+  type: Node
+  properties:
+    inflows:
+      list: /workflows/
+    actor: !ref ListDisassembler
+    outflows:
+      item: /workflow/{item}/
+
+- id: Visualize
+  type: Node
+  properties:
+    nestedUriPrefix: /{workflowName}/   
+    inflows:
+      workflowName: /workflow/{name}
+      restflowFile:
+        receiveOnce: true
+        expression: /fullFileName/
+    actor: !ref Visualize.WorkflowGraph
+

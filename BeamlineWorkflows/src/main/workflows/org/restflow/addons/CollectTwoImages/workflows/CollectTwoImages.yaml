@@ -1,0 +1,141 @@
+namespace:
+
+  module: CollectTwoImages
+  route: A
+
+imports:
+
+- classpath:/common/groovy/actors.yaml
+- classpath:/common/directors.yaml
+- classpath:/common/types.yaml 
+- classpath:/common/support.yaml
+- classpath:/org/restflow/addons/CollectRun/workflows/CollectRun.yaml
+- classpath:/org/restflow/addons/Samples/actors/Sample-actors.yaml
+- classpath:/org/restflow/addons/BeamlineControl/actors/Beamline-actors.yaml
+
+components:
+
+- id: Workflow
+  type: Workflow
+  properties: 
+    director: !ref PublishSubscribeDirector
+    inputs:
+      sampleName:
+      screeningParams:
+      beamlineValues:
+    outputs:
+      imageName1:
+      imageName2:
+      flux_photons_per_second:
+    nodes:
+    - !lref Inputs
+    - !lref ExtractBeamlineValues
+    - !lref ExtractScreeningStrategy
+    - !lref ExtractRasteringParameters    
+    - !lref CenterTheSample
+    - !lref CollectTwoImages
+    - !lref Outputs
+
+- id: Inputs
+  type: InPortal
+  properties:
+    outflows:
+      sampleName: /sampleName/
+      screeningParams: /screening/params
+      beamlineValues: /beamlineValues
+
+- id: ExtractBeamlineValues
+  type: GroovyActorStep
+  properties: 
+    inflows:
+      beamlineValues: /beamlineValues
+    actor.step: |
+      beamline = beamlineValues.beamline;
+      activeKey = beamlineValues.activeKey;
+    outflows:
+      beamline: /beamline/name
+      activeKey: /activeKey
+
+- id: ExtractScreeningStrategy
+  type: Step
+  properties: 
+    inflows:
+      screeningParams: /screening/params
+    actor: !ref Samples.Actor.ExtractScreeningStrategy
+    outflows:
+      exposure_photons_per_image: /exposure/photons_per_image
+      delta_degrees: /delta/degrees
+      beamstop_position_mm: /beamstop/mm
+      beam_size_width_mm: /beam_size/width/mm
+      beam_size_height_mm: /beam_size/height/mm
+      detector_resolution_angstroms: /detector/resolution/angstroms
+      energy_ev: /energy/ev
+      rastering_parameters: /rastering_parameters/
+      
+
+- id: ExtractRasteringParameters
+  type: Step
+  properties: 
+    inflows:
+      rastering_parameters: /rastering_parameters/
+    actor: !ref Samples.Actor.ExtractRasteringParameters
+    outflows:
+      active: /rastering/active
+      peak_cutoff_percent: /rastering/peak_cutoff/percent      
+      exposure_photons_per_image: /rastering/exposure/photons_per_image
+      delta_degrees: /rastering/delta/degrees
+      beamstop_position_mm: /rastering/beamstop/mm
+      detector_resolution_angstroms: /rastering/detector/resolution/angstroms
+      energy_ev: /rastering/energy/ev      
+
+
+- id: CenterTheSample
+  type: Step
+  properties: 
+    stepsOnce: true  
+    inflows:
+      activeKey: /activeKey
+      beamline: /beamline/name      
+      rasterOn: /rastering/active
+      peak_cutoff_percent: /rastering/peak_cutoff/percent      
+      exposure_photons_per_image: /rastering/exposure/photons_per_image
+      delta_degrees: /rastering/delta/degrees
+      beamstop_position_mm: /rastering/beamstop/mm
+      detector_resolution_angstroms: /rastering/detector/resolution/angstroms
+      energy_ev: /rastering/energy/ev
+    actor: !ref __LoopCenterAndRaster
+    outflows: 
+      boundingBox: control:/sampleBoundingBox
+
+- id: CollectTwoImages
+  type: Step
+  properties: 
+    stepsOnce: true  
+    inflows:
+      activeKey: /activeKey    
+      beamline: /beamline/name     
+      boundingBox: control:/sampleBoundingBox     
+      sampleName: /sampleName/
+      exposure_photons_per_image: /exposure/photons_per_image
+      delta_degrees: /delta/degrees
+      beamstop_position_mm: /beamstop/mm
+      beam_size_width_mm: /beam_size/width/mm
+      beam_size_height_mm: /beam_size/height/mm
+      detector_resolution_angstroms: /detector/resolution/angstroms
+      energy_ev: /energy/ev      
+    actor: !ref __CollectTwoImages
+    outflows:
+      images: direct:/images
+      imageName1: /img/ImgOne
+      imageName2: /img/ImgTwo
+      flux_photons_per_second: /flux
+
+
+- id: Outputs
+  type: OutPortal
+  properties:
+    inflows: 
+      imageName1: /img/ImgOne     
+      imageName2: /img/ImgTwo
+      flux_photons_per_second: /flux
+

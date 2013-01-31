@@ -1,0 +1,89 @@
+namespace:
+
+  module: ProcessSample
+  route: A
+
+imports: 
+
+- classpath:/org/restflow/addons/ProcessImages/workflows/ProcessImages-A.yaml
+
+components:
+
+- id: Workflow
+  type: ParallelWorkflow
+  properties:
+    director: !ref PublishSubscribeDirector
+    inputs:
+      sample:
+      firstImagePath:
+      lastImageNum:
+    nodes:
+    - !lref Inputs
+    - !lref ExtractProcessingParameters
+    - !lref RunProcessImages
+
+- id: Inputs
+  type: InPortal
+  properties:
+    outflows:
+      sample: /sample
+      firstImagePath: /firstImageInDataset
+      lastImageNum: /lastImageNum
+
+
+- id: ExtractProcessingParameters
+  type: GroovyActorStep
+  properties:
+    inflows:
+      sample: /sample
+    actor.step: |
+      def strategy = sample.strategy; 
+      def mr = strategy.molecular_replacement;
+      def p = strategy.processing_parameters;
+
+      isigin=p.intensity_cutoff_sigma;
+
+      unitcell=[:];
+      unitcell_list = p.unit_cell_angstroms_degrees.split();
+      unitcell.a=unitcell_list[0].toFloat();
+      unitcell.b=unitcell_list[1].toFloat();
+      unitcell.c=unitcell_list[2].toFloat();
+      unitcell.alpha=unitcell_list[3].toFloat();
+      unitcell.beta=unitcell_list[4].toFloat();
+      unitcell.gamma=unitcell_list[5].toFloat();
+
+      highres=p.resolution_angstroms;;
+      spacegroupNum=p.space_group_number;
+
+      mr_model=mr.mr_model;
+      alt_mr_model=mr.alt_mr_model;
+      rcutoff=mr. r_measure_cutoff_percent;
+    outflows:
+      isigin: /input/isigma
+      unitcell: /unitcell
+      highres: /highres
+      spacegroupNum: /spacegroupNumForce
+      mr_model: /mr_model/path
+      alt_mr_model: /alt_mr_model/path/
+      rcutoff: /in/rcutoff
+
+
+- id: RunProcessImages
+  type: Step
+  properties:
+    nestedUriPrefix: /
+    inflows:
+      firstImagePath: /firstImageInDataset
+      lastImageNum: /lastImageNum
+      isigin: /input/isigma
+      unitcellForce: /unitcell
+      highres: /highres
+      spacegroupNumForce: /spacegroupNumForce
+      mr_model: /mr_model/path
+      alt_mr_model:
+        expression: /alt_mr_model/path/
+        nullable: true
+      rcutoff: /in/rcutoff
+    actor: !ref ProcessImages.A.Workflow
+
+

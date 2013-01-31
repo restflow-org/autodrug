@@ -1,0 +1,66 @@
+namespace:
+
+  module: Beamline
+
+components:
+
+- id: Actor.ConsolidateBeamlineValues
+  type: GroovyActor
+  properties:
+    inputs:
+      detectorRingSize:
+      phiSpeedDegPerSec:
+      energyUpperLimitEv:
+      energyLowerLimitEv:
+      distanceUpperLimitmm:
+      distanceLowerLimitmm:
+      minimumExposure_seconds:
+      detectorGain_countsPerPhoton:     
+      beamline:
+      activeKey:
+    step: |
+      import org.restflow.addons.beamline.BeamlineValues;
+      import org.restflow.addons.beamline.Motor;
+      beamlineValues = new BeamlineValues();
+      beamlineValues.detectorRingSize = detectorRingSize;
+      beamlineValues.phiSpeedDegPerSec = phiSpeedDegPerSec;
+
+      beamlineValues.energy = new Motor(name: 'energy', upperLimit: energyUpperLimitEv.toFloat(), lowerLimit: energyLowerLimitEv.toFloat());
+      beamlineValues.detector_z = new Motor(name: 'detector_z', upperLimit: distanceUpperLimitmm.toFloat(), lowerLimit: distanceLowerLimitmm.toFloat());
+      beamlineValues.beamline = beamline;
+      beamlineValues.minimumExposure_seconds = minimumExposure_seconds;      
+      beamlineValues.detectorGain_countsPerPhoton = detectorGain_countsPerPhoton;
+      beamlineValues.activeKey = activeKey  
+    outputs:
+      beamlineValues:
+    
+
+- id: Actor.ExtractBeamlineValues
+  type: GroovyActor
+  properties: 
+    inputs:
+      beamlineValues:
+    step: |
+      def p = beamlineValues;
+      detectorRingSize = p.detectorRingSize;
+      phiSpeedDegPerSec = p.phiSpeedDegPerSec;
+      energyUpperLimitEv = p.energy.upperLimit;
+      energyLowerLimitEv = p.energy.lowerLimit; 
+      distanceUpperLimitmm = p.detector_z.upperLimit;
+      distanceLowerLimitmm = p.detector_z.lowerLimit;    
+      minimumExposure_seconds = p.minimumExposure_seconds;
+      detectorGain_countsPerPhoton = p.detectorGain_countsPerPhoton;
+      beamline = p.beamline;
+      activeKey = p.activeKey;
+    outputs:
+      activeKey:
+      detectorRingSize:
+      phiSpeedDegPerSec:
+      energyUpperLimitEv:
+      energyLowerLimitEv:      
+      distanceUpperLimitmm:
+      distanceLowerLimitmm: 
+      minimumExposure_seconds:
+      detectorGain_countsPerPhoton:
+      beamline:
+

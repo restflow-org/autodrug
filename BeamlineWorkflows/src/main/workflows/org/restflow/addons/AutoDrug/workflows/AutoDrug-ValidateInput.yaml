@@ -1,0 +1,98 @@
+namespace:
+
+  module: AutoDrug-ValidateInput
+  route: A
+
+imports:
+
+- classpath:/org/restflow/addons/AutoDrug/actors/AutoDrug-ValidateInput-actors.yaml
+- classpath:/org/restflow/addons/BeamlineControl/workflows/ReadBeamlineValues.yaml
+
+
+components:
+
+- id: Workflow
+  type: Workflow
+  properties: 
+    director: !ref PublishSubscribeDirector
+    inputs:
+      spreadsheetId:
+        default: 
+        description: sil id of spreadsheet to screen
+      strategy-file:
+      beamline:
+    nodes:
+    - !lref Inputs
+    - !lref ReadSampleSpreadsheetByGroup
+    - !lref ReadBeamlineValues
+    - !lref AddStrategyToGroups
+    - !lref ValidateMotorRanges
+    - !lref Outputs
+    outputs:
+      groupsWithStrategy:
+      beamlineValues:
+
+- id: Inputs
+  type: InPortal
+  properties:
+    outflows:
+      spreadsheetId: /spreadsheet
+      strategy-file: /strategyInputFilePath
+      beamline: /beamline/name
+
+
+- id: ReadBeamlineValues
+  type: Step
+  properties:
+    nestedUriPrefix: /readBeamlineValues/
+    inflows:
+      beamline: /beamline/name
+    actor: !ref ReadBeamlineValues.Workflow
+    outflows:
+      currentDewarPort: /currentMountedSampleDewarPort/
+      beamlineValues: /beamlineValues
+ 
+ 
+- id: ReadSampleSpreadsheetByGroup
+  type: Step
+  properties:
+    inflows:
+      spreadsheetId: /spreadsheet
+      beamline: /beamline/name
+      currentDewarPort: /currentMountedSampleDewarPort/    
+    actor: !ref AutoDrug-ValidateInput.Actor.ReadSampleSpreadsheetByGroup
+    outflows:
+      groups: /{spreadsheetId}/groupByProtein/
+      cassettePosition: /cassettePosition/        
+      
+- id: AddStrategyToGroups
+  type: Step
+  properties:
+    stepsOnce: true  
+    inflows:
+      strategyPath: /strategyInputFilePath
+      groups: /{spreadsheetId}/groupByProtein/
+    actor: !ref AutoDrug-ValidateInput.Actor.AddStrategyToGroups
+    outflows:
+      groupsWithStrategy: /{spreadsheetId}/groupsWithStrategy
+      strategyText: file:/strategy.yaml
+
+- id: ValidateMotorRanges
+  type: Step
+  properties:
+    inflows:
+      groupsWithStrategy: /{spreadsheetId}/groupsWithStrategy
+      beamlineValues: /beamlineValues
+    actor: !ref AutoDrug-ValidateInput.Actor.ValidateGroupMotorRanges
+    outflows:
+      pass: /pass
+      
+
+- id: Outputs
+  type: OutPortal
+  properties:
+    inflows:
+      groupsWithStrategy: /{spreadsheetId}/groupsWithStrategy
+      beamlineValues: /beamlineValues
+      pass: /pass
+      

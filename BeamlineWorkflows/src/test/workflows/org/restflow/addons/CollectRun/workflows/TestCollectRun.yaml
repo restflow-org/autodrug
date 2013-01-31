@@ -1,0 +1,87 @@
+namespace:
+
+  module: CollectRun
+  route: Test
+
+imports:
+
+- classpath:/org/restflow/addons/CollectRun/workflows/CollectRun.yaml
+
+components:
+
+- id: Workflow
+  type: Workflow
+  properties: 
+    director: !ref PublishSubscribeDirector
+    inputs:
+      beamlineValues:
+      sampleName:
+      runDefinition:
+      testDataDir:
+      testDataImageLookupMapPath:
+    outputs:
+      firstImageFullPath:
+      lastImage:
+      firstImage:
+    nodes:
+    - !lref Inputs
+    - !lref LoadSimulationData
+    - !lref CollectRun
+    - !lref Outputs
+
+- id: Inputs
+  type: InPortal
+  properties:
+    outflows:
+      beamlineValues: /beamlineValues
+      sampleName: /sample/name
+      runDefinition: /run/definition
+      testDataDir: /testDataDir
+      testDataImageLookupMapPath: /testDataImageLookupMapPath
+
+
+- id: LoadSimulationData
+  type: GroovyActorStep
+  properties:
+    inflows: 
+      testDataDir: /testDataDir
+      testDataImageLookupMapPath: /testDataImageLookupMapPath
+    actor.settings:
+      testData: !ref __TestData
+    actor.step: |
+      import org.yaml.snakeyaml.*;
+      Yaml y = new Yaml();
+      def testDataImageLookupMapFile = new File(testDataImageLookupMapPath);
+      testDataImageLookupMap = y.load(testDataImageLookupMapFile.text); 
+
+      testData['testDataDir']=testDataDir;
+      testData['map']=testDataImageLookupMap;
+    outflows:
+      testData: /testData
+
+- id: CollectRun
+  type: Step
+  properties: 
+    stepsOnce: true  
+    nestedUriPrefix: /testCollectRun/
+    inflows:
+      beamlineValues: /beamlineValues
+      sampleName: /sample/name
+      runDefinition: /run/definition
+      testData: control:/testData
+    actor: !ref CollectRun.A.Workflow
+    outflows: 
+      directory: file:/dataset
+      firstImageFullPath: /firstImageFullPath      
+      lastImage: /lastImageNum
+      firstImage: /firstImageNum
+
+
+- id: Outputs
+  type: OutPortal
+  properties:
+    inflows: 
+      firstImageFullPath: /firstImageFullPath      
+      lastImage: /lastImageNum
+      firstImage: /firstImageNum
+

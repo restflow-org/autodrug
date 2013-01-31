@@ -1,0 +1,3764 @@
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: A1
+  data: {comment: 'Collected at 7-1, dose 2.3e+5 Gy Collected at 12-2 87% attentuation
+      with 0.2 s and 0.1s (720 frames)', crystalCond: '', crystalUrl: '', directory: A1,
+    freezingCond: null, metal: '', move: null, person: '', priority: '', protein: '',
+    proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: A1
+  port: A1
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 0
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756678
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: A2
+  data: {comment: Myo, crystalCond: null, crystalUrl: null, directory: A2, freezingCond: null,
+    metal: null, move: null, person: null, priority: null, protein: 'not here anymore?',
+    proteinUrl: null}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: A2
+  port: A2
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 1
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756679
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: A3
+  data: {comment: Myo, crystalCond: null, crystalUrl: null, directory: A3, freezingCond: null,
+    metal: null, move: null, person: null, priority: null, protein: null, proteinUrl: null}
+  eventId: 0
+  excelRow: -1
+  images:
+    '2':
+      data: {jpeg: A3_90deg_0002.jpg, large: A3_0002_large.jpg, medium: A3_0002_medium.jpg,
+        small: A3_0002_small.jpg}
+      dir: /data/bluser/BL9-2/A3
+      group: '2'
+      name: A3_0002.mccd
+      order: 1
+      path: /data/bluser/BL9-2/A3/A3_0002.mccd
+      result:
+        spotfinderResult: {cellEdge: 145, diffractionStrength: 27.0, dir: /data/bluser/webice/screening/20671/A3/spotfinder,
+          integratedIntensity: 0.0, numBraggSpots: 2030, numIceRings: 3, numOverloadSpots: 1,
+          numSpots: 2030, quality: 0.0, resolution: 1.4, score: 15.0, spotShape: 0.749,
+          warning: null}
+    '1':
+      data: {jpeg: A3_0deg_0001.jpg, large: A3_0001_large.jpg, medium: A3_0001_medium.jpg,
+        small: A3_0001_small.jpg}
+      dir: /data/bluser/BL9-2/A3
+      group: '1'
+      name: A3_0001.mccd
+      order: 0
+      path: /data/bluser/BL9-2/A3/A3_0001.mccd
+      result:
+        spotfinderResult: {cellEdge: 142, diffractionStrength: 31.0, dir: /data/bluser/webice/screening/20671/A3/spotfinder,
+          integratedIntensity: 0.0, numBraggSpots: 1975, numIceRings: 5, numOverloadSpots: 2,
+          numSpots: 1975, quality: 0.0, resolution: 1.5, score: 13.0, spotShape: 0.665,
+          warning: null}
+  name: A3
+  port: A3
+  result:
+    autoindexResult:
+      bestSolution: 12
+      bravaisLattice: P3,P312,P321,P6,P622
+      dir: /data/bluser/webice/screening/20671/A3/autoindex
+      images: /data/bluser/BL9-2/A3/A3_0001.mccd /data/bluser/BL9-2/A3/A3_0002.mccd
+      isigma: 0.0
+      mosaicity: 0.025
+      resolution: 0.96
+      rmsd: 0.03
+      score: 0.9391473024806934
+      unitCell: {a: 90.52, alpha: 90.0, b: 90.52, beta: 90.0, c: 45.34, gamma: 120.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 1
+    repositions: []
+    runs: []
+  row: 2
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756680
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: A4
+  data: {comment: Myo, crystalCond: null, crystalUrl: null, directory: A4, freezingCond: null,
+    metal: null, move: null, person: null, priority: null, protein: null, proteinUrl: null}
+  eventId: 0
+  excelRow: -1
+  images:
+    '2':
+      data: {jpeg: A4_90deg_0002.jpg, large: A4_0002_large.jpg, medium: A4_0002_medium.jpg,
+        small: A4_0002_small.jpg}
+      dir: /data/bluser/BL7-1/Nov2011/A4
+      group: '2'
+      name: A4_0002.img
+      order: 1
+      path: /data/bluser/BL7-1/Nov2011/A4/A4_0002.img
+      result:
+        spotfinderResult: {cellEdge: 119, diffractionStrength: 36.5, dir: /data/bluser/webice/screening/20671/A4/spotfinder,
+          integratedIntensity: 0.0, numBraggSpots: 1661, numIceRings: 2, numOverloadSpots: 2,
+          numSpots: 1661, quality: 0.0, resolution: 1.4, score: 15.0, spotShape: 0.657,
+          warning: null}
+    '1':
+      data: {jpeg: A4_0deg_0001.jpg, large: A4_0001_large.jpg, medium: A4_0001_medium.jpg,
+        small: A4_0001_small.jpg}
+      dir: /data/bluser/BL7-1/Nov2011/A4
+      group: '1'
+      name: A4_0001.img
+      order: 0
+      path: /data/bluser/BL7-1/Nov2011/A4/A4_0001.img
+      result:
+        spotfinderResult: {cellEdge: 118, diffractionStrength: 36.5, dir: /data/bluser/webice/screening/20671/A4/spotfinder,
+          integratedIntensity: 0.0, numBraggSpots: 1502, numIceRings: 1, numOverloadSpots: 3,
+          numSpots: 1502, quality: 0.0, resolution: 1.4, score: 15.0, spotShape: 0.726,
+          warning: null}
+  name: A4
+  port: A4
+  result:
+    autoindexResult:
+      bestSolution: 12
+      bravaisLattice: P3,P312,P321,P6,P622
+      dir: /data/bluser/webice/screening/20671/A4/autoindex
+      images: /data/bluser/BL7-1/Nov2011/A4/A4_0001.img /data/bluser/BL7-1/Nov2011/A4/A4_0002.img
+      isigma: 0.0
+      mosaicity: 0.95
+      resolution: 1.52
+      rmsd: 0.091
+      score: 0.6231246792407941
+      unitCell: {a: 90.43, alpha: 90.0, b: 90.43, beta: 90.0, c: 45.36, gamma: 120.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 1
+    repositions: []
+    runs: []
+  row: 3
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756681
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: A5
+  data: {comment: Myo, crystalCond: '', crystalUrl: '', directory: A5, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: '', proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images:
+    '2':
+      data: {jpeg: A5_90deg_0002.jpg, large: A5_0002_large.jpg, medium: A5_0002_medium.jpg,
+        small: A5_0002_small.jpg}
+      dir: /data/bluser/BL7-1/Nov2011/A5
+      group: '2'
+      name: A5_0002.img
+      order: 1
+      path: /data/bluser/BL7-1/Nov2011/A5/A5_0002.img
+      result:
+        spotfinderResult: {cellEdge: 123, diffractionStrength: 20.6, dir: /data/bluser/webice/screening/20671/A5/spotfinder,
+          integratedIntensity: 0.0, numBraggSpots: 1065, numIceRings: 17, numOverloadSpots: 0,
+          numSpots: 1065, quality: 0.0, resolution: 1.4, score: 14.0, spotShape: 0.587,
+          warning: null}
+    '1':
+      data: {jpeg: A5_0deg_0001.jpg, large: A5_0001_large.jpg, medium: A5_0001_medium.jpg,
+        small: A5_0001_small.jpg}
+      dir: /data/bluser/BL7-1/Nov2011/A5
+      group: '1'
+      name: A5_0001.img
+      order: 0
+      path: /data/bluser/BL7-1/Nov2011/A5/A5_0001.img
+      result:
+        spotfinderResult: {cellEdge: 135, diffractionStrength: 25.2, dir: /data/bluser/webice/screening/20671/A5/spotfinder,
+          integratedIntensity: 0.0, numBraggSpots: 1159, numIceRings: 15, numOverloadSpots: 1,
+          numSpots: 1159, quality: 0.0, resolution: 1.4, score: 15.0, spotShape: 0.679,
+          warning: null}
+  name: A5
+  port: A5
+  result:
+    autoindexResult:
+      bestSolution: 12
+      bravaisLattice: P3,P312,P321,P6,P622
+      dir: /data/bluser/webice/screening/20671/A5/autoindex
+      images: /data/bluser/BL7-1/Nov2011/A5/A5_0001.img /data/bluser/BL7-1/Nov2011/A5/A5_0002.img
+      isigma: 0.0
+      mosaicity: 0.075
+      resolution: 1.32
+      rmsd: 0.051
+      score: 0.8746893005307889
+      unitCell: {a: 90.54, alpha: 90.0, b: 90.54, beta: 90.0, c: 45.31, gamma: 120.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 1
+    repositions: []
+    runs: []
+  row: 4
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756682
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: A6
+  data: {comment: Myo, crystalCond: '', crystalUrl: '', directory: A6, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: '', proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images:
+    '2':
+      data: {jpeg: A6_90deg_0002.jpg, large: A6_0002_large.jpg, medium: A6_0002_medium.jpg,
+        small: A6_0002_small.jpg}
+      dir: /data/bluser/BL7-1/Nov2011/A6
+      group: '2'
+      name: A6_0002.img
+      order: 1
+      path: /data/bluser/BL7-1/Nov2011/A6/A6_0002.img
+      result:
+        spotfinderResult: {cellEdge: 117, diffractionStrength: 9.3, dir: /data/bluser/webice/screening/20671/A6/spotfinder,
+          integratedIntensity: 0.0, numBraggSpots: 642, numIceRings: 19, numOverloadSpots: 0,
+          numSpots: 642, quality: 0.0, resolution: 1.8, score: 10.0, spotShape: 0.597,
+          warning: null}
+    '1':
+      data: {jpeg: A6_0deg_0001.jpg, large: A6_0001_large.jpg, medium: A6_0001_medium.jpg,
+        small: A6_0001_small.jpg}
+      dir: /data/bluser/BL7-1/Nov2011/A6
+      group: '1'
+      name: A6_0001.img
+      order: 0
+      path: /data/bluser/BL7-1/Nov2011/A6/A6_0001.img
+      result:
+        spotfinderResult: {cellEdge: 119, diffractionStrength: 9.7, dir: /data/bluser/webice/screening/20671/A6/spotfinder,
+          integratedIntensity: 0.0, numBraggSpots: 550, numIceRings: 21, numOverloadSpots: 0,
+          numSpots: 550, quality: 0.0, resolution: 1.7, score: 10.0, spotShape: 0.634,
+          warning: null}
+  name: A6
+  port: A6
+  result:
+    autoindexResult:
+      bestSolution: 12
+      bravaisLattice: P3,P312,P321,P6,P622
+      dir: /data/bluser/webice/screening/20671/A6/autoindex
+      images: /data/bluser/BL7-1/Nov2011/A6/A6_0001.img /data/bluser/BL7-1/Nov2011/A6/A6_0002.img
+      isigma: 0.0
+      mosaicity: 0.125
+      resolution: 1.5
+      rmsd: 0.063
+      score: 0.8318615841440389
+      unitCell: {a: 90.3, alpha: 90.0, b: 90.3, beta: 90.0, c: 45.19, gamma: 120.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 1
+    repositions: []
+    runs: []
+  row: 5
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756683
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: A7
+  data: {comment: Myo, crystalCond: '', crystalUrl: '', directory: A7, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: '', proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: A7
+  port: A7
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 6
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756684
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: A8
+  data: {comment: Myo, crystalCond: '', crystalUrl: '', directory: A8, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: '', proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: A8
+  port: A8
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 7
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756685
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: B1
+  data: {comment: AutoDrug testing, crystalCond: '', crystalUrl: '', directory: B1,
+    freezingCond: null, metal: '', move: null, person: '', priority: '', protein: myo1,
+    proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: B1
+  port: B1
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 1.716018383949216
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: ''
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 8
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756686
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: B2
+  data: {comment: AutoDrug testing, crystalCond: '', crystalUrl: '', directory: B2,
+    freezingCond: null, metal: '', move: null, person: '', priority: '', protein: myo1,
+    proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: B2
+  port: B2
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 1.7347854059077559
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: ''
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 9
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756687
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: B3
+  data: {comment: AutoDrug testing, crystalCond: '', crystalUrl: '', directory: B3,
+    freezingCond: null, metal: '', move: null, person: '', priority: '', protein: myo2,
+    proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: B3
+  port: B3
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 1.7200049153568804
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: ''
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 10
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756688
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: B4
+  data: {comment: AutoDrug testing, crystalCond: '', crystalUrl: '', directory: B4,
+    freezingCond: null, metal: '', move: null, person: '', priority: '', protein: myo2,
+    proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: B4
+  port: B4
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 1.6865010292712859
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: ''
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 11
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756689
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: B5
+  data: {comment: Myo, crystalCond: '', crystalUrl: '', directory: B5, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: myo1, proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: B5
+  port: B5
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: -100.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: 'Actor AutoDrugWorkflow.ScreenSample.ScoreSample.ParseLabelitOutput.(inner
+        bean) threw exception: java.lang.Exception: Labelit error: couldn''t find
+        3 good basis vectors'
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 12
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756690
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: B6
+  data: {comment: Low alpha mode testing, crystalCond: '', crystalUrl: '', directory: B6,
+    freezingCond: null, metal: '', move: null, person: '', priority: '', protein: myo1,
+    proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: B6
+  port: B6
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 1.6772854056097326
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: "error aborted\n    while executing\n\"::DCS::Operation::waitForOperation\
+        \ $handle\"\n    (procedure \"wait_for_operation\" line 2)\n    invoked from\
+        \ within\n\"wait_for_operation $handle\"\n    (procedure \"wait_for_operation_to_finish\"\
+        \ line 5)\n    invoked from within\n\"wait_for_operation_to_finish $_collectRaster\"\
+        \n    (procedure \"raster_run_0\" line 40)\n    invoked from within\n\"raster_run_0\
+        \ [set $detectorMotorName] $beamstop_z $delta_degrees $exposure_seconds $peak_cutoff_percent\"\
+        \n    (in namespace eval \"::nScripts\" script line 52)\n    invoked from\
+        \ within\n\"namespace eval ::nScripts {set boundingBox \"null\"\nvariable\
+        \ ::nScripts::_status\nset _status(disabledOutputs) {}\nset _status(enabledInputs)\
+        \ {}\nset _stat...\"\n    (\"eval\" body line 2)\n    invoked from within\n\
+        \"eval {\nnamespace eval ::nScripts {set boundingBox \"null\"\nvariable ::nScripts::_status\n\
+        set _status(disabledOutputs) {}\nset _status(enabledInputs) {}\nse...\"\n"
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 13
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756691
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: B7
+  data: {comment: Myo, crystalCond: '', crystalUrl: '', directory: B7, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: myo1, proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: B7
+  port: B7
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 1.6878090302150173
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: "wait for active lock rejected\n    while executing\n\"$controlSystem\
+        \ waitForActiveLock [lindex $args 0]\"\n    (procedure \"::nScripts::lock_active\"\
+        \ line 7)\n    invoked from within\n\"::nScripts::lock_active $activeKey \
+        \       \"\n    (procedure \"assertClientIsActive\" line 7)\n    invoked from\
+        \ within\n\"assertClientIsActive\"\n    (in namespace eval \"::nScripts\"\
+        \ script line 19)\n    invoked from within\n\"namespace eval ::nScripts {set\
+        \ mounted \"null\"\nvariable ::nScripts::_status\nset _status(disabledOutputs)\
+        \ {}\nset _status(enabledInputs) {}\nset _status(d...\"\n    (\"eval\" body\
+        \ line 2)\n    invoked from within\n\"eval {\nnamespace eval ::nScripts {set\
+        \ mounted \"null\"\nvariable ::nScripts::_status\nset _status(disabledOutputs)\
+        \ {}\nset _status(enabledInputs) {}\nset _s...\"\n"
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 14
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756692
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: B8
+  data: {comment: Myo, crystalCond: '', crystalUrl: '', directory: B8, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: myo1, proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: B8
+  port: B8
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 1.6757762634908857
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: "wait for active lock rejected\n    while executing\n\"$controlSystem\
+        \ waitForActiveLock [lindex $args 0]\"\n    (procedure \"::nScripts::lock_active\"\
+        \ line 7)\n    invoked from within\n\"::nScripts::lock_active $activeKey \
+        \       \"\n    (procedure \"assertClientIsActive\" line 7)\n    invoked from\
+        \ within\n\"assertClientIsActive\"\n    (in namespace eval \"::nScripts\"\
+        \ script line 19)\n    invoked from within\n\"namespace eval ::nScripts {set\
+        \ mounted \"null\"\nvariable ::nScripts::_status\nset _status(disabledOutputs)\
+        \ {}\nset _status(enabledInputs) {}\nset _status(d...\"\n    (\"eval\" body\
+        \ line 2)\n    invoked from within\n\"eval {\nnamespace eval ::nScripts {set\
+        \ mounted \"null\"\nvariable ::nScripts::_status\nset _status(disabledOutputs)\
+        \ {}\nset _status(enabledInputs) {}\nset _s...\"\n"
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 15
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756693
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: C1
+  data: {comment: Myo, crystalCond: null, crystalUrl: null, directory: C1, freezingCond: null,
+    metal: null, move: null, person: null, priority: null, protein: myo1, proteinUrl: null}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: C1
+  port: C1
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 1.7699378373044026
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: "wait for active lock rejected\n    while executing\n\"$controlSystem\
+        \ waitForActiveLock [lindex $args 0]\"\n    (procedure \"::nScripts::lock_active\"\
+        \ line 7)\n    invoked from within\n\"::nScripts::lock_active $activeKey \
+        \       \"\n    (procedure \"assertClientIsActive\" line 7)\n    invoked from\
+        \ within\n\"assertClientIsActive\"\n    (in namespace eval \"::nScripts\"\
+        \ script line 19)\n    invoked from within\n\"namespace eval ::nScripts {set\
+        \ mounted \"null\"\nvariable ::nScripts::_status\nset _status(disabledOutputs)\
+        \ {}\nset _status(enabledInputs) {}\nset _status(d...\"\n    (\"eval\" body\
+        \ line 2)\n    invoked from within\n\"eval {\nnamespace eval ::nScripts {set\
+        \ mounted \"null\"\nvariable ::nScripts::_status\nset _status(disabledOutputs)\
+        \ {}\nset _status(enabledInputs) {}\nset _s...\"\n"
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 16
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756694
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: C2
+  data: {comment: Myo, crystalCond: null, crystalUrl: null, directory: C2, freezingCond: null,
+    metal: null, move: null, person: null, priority: null, protein: myo1, proteinUrl: null}
+  eventId: 0
+  excelRow: -1
+  images:
+    '2':
+      data: {jpeg: C2_90deg_00002.jpg, large: C2_00002_large.jpg, medium: C2_00002_medium.jpg,
+        small: C2_00002_small.jpg}
+      dir: /data/ana/100K-RADDAM-MYO/SCREEN/C2
+      group: '2'
+      name: C2_00002.cbf
+      order: 1
+      path: /data/ana/100K-RADDAM-MYO/SCREEN/C2/C2_00002.cbf
+      result:
+        spotfinderResult: {cellEdge: 116, diffractionStrength: 7.2, dir: /data/ana/webice/screening/20671/C2/spotfinder,
+          integratedIntensity: 0.0, numBraggSpots: 1352, numIceRings: 0, numOverloadSpots: 0,
+          numSpots: 1352, quality: 0.0, resolution: 1.4, score: 14.0, spotShape: 0.71,
+          warning: null}
+    '1':
+      data: {jpeg: C2_0deg_00001.jpg, large: C2_00001_large.jpg, medium: C2_00001_medium.jpg,
+        small: C2_00001_small.jpg}
+      dir: /data/ana/100K-RADDAM-MYO/SCREEN/C2
+      group: '1'
+      name: C2_00001.cbf
+      order: 0
+      path: /data/ana/100K-RADDAM-MYO/SCREEN/C2/C2_00001.cbf
+      result:
+        spotfinderResult: {cellEdge: 113, diffractionStrength: 7.4, dir: /data/ana/webice/screening/20671/C2/spotfinder,
+          integratedIntensity: 0.0, numBraggSpots: 1557, numIceRings: 0, numOverloadSpots: 0,
+          numSpots: 1557, quality: 0.0, resolution: 1.3, score: 14.0, spotShape: 0.707,
+          warning: null}
+  name: C2
+  port: C2
+  result:
+    autoindexResult:
+      bestSolution: 12
+      bravaisLattice: P3,P312,P321,P6,P622
+      dir: /data/ana/webice/screening/20671/C2/autoindex
+      images: /data/ana/100K-RADDAM-MYO/SCREEN/C2/C2_00001.cbf /data/ana/100K-RADDAM-MYO/SCREEN/C2/C2_00002.cbf
+      isigma: 0.0
+      mosaicity: 0.25
+      resolution: 1.29
+      rmsd: 0.11
+      score: 0.7534899941556578
+      unitCell: {a: 90.45, alpha: 90.0, b: 90.45, beta: 90.0, c: 45.42, gamma: 120.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 1
+    repositions: []
+    runs: []
+  row: 17
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756695
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: C3
+  data: {comment: Myo, crystalCond: null, crystalUrl: null, directory: C3, freezingCond: null,
+    metal: null, move: null, person: null, priority: null, protein: myo1, proteinUrl: null}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: C3
+  port: C3
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 1.752750741748037
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: "wait for active lock rejected\n    while executing\n\"$controlSystem\
+        \ waitForActiveLock [lindex $args 0]\"\n    (procedure \"::nScripts::lock_active\"\
+        \ line 7)\n    invoked from within\n\"::nScripts::lock_active $activeKey \
+        \       \"\n    (procedure \"assertClientIsActive\" line 7)\n    invoked from\
+        \ within\n\"assertClientIsActive\"\n    (in namespace eval \"::nScripts\"\
+        \ script line 19)\n    invoked from within\n\"namespace eval ::nScripts {set\
+        \ mounted \"null\"\nvariable ::nScripts::_status\nset _status(disabledOutputs)\
+        \ {}\nset _status(enabledInputs) {}\nset _status(d...\"\n    (\"eval\" body\
+        \ line 2)\n    invoked from within\n\"eval {\nnamespace eval ::nScripts {set\
+        \ mounted \"null\"\nvariable ::nScripts::_status\nset _status(disabledOutputs)\
+        \ {}\nset _status(enabledInputs) {}\nset _s...\"\n"
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 18
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756696
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: C4
+  data: {comment: Myo, crystalCond: null, crystalUrl: null, directory: C4, freezingCond: null,
+    metal: null, move: null, person: null, priority: null, protein: myo1, proteinUrl: null}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: C4
+  port: C4
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 1.5959764060078525
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: "wait for active lock rejected\n    while executing\n\"$controlSystem\
+        \ waitForActiveLock [lindex $args 0]\"\n    (procedure \"::nScripts::lock_active\"\
+        \ line 7)\n    invoked from within\n\"::nScripts::lock_active $activeKey \
+        \       \"\n    (procedure \"assertClientIsActive\" line 7)\n    invoked from\
+        \ within\n\"assertClientIsActive\"\n    (in namespace eval \"::nScripts\"\
+        \ script line 19)\n    invoked from within\n\"namespace eval ::nScripts {set\
+        \ mounted \"null\"\nvariable ::nScripts::_status\nset _status(disabledOutputs)\
+        \ {}\nset _status(enabledInputs) {}\nset _status(d...\"\n    (\"eval\" body\
+        \ line 2)\n    invoked from within\n\"eval {\nnamespace eval ::nScripts {set\
+        \ mounted \"null\"\nvariable ::nScripts::_status\nset _status(disabledOutputs)\
+        \ {}\nset _status(enabledInputs) {}\nset _s...\"\n"
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 19
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756697
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: C5
+  data: {comment: Myo, crystalCond: '', crystalUrl: '', directory: C5, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: '', proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images:
+    '2':
+      data: {jpeg: C5_90deg_00002.jpg, large: C5_00002_large.jpg, medium: C5_00002_medium.jpg,
+        small: C5_00002_small.jpg}
+      dir: /data/ana/100K-RADDAM-MYO/SCREEN/C5
+      group: '2'
+      name: C5_00002.cbf
+      order: 1
+      path: /data/ana/100K-RADDAM-MYO/SCREEN/C5/C5_00002.cbf
+      result:
+        spotfinderResult: {cellEdge: 212, diffractionStrength: 1.9, dir: /data/ana/webice/screening/20671/C5/spotfinder,
+          integratedIntensity: 0.0, numBraggSpots: 1151, numIceRings: 0, numOverloadSpots: 0,
+          numSpots: 1151, quality: 0.0, resolution: 1.7, score: 10.0, spotShape: 0.644,
+          warning: null}
+    '1':
+      data: {jpeg: C5_0deg_00001.jpg, large: C5_00001_large.jpg, medium: C5_00001_medium.jpg,
+        small: C5_00001_small.jpg}
+      dir: /data/ana/100K-RADDAM-MYO/SCREEN/C5
+      group: '1'
+      name: C5_00001.cbf
+      order: 0
+      path: /data/ana/100K-RADDAM-MYO/SCREEN/C5/C5_00001.cbf
+      result:
+        spotfinderResult: {cellEdge: 189, diffractionStrength: 1.7, dir: /data/ana/webice/screening/20671/C5/spotfinder,
+          integratedIntensity: 0.0, numBraggSpots: 1076, numIceRings: 0, numOverloadSpots: 0,
+          numSpots: 1076, quality: 0.0, resolution: 1.7, score: 10.0, spotShape: 0.678,
+          warning: null}
+  name: C5
+  port: C5
+  result:
+    autoindexResult:
+      bestSolution: 12
+      bravaisLattice: P3,P312,P321,P6,P622
+      dir: /data/ana/webice/screening/20671/C5/autoindex
+      images: /data/ana/100K-RADDAM-MYO/SCREEN/C5/C5_00001.cbf /data/ana/100K-RADDAM-MYO/SCREEN/C5/C5_00002.cbf
+      isigma: 0.0
+      mosaicity: 0.8
+      resolution: 1.58
+      rmsd: 0.112
+      score: 0.45633036946788585
+      unitCell: {a: 90.57, alpha: 90.0, b: 90.57, beta: 90.0, c: 45.29, gamma: 120.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 1
+    repositions: []
+    runs: []
+  row: 20
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756698
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: C6
+  data: {comment: Myo destroyed, crystalCond: '', crystalUrl: '', directory: C6, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: '', proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: C6
+  port: C6
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 21
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756699
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: C7
+  data: {comment: Myo destroyed, crystalCond: '', crystalUrl: '', directory: C7, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: '', proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: C7
+  port: C7
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 22
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756700
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: C8
+  data: {comment: Myo destroyed, crystalCond: '', crystalUrl: '', directory: C8, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: '', proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: C8
+  port: C8
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 23
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756701
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: D1
+  data: {comment: Myo destroyed, crystalCond: null, crystalUrl: null, directory: D1,
+    freezingCond: null, metal: null, move: null, person: null, priority: null, protein: null,
+    proteinUrl: null}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: D1
+  port: D1
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 24
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756702
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: D2
+  data: {comment: Myo destroyed, crystalCond: null, crystalUrl: null, directory: D2,
+    freezingCond: null, metal: null, move: null, person: null, priority: null, protein: null,
+    proteinUrl: null}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: D2
+  port: D2
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 25
+  selected: true
+  selectedForQueue: false
+  uniqueId: 1756703
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: D3
+  data: {comment: Myo, crystalCond: null, crystalUrl: null, directory: D3, freezingCond: null,
+    metal: null, move: null, person: null, priority: null, protein: null, proteinUrl: null}
+  eventId: 0
+  excelRow: -1
+  images:
+    '2':
+      data: {jpeg: D3_90deg_00002.jpg, large: D3_00002_large.jpg, medium: D3_00002_medium.jpg,
+        small: D3_00002_small.jpg}
+      dir: /data/ana/100K-RADDAM-MYO/SCREEN/D3
+      group: '2'
+      name: D3_00002.cbf
+      order: 1
+      path: /data/ana/100K-RADDAM-MYO/SCREEN/D3/D3_00002.cbf
+      result:
+        spotfinderResult: {cellEdge: 159, diffractionStrength: 1.6, dir: /data/ana/webice/screening/20671/D3/spotfinder,
+          integratedIntensity: 0.0, numBraggSpots: 682, numIceRings: 4, numOverloadSpots: 0,
+          numSpots: 682, quality: 0.0, resolution: 2.0, score: 8.0, spotShape: 0.806,
+          warning: null}
+    '1':
+      data: {jpeg: D3_0deg_00001.jpg, large: D3_00001_large.jpg, medium: D3_00001_medium.jpg,
+        small: D3_00001_small.jpg}
+      dir: /data/ana/100K-RADDAM-MYO/SCREEN/D3
+      group: '1'
+      name: D3_00001.cbf
+      order: 0
+      path: /data/ana/100K-RADDAM-MYO/SCREEN/D3/D3_00001.cbf
+      result:
+        spotfinderResult: {cellEdge: 237, diffractionStrength: 2.2, dir: /data/ana/webice/screening/20671/D3/spotfinder,
+          integratedIntensity: 0.0, numBraggSpots: 875, numIceRings: 4, numOverloadSpots: 0,
+          numSpots: 875, quality: 0.0, resolution: 1.8, score: 10.0, spotShape: 0.828,
+          warning: null}
+  name: D3
+  port: D3
+  result:
+    autoindexResult:
+      bestSolution: 12
+      bravaisLattice: P3,P312,P321,P6,P622
+      dir: /data/ana/webice/screening/20671/D3/autoindex
+      images: /data/ana/100K-RADDAM-MYO/SCREEN/D3/D3_00001.cbf /data/ana/100K-RADDAM-MYO/SCREEN/D3/D3_00002.cbf
+      isigma: 0.0
+      mosaicity: 0.9
+      resolution: 1.74
+      rmsd: 0.078
+      score: 0.6327380949801504
+      unitCell: {a: 90.52, alpha: 90.0, b: 90.52, beta: 90.0, c: 45.45, gamma: 120.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 1
+    repositions: []
+    runs: []
+  row: 26
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756704
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: D4
+  data: {comment: Myo, crystalCond: null, crystalUrl: null, directory: D4, freezingCond: null,
+    metal: null, move: null, person: null, priority: null, protein: null, proteinUrl: null}
+  eventId: 0
+  excelRow: -1
+  images:
+    '2':
+      data: {jpeg: D4_90deg_00002.jpg, large: D4_00002_large.jpg, medium: D4_00002_medium.jpg,
+        small: D4_00002_small.jpg}
+      dir: /data/ana/100K-RADDAM-MYO/SCREEN/D4
+      group: '2'
+      name: D4_00002.cbf
+      order: 1
+      path: /data/ana/100K-RADDAM-MYO/SCREEN/D4/D4_00002.cbf
+      result:
+        spotfinderResult: {cellEdge: 120, diffractionStrength: 2.8, dir: /data/ana/webice/screening/20671/D4/spotfinder,
+          integratedIntensity: 0.0, numBraggSpots: 1135, numIceRings: 0, numOverloadSpots: 0,
+          numSpots: 1135, quality: 0.0, resolution: 1.5, score: 12.0, spotShape: 0.757,
+          warning: null}
+    '1':
+      data: {jpeg: D4_0deg_00001.jpg, large: D4_00001_large.jpg, medium: D4_00001_medium.jpg,
+        small: D4_00001_small.jpg}
+      dir: /data/ana/100K-RADDAM-MYO/SCREEN/D4
+      group: '1'
+      name: D4_00001.cbf
+      order: 0
+      path: /data/ana/100K-RADDAM-MYO/SCREEN/D4/D4_00001.cbf
+      result:
+        spotfinderResult: {cellEdge: 126, diffractionStrength: 4.2, dir: /data/ana/webice/screening/20671/D4/spotfinder,
+          integratedIntensity: 0.0, numBraggSpots: 1318, numIceRings: 0, numOverloadSpots: 0,
+          numSpots: 1318, quality: 0.0, resolution: 1.5, score: 12.0, spotShape: 0.749,
+          warning: null}
+  name: D4
+  port: D4
+  result:
+    autoindexResult:
+      bestSolution: 12
+      bravaisLattice: P3,P312,P321,P6,P622
+      dir: /data/ana/webice/screening/20671/D4/autoindex
+      images: /data/ana/100K-RADDAM-MYO/SCREEN/D4/D4_00001.cbf /data/ana/100K-RADDAM-MYO/SCREEN/D4/D4_00002.cbf
+      isigma: 0.0
+      mosaicity: 0.35
+      resolution: 1.42
+      rmsd: 0.103
+      score: 0.7336463534649872
+      unitCell: {a: 90.36, alpha: 90.0, b: 90.36, beta: 90.0, c: 45.41, gamma: 120.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 1
+    repositions: []
+    runs: []
+  row: 27
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756705
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: D5
+  data: {comment: Myo, crystalCond: '', crystalUrl: '', directory: D5, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: '', proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: D5
+  port: D5
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 28
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756706
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: D6
+  data: {comment: Myo, crystalCond: '', crystalUrl: '', directory: D6, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: '', proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: D6
+  port: D6
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 29
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756707
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: D7
+  data: {comment: Myo, crystalCond: '', crystalUrl: '', directory: D7, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: '', proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: D7
+  port: D7
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 30
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756708
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: D8
+  data: {comment: Myo, crystalCond: '', crystalUrl: '', directory: D8, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: '', proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: D8
+  port: D8
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 31
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756709
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: E1
+  data: {comment: Myo, crystalCond: null, crystalUrl: null, directory: E1, freezingCond: null,
+    metal: null, move: null, person: null, priority: null, protein: null, proteinUrl: null}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: E1
+  port: E1
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 32
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756710
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: E2
+  data: {comment: Myo, crystalCond: null, crystalUrl: null, directory: E2, freezingCond: null,
+    metal: null, move: null, person: null, priority: null, protein: null, proteinUrl: null}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: E2
+  port: E2
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 33
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756711
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: E3
+  data: {comment: Myo, crystalCond: null, crystalUrl: null, directory: E3, freezingCond: null,
+    metal: null, move: null, person: null, priority: null, protein: null, proteinUrl: null}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: E3
+  port: E3
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 34
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756712
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: E4
+  data: {comment: Myo, crystalCond: null, crystalUrl: null, directory: E4, freezingCond: null,
+    metal: null, move: null, person: null, priority: null, protein: null, proteinUrl: null}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: E4
+  port: E4
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 35
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756713
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: E5
+  data: {comment: Myo, crystalCond: '', crystalUrl: '', directory: E5, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: '', proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: E5
+  port: E5
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 36
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756714
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: E6
+  data: {comment: Myo, crystalCond: '', crystalUrl: '', directory: E6, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: '', proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: E6
+  port: E6
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 37
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756715
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: E7
+  data: {comment: Myo, crystalCond: '', crystalUrl: '', directory: E7, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: '', proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: E7
+  port: E7
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 38
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756716
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: E8
+  data: {comment: Myo, crystalCond: '', crystalUrl: '', directory: E8, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: '', proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: E8
+  port: E8
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 39
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756717
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: F1
+  data: {comment: Myo, crystalCond: null, crystalUrl: null, directory: F1, freezingCond: null,
+    metal: null, move: null, person: null, priority: null, protein: null, proteinUrl: null}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: F1
+  port: F1
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 40
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756718
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: F2
+  data: {comment: Myo, crystalCond: null, crystalUrl: null, directory: F2, freezingCond: null,
+    metal: null, move: null, person: null, priority: null, protein: null, proteinUrl: null}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: F2
+  port: F2
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 41
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756719
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: F3
+  data: {comment: Myo, crystalCond: null, crystalUrl: null, directory: F3, freezingCond: null,
+    metal: null, move: null, person: null, priority: null, protein: null, proteinUrl: null}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: F3
+  port: F3
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 42
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756720
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: F4
+  data: {comment: Myo, crystalCond: null, crystalUrl: null, directory: F4, freezingCond: null,
+    metal: null, move: null, person: null, priority: null, protein: null, proteinUrl: null}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: F4
+  port: F4
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 43
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756721
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: F5
+  data: {comment: Myo, crystalCond: '', crystalUrl: '', directory: F5, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: '', proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: F5
+  port: F5
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 44
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756722
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: F6
+  data: {comment: Myo, crystalCond: '', crystalUrl: '', directory: F6, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: '', proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: F6
+  port: F6
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 45
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756723
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: F7
+  data: {comment: Myo, crystalCond: '', crystalUrl: '', directory: F7, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: '', proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images:
+    '2':
+      data: {jpeg: F7_90deg_0002.jpg, large: F7_0002_large.jpg, medium: F7_0002_medium.jpg,
+        small: F7_0002_small.jpg}
+      dir: /data/tdoukov/Beamlines/bl111/jan2012myo/F7
+      group: '2'
+      name: F7_0002.cbf
+      order: 1
+      path: /data/tdoukov/Beamlines/bl111/jan2012myo/F7/F7_0002.cbf
+      result:
+        spotfinderResult: {cellEdge: 18, diffractionStrength: 0.1, dir: /data/tdoukov/webice/screening/20671/F7/spotfinder,
+          integratedIntensity: 0.0, numBraggSpots: 5, numIceRings: 3, numOverloadSpots: 0,
+          numSpots: 5, quality: 0.0, resolution: 0.0, score: 0.0, spotShape: 0.853,
+          warning: null}
+    '1':
+      data: {jpeg: F7_0deg_0001.jpg, large: F7_0001_large.jpg, medium: F7_0001_medium.jpg,
+        small: F7_0001_small.jpg}
+      dir: /data/tdoukov/Beamlines/bl111/jan2012myo/F7
+      group: '1'
+      name: F7_0001.cbf
+      order: 0
+      path: /data/tdoukov/Beamlines/bl111/jan2012myo/F7/F7_0001.cbf
+      result:
+        spotfinderResult: {cellEdge: 19, diffractionStrength: 0.1, dir: /data/tdoukov/webice/screening/20671/F7/spotfinder,
+          integratedIntensity: 0.0, numBraggSpots: 5, numIceRings: 3, numOverloadSpots: 0,
+          numSpots: 5, quality: 0.0, resolution: 0.0, score: 0.0, spotShape: 0.826,
+          warning: null}
+  name: F7
+  port: F7
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: /data/tdoukov/webice/screening/20671/F7/autoindex
+      images: /data/tdoukov/Beamlines/bl111/jan2012myo/F7/F7_0001.cbf /data/tdoukov/Beamlines/bl111/jan2012myo/F7/F7_0002.cbf
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: Too few candidate Bragg spots (17) in image 1
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 46
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756724
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: F8
+  data: {comment: Myo, crystalCond: '', crystalUrl: '', directory: F8, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: '', proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: F8
+  port: F8
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 47
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756725
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: G1
+  data: {comment: '', crystalCond: '', crystalUrl: '', directory: G1, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: '', proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: G1
+  port: G1
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 48
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756726
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: G2
+  data: {comment: '', crystalCond: '', crystalUrl: '', directory: G2, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: '', proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: G2
+  port: G2
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 49
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756727
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: G3
+  data: {comment: '', crystalCond: '', crystalUrl: '', directory: G3, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: '', proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: G3
+  port: G3
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 50
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756728
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: G4
+  data: {comment: '', crystalCond: '', crystalUrl: '', directory: G4, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: '', proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: G4
+  port: G4
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 51
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756729
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: G5
+  data: {comment: null, crystalCond: null, crystalUrl: null, directory: G5, freezingCond: null,
+    metal: null, move: null, person: null, priority: null, protein: null, proteinUrl: null}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: G5
+  port: G5
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 52
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756730
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: G6
+  data: {comment: null, crystalCond: null, crystalUrl: null, directory: G6, freezingCond: null,
+    metal: null, move: null, person: null, priority: null, protein: null, proteinUrl: null}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: G6
+  port: G6
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 53
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756731
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: G7
+  data: {comment: null, crystalCond: null, crystalUrl: null, directory: G7, freezingCond: null,
+    metal: null, move: null, person: null, priority: null, protein: null, proteinUrl: null}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: G7
+  port: G7
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 54
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756732
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: G8
+  data: {comment: '', crystalCond: '', crystalUrl: '', directory: G8, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: '', proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: G8
+  port: G8
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 55
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756733
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: H1
+  data: {comment: '', crystalCond: '', crystalUrl: '', directory: H1, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: '', proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: H1
+  port: H1
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 56
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756734
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: H2
+  data: {comment: '', crystalCond: '', crystalUrl: '', directory: H2, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: '', proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: H2
+  port: H2
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 57
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756735
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: H3
+  data: {comment: '', crystalCond: '', crystalUrl: '', directory: H3, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: '', proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: H3
+  port: H3
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 58
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756736
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: H4
+  data: {comment: '', crystalCond: '', crystalUrl: '', directory: H4, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: '', proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: H4
+  port: H4
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 59
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756737
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: H5
+  data: {comment: null, crystalCond: null, crystalUrl: null, directory: H5, freezingCond: null,
+    metal: null, move: null, person: null, priority: null, protein: null, proteinUrl: null}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: H5
+  port: H5
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 60
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756738
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: H6
+  data: {comment: null, crystalCond: null, crystalUrl: null, directory: H6, freezingCond: null,
+    metal: null, move: null, person: null, priority: null, protein: null, proteinUrl: null}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: H6
+  port: H6
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 61
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756739
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: H7
+  data: {comment: null, crystalCond: null, crystalUrl: null, directory: H7, freezingCond: null,
+    metal: null, move: null, person: null, priority: null, protein: null, proteinUrl: null}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: H7
+  port: H7
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 62
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756740
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: H8
+  data: {comment: null, crystalCond: null, crystalUrl: null, directory: H8, freezingCond: null,
+    metal: null, move: null, person: null, priority: null, protein: null, proteinUrl: null}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: H8
+  port: H8
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 63
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756741
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: I1
+  data: {comment: '', crystalCond: '', crystalUrl: '', directory: I1, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: '', proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: I1
+  port: I1
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 64
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756742
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: I2
+  data: {comment: '', crystalCond: '', crystalUrl: '', directory: I2, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: '', proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: I2
+  port: I2
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 65
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756743
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: I3
+  data: {comment: '', crystalCond: '', crystalUrl: '', directory: I3, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: '', proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: I3
+  port: I3
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 66
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756744
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: I4
+  data: {comment: '', crystalCond: '', crystalUrl: '', directory: I4, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: '', proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: I4
+  port: I4
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 67
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756745
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: I5
+  data: {comment: '', crystalCond: '', crystalUrl: '', directory: I5, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: '', proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: I5
+  port: I5
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 68
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756746
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: I6
+  data: {comment: null, crystalCond: null, crystalUrl: null, directory: I6, freezingCond: null,
+    metal: null, move: null, person: null, priority: null, protein: null, proteinUrl: null}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: I6
+  port: I6
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 69
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756747
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: I7
+  data: {comment: null, crystalCond: null, crystalUrl: null, directory: I7, freezingCond: null,
+    metal: null, move: null, person: null, priority: null, protein: null, proteinUrl: null}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: I7
+  port: I7
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 70
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756748
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: I8
+  data: {comment: null, crystalCond: null, crystalUrl: null, directory: I8, freezingCond: null,
+    metal: null, move: null, person: null, priority: null, protein: null, proteinUrl: null}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: I8
+  port: I8
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 71
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756749
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: J1
+  data: {comment: '', crystalCond: '', crystalUrl: '', directory: J1, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: '', proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: J1
+  port: J1
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 72
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756750
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: J2
+  data: {comment: '', crystalCond: '', crystalUrl: '', directory: J2, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: '', proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: J2
+  port: J2
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 73
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756751
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: J3
+  data: {comment: '', crystalCond: '', crystalUrl: '', directory: J3, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: '', proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: J3
+  port: J3
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 74
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756752
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: J4
+  data: {comment: '', crystalCond: '', crystalUrl: '', directory: J4, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: '', proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: J4
+  port: J4
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 75
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756753
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: J5
+  data: {comment: null, crystalCond: null, crystalUrl: null, directory: J5, freezingCond: null,
+    metal: null, move: null, person: null, priority: null, protein: null, proteinUrl: null}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: J5
+  port: J5
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 76
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756754
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: J6
+  data: {comment: null, crystalCond: null, crystalUrl: null, directory: J6, freezingCond: null,
+    metal: null, move: null, person: null, priority: null, protein: null, proteinUrl: null}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: J6
+  port: J6
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 77
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756755
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: J7
+  data: {comment: null, crystalCond: null, crystalUrl: null, directory: J7, freezingCond: null,
+    metal: null, move: null, person: null, priority: null, protein: null, proteinUrl: null}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: J7
+  port: J7
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 78
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756756
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: J8
+  data: {comment: null, crystalCond: null, crystalUrl: null, directory: J8, freezingCond: null,
+    metal: null, move: null, person: null, priority: null, protein: null, proteinUrl: null}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: J8
+  port: J8
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 79
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756757
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: K1
+  data: {comment: '', crystalCond: '', crystalUrl: '', directory: K1, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: '', proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: K1
+  port: K1
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 80
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756758
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: K2
+  data: {comment: '', crystalCond: '', crystalUrl: '', directory: K2, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: '', proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: K2
+  port: K2
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 81
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756759
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: K3
+  data: {comment: '', crystalCond: '', crystalUrl: '', directory: K3, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: '', proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: K3
+  port: K3
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 82
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756760
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: K4
+  data: {comment: '', crystalCond: '', crystalUrl: '', directory: K4, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: '', proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: K4
+  port: K4
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 83
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756761
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: K5
+  data: {comment: null, crystalCond: null, crystalUrl: null, directory: K5, freezingCond: null,
+    metal: null, move: null, person: null, priority: null, protein: null, proteinUrl: null}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: K5
+  port: K5
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 84
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756762
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: K6
+  data: {comment: null, crystalCond: null, crystalUrl: null, directory: K6, freezingCond: null,
+    metal: null, move: null, person: null, priority: null, protein: null, proteinUrl: null}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: K6
+  port: K6
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 85
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756763
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: K7
+  data: {comment: null, crystalCond: null, crystalUrl: null, directory: K7, freezingCond: null,
+    metal: null, move: null, person: null, priority: null, protein: null, proteinUrl: null}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: K7
+  port: K7
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 86
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756764
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: K8
+  data: {comment: null, crystalCond: null, crystalUrl: null, directory: K8, freezingCond: null,
+    metal: null, move: null, person: null, priority: null, protein: null, proteinUrl: null}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: K8
+  port: K8
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 87
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756765
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: L1
+  data: {comment: '', crystalCond: '', crystalUrl: '', directory: L1, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: '', proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: L1
+  port: L1
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 88
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756766
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: L2
+  data: {comment: '', crystalCond: '', crystalUrl: '', directory: L2, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: '', proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: L2
+  port: L2
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 89
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756767
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: L3
+  data: {comment: '', crystalCond: '', crystalUrl: '', directory: L3, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: '', proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: L3
+  port: L3
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 90
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756768
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: L4
+  data: {comment: '', crystalCond: '', crystalUrl: '', directory: L4, freezingCond: null,
+    metal: '', move: null, person: '', priority: '', protein: '', proteinUrl: ''}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: L4
+  port: L4
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: ''
+    reorientPhi: ''
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 91
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756769
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: L5
+  data: {comment: null, crystalCond: null, crystalUrl: null, directory: L5, freezingCond: null,
+    metal: null, move: null, person: null, priority: null, protein: null, proteinUrl: null}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: L5
+  port: L5
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 92
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756770
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: L6
+  data: {comment: null, crystalCond: null, crystalUrl: null, directory: L6, freezingCond: null,
+    metal: null, move: null, person: null, priority: null, protein: null, proteinUrl: null}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: L6
+  port: L6
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 93
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756771
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: L7
+  data: {comment: null, crystalCond: null, crystalUrl: null, directory: L7, freezingCond: null,
+    metal: null, move: null, person: null, priority: null, protein: null, proteinUrl: null}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: L7
+  port: L7
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 94
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756772
+- !!sil.beans.Crystal
+  barcode: null
+  barcodeScanned: null
+  containerId: UNKOWN
+  containerType: cassette
+  crystalId: L8
+  data: {comment: null, crystalCond: null, crystalUrl: null, directory: L8, freezingCond: null,
+    metal: null, move: null, person: null, priority: null, protein: null, proteinUrl: null}
+  eventId: 0
+  excelRow: -1
+  images: {}
+  name: L8
+  port: L8
+  result:
+    autoindexResult:
+      bestSolution: -1
+      bravaisLattice: null
+      dir: null
+      images: null
+      isigma: 0.0
+      mosaicity: 0.0
+      resolution: 0.0
+      rmsd: 0.0
+      score: 0.0
+      unitCell: {a: 0.0, alpha: 0.0, b: 0.0, beta: 0.0, c: 0.0, gamma: 0.0}
+      warning: null
+    dcsStrategyResult: {status: null, summary: null}
+    reorientInfo: null
+    reorientPhi: null
+    reorientable: 0
+    repositions: []
+    runs: []
+  row: 95
+  selected: false
+  selectedForQueue: false
+  uniqueId: 1756773
+

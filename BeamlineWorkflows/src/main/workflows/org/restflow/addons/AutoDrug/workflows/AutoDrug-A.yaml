@@ -1,0 +1,129 @@
+namespace:
+
+  module: AutoDrug
+  route: A
+
+imports: 
+
+- classpath:/org/restflow/addons/AutoDrug/workflows/AutoDrug-ValidateInput.yaml
+- classpath:/org/restflow/addons/AutoDrug/reports/reports.yaml
+- classpath:/org/restflow/addons/ScreenAndCollectSample/workflows/ScreenAndCollectSample-A.yaml
+- classpath:/org/restflow/addons/ProcessSample/workflows/ProcessSample.yaml
+
+components:
+
+- id: Workflow
+  type: Workflow
+  properties:
+    director: !ref MTDataDrivenDirector
+    inputs:
+      spreadsheetId:
+        default: 
+        description: sil id of spreadsheet to screen
+      strategy-file:
+      beamline:
+    nodes:
+    - !lref CommandLineInputs
+    - !lref LoadAndValidateJobs
+    - !lref StepForEachGroup
+    - !lref ExtractSamples
+    - !lref StepForEachSample
+    - !lref ScreenAndCollectSample
+    - !lref DataProcessing    
+    reports:
+      summary: !ref AutoDrugReport.A.Summary
+      status: !inline
+        type: UnixProcessStatusReporter
+
+- id: CommandLineInputs
+  type: InPortal
+  properties:
+    outflows:
+      spreadsheetId: /spreadsheet
+      strategy-file: /strategyInputFilePath
+      beamline: /beamline
+
+- id: LoadAndValidateJobs
+  type: Step
+  properties:
+    inflows:
+      spreadsheetId: /spreadsheet
+      strategy-file: /strategyInputFilePath
+      beamline: /beamline
+    actor: !ref AutoDrug-ValidateInput.A.Workflow 
+    nestedUriPrefix: /validate/{spreadsheetId}/{beamline}
+    outflows:
+      beamlineValues: /beamlineValues/{beamline}
+      groupsWithStrategy: /{spreadsheetId}/groupsWithStrategy 
+
+
+- id: StepForEachGroup
+  type: Node
+  properties:
+    inflows:
+      map: /{spreadsheetId}/groupsWithStrategy/
+    actor: !ref MapDisassembler
+    outflows:
+      item: /{spreadsheetId}/{key}/group
+
+- id: ExtractSamples
+  type: GroovyActorNode
+  properties:
+    inflows:
+      groupDefinition: /{spreadsheetId}/{key}/group
+    actor.step: |
+      println groupDefinition
+      samples = groupDefinition.samples
+    outflows:
+      samples: /{spreadsheetId}/samples    
+      
+- id: StepForEachSample
+  type: Node
+  properties:
+    inflows:
+      map: /{spreadsheetId}/samples
+    actor: !ref MapDisassembler
+    outflows:
+      item: /{spreadsheetId}/sample/{key}
+      last: /{spreadsheetId}/last/
+
+- id: ScreenAndCollectSample
+  type: Node
+  properties:
+    maxConcurrency: 1
+    inflows: 
+      sample: /{spreadsheetId}/sample/{sampleName}
+      beamlineValues:
+        expression: /beamlineValues/{beamline}
+        receiveOnce: true
+    nestedUriPrefix: /{spreadsheetId}/{sampleName}/
+    actor: !ref ScreenAndCollectSample.A.Workflow
+    outflows: 
+      firstImageFullPath: /{spreadsheetId}/{sampleName}/firstImagePath      
+      lastImage: /{spreadsheetId}/{sampleName}/lastImageNum
+      collectedSample: /{spreadsheetId}/{sampleName}/collectedSample/
+    exceptions:
+      java.lang.Exception: /exceptions/collect/{spreadsheetId}/{sampleName}
+
+- id: DataProcessing
+  type: Node
+  properties:
+    maxConcurrency: 2
+    nestedUriPrefix: /{spreadsheetId_a}/{sampleName_a}/processing/   
+    actor: !ref ProcessSample.A.Workflow
+    inflows:
+      firstImagePath: /{spreadsheetId_a}/{sampleName_a}/firstImagePath      
+      lastImageNum: /{spreadsheetId_b}/{sampleName_b}/lastImageNum
+      sample: /{spreadsheetId}/{sampleName}/collectedSample/
+    exceptions:
+      java.lang.Exception: stderr:/exceptions/processing/{spreadsheetId_a}/{sampleName_a}
+
+
+- id: RethrowCriticalErrors
+  type: GroovyActorNode
+  properties:
+    inflows: 
+      exception: /exceptions/screenAndCollect/{spreadsheetId}/{sampleName}
+    actor.step: |
+      if (exception.message.contains("wait for active lock rejected")) throw exception;
+

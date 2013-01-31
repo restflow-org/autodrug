@@ -1,0 +1,31 @@
+beamlineValues: !!org.restflow.addons.beamline.BeamlineValues
+  beamline: BL-SIM
+  activeKey: x-test-x
+  detectorRingSize: 211.5
+  phiSpeedDegPerSec: 20.0
+  energy: !!org.restflow.addons.beamline.Motor
+    name: energy
+    upperLimit: 15100
+    lowerLimit: 10600
+  detector_z: !!org.restflow.addons.beamline.Motor
+    name:  detector_z_corr
+    upperLimit: 650
+    lowerLimit: 182
+  flux_photons_per_second: 61500000000
+  minimumExposure_seconds: 0.2
+  detectorGain_countsPerPhoton: 0.5
+sampleName: B2
+runDefinition: !!org.restflow.addons.samples.collect.CollectRunDefinition
+  energy_ev: 12657
+  beamstop_position_mm: 32
+  phi_delta_degrees: 0.5
+  wedge: 20.0
+  startAngle: 137.0
+  endAngle: 147.0
+  beam_size_width_mm: 100
+  beam_size_height_mm: 100
+  exposureTime: 1
+  attenuation: 0
+  distance: 400
+  inverse: false
+

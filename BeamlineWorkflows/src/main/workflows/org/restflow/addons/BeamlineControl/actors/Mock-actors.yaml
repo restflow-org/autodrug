@@ -1,0 +1,212 @@
+namespace:
+  module: BeamlineControl
+  route: Mock
+
+components:
+
+- id: Actor.LoopCenterAndRaster
+  type: GroovyActor
+  properties:
+    inputs:
+      activeKey:    
+      beamline:
+      rasterOn:
+      peak_cutoff_percent:    
+      energy_ev:      
+      detector_resolution_angstroms:
+      exposure_photons_per_image:
+      beamstop_position_mm:                  
+      delta_degrees:      
+      beamstop_position_mm:
+    step: |
+      boundingBox = ""
+    outputs:
+      boundingBox:
+      
+
+- id: Actor.CollectTwoImages
+  type: GroovyActor
+  properties:
+    settings:
+      testData: !ref __TestData
+    inputs:
+      activeKey:    
+      beamline:
+      sampleName:
+      energy_ev:
+      detector_resolution_angstroms:
+      exposure_photons_per_image:
+      delta_degrees:
+      beamstop_position_mm:
+      beam_size_width_mm:
+      beam_size_height_mm:
+    step: |
+      String WORKSPACE = "/home/scottm/workspace-restflow/";
+      String PROJECT = WORKSPACE + "BeamlineWorkflows/";		
+      String TEST_DIR = "/data/scottm/TestRestFlow";
+      String TESTDATALOOKUPMAP = PROJECT + "/src/test/resources/org/restflow/addons/AutoDrug/inputs/1/testDataMap.yaml";  
+      
+      import org.yaml.snakeyaml.*;
+      Yaml y = new Yaml();
+      def testDataImageLookupMapFile = new File(TESTDATALOOKUPMAP);
+      testDataMap = y.load(testDataImageLookupMapFile.text); 
+       
+      testData['testDataDir']=TEST_DIR;
+      testData['map']=testDataMap;
+       
+      import static org.apache.commons.io.FileUtils.*;
+      flux_photons_per_second = 160000000 
+          
+        
+      //source files
+      def s1=new File( "${testData.testDataDir}/${testData.map.index[sampleName].path}/${sampleName}_0001.cbf");
+      def s2=new File( "${testData.testDataDir}/${testData.map.index[sampleName].path}/${sampleName}_0002.cbf");
+
+      //destination
+      println _outflowDirectory
+      def dir = "${_outflowDirectory['images']}/${sampleName}";
+      images = new File( dir);
+      def d1 = new File( "${dir}/${sampleName}_0001.cbf" );
+      def d2 = new File( "${dir}/${sampleName}_0002.cbf" );
+
+      println "copy $testData to $dir" 
+      copyFile( s1, d1);
+      copyFile( s2, d2);
+
+      imageName1 = d1.path;
+      imageName2 = d2.path;
+    outputs:
+      images:
+        type: File
+      imageName1:
+      imageName2:
+      flux_photons_per_second:
+
+
+- id: Actor.CollectRun
+  type: GroovyActor
+  properties:
+    settings:
+      testData: !ref __TestData
+    usesStepDirectory: true      
+    inputs:
+      activeKey:    
+      beamline:    
+      sampleName:
+      first:
+      startAngle:
+      endAngle:
+      delta:
+      wedge:
+      exposureTime:
+      energy_ev:
+      wedge:
+      distance:
+      beamstop:
+      attenuation_percent:
+      inverse: 
+      sampleName:
+      beam_size_width_mm:
+      beam_size_height_mm:      
+    step: |
+      String WORKSPACE = "/home/scottm/workspace-restflow/";
+      String PROJECT = WORKSPACE + "BeamlineWorkflows/";		
+      String TEST_DIR = "/data/scottm/TestRestFlow";
+      String TESTDATALOOKUPMAP = PROJECT + "/src/test/resources/org/restflow/addons/AutoDrug/inputs/1/testDataMap.yaml";  
+      
+      import org.yaml.snakeyaml.*;
+      Yaml y = new Yaml();
+      def testDataImageLookupMapFile = new File(TESTDATALOOKUPMAP);
+      testDataMap = y.load(testDataImageLookupMapFile.text); 
+       
+      testData['testDataDir']=TEST_DIR;
+      testData['map']=testDataMap;
+    
+      import static org.apache.commons.io.FileUtils.*;
+
+      //destination dir
+      def dir = "${_outflowDirectory['dataset']}/${sampleName}/";
+
+      //source files
+      def src =new File( "${testData.testDataDir}/${testData.map.collect[sampleName].path}");
+      def files = listFiles (src, ['cbf','mccd','img'] as String[] , false );
+      files.each { s ->
+        def d = new File (dir + s.name); 
+        println "copy $s to $d" 
+        copyFile( s, d);
+      } 
+      firstImageFullPath = dir + "${sampleName}_1_00001.cbf"
+      firstImage = '1';
+      lastImage = files.size().toString();
+      dataset = new File(dir);
+    outputs:
+      firstImageFullPath:    
+      lastImage: 
+      firstImage: 
+      dataset:
+        type: File
+
+
+- id: Actor.MountNextSample
+  type: GroovyActor
+  properties:
+    inputs:
+      dewarPort:
+      beamline:
+      activeKey:      
+    step: |
+      mounted = dewarPort;
+    outputs:
+      mounted:
+
+- id: Actor.UnselectSamples
+  type: GroovyActor
+  properties:
+    inputs:
+      deselectSamples:
+      beamline:
+      activeKey:
+    step: |
+      done = true;
+    outputs:
+      done:
+
+      
+- id: Actor.ReadBeamlineValues
+  type: GroovyActor
+  properties:
+    settings:
+      beamlineValues: !resource org/restflow/addons/AutoDrug/inputs/1/beamlineValues.yaml
+    inputs:
+      beamline:
+    step: |         
+      import org.yaml.snakeyaml.*;
+      Yaml y = new Yaml();
+      def v = y.load(beamlineValues);
+      currentDewarPort = "A1";
+
+      detectorRingSize = v.detectorRingSize;
+      phiSpeedDegPerSec = v.phiSpeedDegPerSec;
+      energyUpperLimitEv = v.energy.upperLimit;
+      energyLowerLimitEv = v.energy.lowerLimit;
+
+      distanceUpperLimitmm = v.detector_z.upperLimit;
+      distanceLowerLimitmm = v.detector_z.lowerLimit;
+      minimumExposure_seconds = v.minimumExposure_seconds;
+      activeKey = "x-sim-x";
+
+      detectorGain_countsPerPhoton = v.detectorGain_countsPerPhoton;
+      beamline = v.beamline;
+    outputs:
+      currentDewarPort:
+      detectorRingSize:
+      phiSpeedDegPerSec:
+      energyUpperLimitEv:
+      energyLowerLimitEv:
+      distanceUpperLimitmm:
+      distanceLowerLimitmm:          
+      detectorGain_countsPerPhoton:
+      minimumExposure_seconds:
+      beamline:
+      activeKey:
+

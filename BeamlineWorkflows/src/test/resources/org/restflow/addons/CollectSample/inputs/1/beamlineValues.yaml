@@ -1,0 +1,17 @@
+!!org.restflow.addons.beamline.BeamlineValues
+beamline: BL11-1
+detectorRingSize: 211.5
+phiSpeedDegPerSec: 20.0
+energy: !!org.restflow.addons.beamline.Motor
+  name: energy
+  upperLimit: 15100
+  lowerLimit: 10600
+detector_z: !!org.restflow.addons.beamline.Motor
+  name:  detector_z_corr
+  upperLimit: 650
+  lowerLimit: 182
+flux_photons_per_second: 61500000000
+minimumExposure_seconds: 0.2
+detectorGain_countsPerPhoton: 0.5
+abortCount:
+activeKey:

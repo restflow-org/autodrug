@@ -1,0 +1,79 @@
+namespace:
+
+  module: ScreenAndCollectSample
+  route: A
+
+imports: 
+
+- classpath:/org/restflow/addons/ScreenSample/workflows/ScreenSample.yaml
+- classpath:/org/restflow/addons/CollectSample/workflows/CollectSample.yaml
+
+components:
+
+- id: Workflow
+  type: ParallelWorkflow
+  properties:
+    director: !ref PublishSubscribeDirector
+    inputs:
+      sample:
+      sampleName:
+      beamlineValues:
+    outputs:
+      firstImageFullPath:
+      lastImage:
+      firstImage:
+      collectedSample:
+    nodes:
+    - !lref Inputs
+    - !lref ScreenSample
+    - !lref CollectSample
+    - !lref Outputs
+
+- id: Inputs
+  type: InPortal
+  properties:
+    outflows:
+      sample: /sample
+      sampleName: /sampleName
+      beamlineValues: /beamlineValues
+
+- id: ScreenSample
+  type: Step
+  properties:
+    inflows: 
+      sample: /sample
+      beamlineValues: /beamlineValues
+    nestedUriPrefix: /screen/
+    actor: !ref ScreenSample.A.Workflow
+    outflows: 
+      score: /score
+      goodSample: /collectableSample
+      runDefinition: /runDefinition
+
+- id: CollectSample
+  type: Step
+  properties:
+    nestedUriPrefix: /collect
+    inflows:
+      sampleName: /sampleName
+      sample: /collectableSample/
+      beamlineValues:
+        expression: /beamlineValues/
+        receiveOnce: true
+      runDefinition: /runDefinition
+    actor: !ref CollectSample.A.Workflow
+    outflows: 
+      firstImageFullPath: /firstImagePath      
+      lastImage: /lastImageNum
+      firstImage: /firstImageNum
+      collectedSample: /collectedSample/
+
+- id: Outputs
+  type: OutPortal
+  properties:
+    inflows:
+      firstImageFullPath: /firstImagePath      
+      lastImage: /lastImageNum
+      firstImage: /firstImageNum
+      collectedSample: /collectedSample
+

@@ -1,0 +1,98 @@
+namespace:
+
+  module: IndexSample
+  route: Test
+
+imports:
+
+- classpath:/org/restflow/addons/IndexSample/workflows/IndexSample.yaml
+
+components:
+
+- id: Workflow
+  type: Workflow
+  properties: 
+    director: !ref PublishSubscribeDirector
+    inputs:
+      sampleName:
+      beamlineValues:
+      testDataDir:
+      testDataImageLookupMapPath:
+      strategyBySpaceGroup:
+      criteriaBySpaceGroup:
+      screeningParams:
+    outputs:
+      score:
+      spacegroupNum:
+      unitcell:
+      highres:
+      runDefinition:
+    nodes:
+    - !lref Inputs
+    - !lref LoadSimulationData
+    - !lref IndexSample
+    - !lref Outputs
+
+- id: Inputs
+  type: InPortal
+  properties:
+    outflows:
+      sampleName: /sampleName/
+      beamlineValues: /beamlineValues/
+      testDataDir: /testDataDir
+      testDataImageLookupMapPath: /testDataImageLookupMapPath
+      strategyBySpaceGroup: /strategyBySpaceGroup
+      criteriaBySpaceGroup: /criteriaBySpaceGroup
+      screeningParams: /screeningParams
+
+
+- id: LoadSimulationData
+  type: GroovyActorStep
+  properties:
+    inflows: 
+      testDataDir: /testDataDir
+      testDataImageLookupMapPath: /testDataImageLookupMapPath
+    actor.settings:
+      testData: !ref __TestData
+    actor.step: |
+      import org.yaml.snakeyaml.*;
+      Yaml y = new Yaml();
+      def testDataImageLookupMapFile = new File(testDataImageLookupMapPath);
+      testDataImageLookupMap = y.load(testDataImageLookupMapFile.text); 
+
+
+      testData['testDataDir']=testDataDir;
+      testData['map']=testDataImageLookupMap;
+    outflows:
+      testData: /testData
+
+- id: IndexSample
+  type: Step
+  properties: 
+    stepsOnce: true  
+    nestedUriPrefix: /testTwoImages/
+    inflows:
+      sampleName: /sampleName/
+      beamlineValues: /beamlineValues/
+      screeningParams: /screeningParams
+      strategyBySpaceGroup: /strategyBySpaceGroup
+      criteriaBySpaceGroup: /criteriaBySpaceGroup
+    actor: !ref IndexSample.A.Workflow
+    outflows: 
+      score: /score
+      spacegroupNum: /spacegroup/num
+      unitcell: /unitcell
+      highres: /highres
+      runDefinition: /run/definition
+
+
+- id: Outputs
+  type: OutPortal
+  properties:
+    inflows: 
+      score: /score
+      spacegroupNum: /spacegroup/num
+      unitcell: /unitcell
+      highres: /highres
+      runDefinition: /run/definition
+

@@ -1,0 +1,103 @@
+namespace:
+
+  module: CollectTwoImages
+  route: Test
+
+imports:
+
+- classpath:/org/restflow/addons/CollectTwoImages/workflows/CollectTwoImages.yaml
+
+components:
+
+- id: Workflow
+  type: Workflow
+  properties: 
+    director: !ref PublishSubscribeDirector
+    inputs:
+      sampleName:
+      screeningParamsPath:
+      beamlineValues:
+      testDataDir:
+      testDataImageLookupMapPath:
+    outputs:
+      imageName1:
+      imageName2:
+      flux_photons_per_second:
+    nodes:
+    - !lref Inputs
+    - !lref LoadSimulationData
+    - !lref LoadScreeningParamsFile
+    - !lref CollectTwoImages
+    - !lref Outputs
+
+- id: Inputs
+  type: InPortal
+  properties:
+    outflows:
+      sampleName: /sampleName/
+      screeningParamsPath: /screening-params-path
+      beamlineValues: /beamlineValues
+      testDataDir: /testDataDir
+      testDataImageLookupMapPath: /testDataImageLookupMapPath
+
+
+- id: LoadSimulationData
+  type: GroovyActorStep
+  properties:
+    inflows: 
+      screeningParamsPath: /screening-params-path
+      testDataDir: /testDataDir
+      testDataImageLookupMapPath: /testDataImageLookupMapPath
+    actor.settings:
+      testData: !ref __TestData
+    actor.step: |
+      import org.yaml.snakeyaml.*;
+      Yaml y = new Yaml();
+      def testDataImageLookupMapFile = new File(testDataImageLookupMapPath);
+      testDataImageLookupMap = y.load(testDataImageLookupMapFile.text); 
+
+
+      testData['testDataDir']=testDataDir;
+      testData['map']=testDataImageLookupMap;
+    outflows:
+      testData: /testData
+
+- id: LoadScreeningParamsFile
+  type: GroovyActorStep
+  properties:
+    inflows: 
+      screeningParamsPath: /screening-params-path
+    actor.step: |
+      import org.yaml.snakeyaml.*;
+      Yaml y = new Yaml();
+      def screeningParamsFile = new File(screeningParamsPath);
+      screeningParams = y.load(screeningParamsFile.text); 
+    outflows:
+      screeningParams: /screening-params
+
+
+- id: CollectTwoImages
+  type: Step
+  properties: 
+    stepsOnce: true  
+    nestedUriPrefix: /testTwoImages/
+    inflows:
+      sampleName: /sampleName/
+      screeningParams: /screening-params
+      beamlineValues: /beamlineValues
+      testData: control:/testData
+    actor: !ref CollectTwoImages.A.Workflow
+    outflows: 
+      imageName1: /img/ImgOne
+      imageName2: /img/ImgTwo
+      flux_photons_per_second: /flux
+
+
+- id: Outputs
+  type: OutPortal
+  properties:
+    inflows: 
+      imageName1: /img/ImgOne     
+      imageName2: /img/ImgTwo
+      flux_photons_per_second: /flux
+

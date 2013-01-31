@@ -1,0 +1,71 @@
+namespace:
+
+  module: AutoDrug
+  route: Test
+
+imports:
+
+- classpath:/org/restflow/addons/AutoDrug/workflows/AutoDrug-A.yaml
+
+components:
+
+- id: Workflow
+  type: Workflow
+  properties:
+    director: !ref PublishSubscribeDirector
+    inputs:
+      spreadsheetId:
+      strategy-file:
+      beamline:
+      testDataDir:
+      testDataImageLookupMapPath:
+    nodes:
+    - !lref Inputs
+    - !lref LoadSimulationData
+    - !lref TestAutoDrug
+    reports:
+      status: !inline
+        type: UnixProcessStatusReporter
+      summary: !ref AutoDrugReport.A.Summary
+
+- id: Inputs
+  type: InPortal
+  properties:
+    outflows:
+      spreadsheetId: /spreadsheet
+      strategy-file: /strategyInputFilePath
+      beamline: /beamline
+      testDataDir: /testDataDir
+      testDataImageLookupMapPath: /testDataImageLookupMapPath
+
+
+- id: LoadSimulationData
+  type: GroovyActorStep
+  properties:
+    inflows: 
+      testDataDir: /testDataDir
+      testDataImageLookupMapPath: /testDataImageLookupMapPath
+    actor.settings:
+      testData: !ref __TestData
+    actor.step: |
+      import org.yaml.snakeyaml.*;
+      Yaml y = new Yaml();
+      def testDataImageLookupMapFile = new File(testDataImageLookupMapPath);
+      testDataImageLookupMap = y.load(testDataImageLookupMapFile.text); 
+
+      testData['testDataDir']=testDataDir;
+      testData['map']=testDataImageLookupMap;
+    outflows:
+      testData: /testData
+
+
+- id: TestAutoDrug
+  type: Step
+  properties:
+    inflows:
+      spreadsheetId: /spreadsheet
+      strategy-file: /strategyInputFilePath
+      beamline: /beamline
+    actor: !ref AutoDrug.A.Workflow 
+    nestedUriPrefix: /
+

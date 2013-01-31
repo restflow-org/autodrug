@@ -1,0 +1,95 @@
+namespace:
+
+  module: IndexSample
+  route: A
+
+imports:
+
+- classpath:/common/groovy/actors.yaml
+- classpath:/common/directors.yaml
+- classpath:/common/types.yaml 
+- classpath:/common/support.yaml
+- classpath:/org/restflow/addons/CollectRun/workflows/CollectRun.yaml
+- classpath:/org/restflow/addons/CollectTwoImages/workflows/CollectTwoImages.yaml
+- classpath:/org/restflow/addons/ScoreSample/workflows/ScoreSample.yaml
+- classpath:/org/restflow/addons/Strategy/workflows/StrategyLookup.yaml
+
+components:
+
+- id: Workflow
+  type: Workflow
+  properties: 
+    director: !ref PublishSubscribeDirector
+    inputs:
+      sampleName:
+      beamlineValues:
+      screeningParams:
+      criteriaBySpaceGroup:
+      strategyBySpaceGroup:
+    outputs:
+      score:
+      spacegroupNum:
+      unitcell:
+      highres:
+      runDefinition:
+    nodes:
+    - !lref Inputs
+    - !lref CollectTwoImages
+    - !lref RunStrategyAndScore
+    - !lref Outputs
+
+- id: Inputs
+  type: InPortal
+  properties:
+    outflows:
+      sampleName: /sampleName/
+      beamlineValues: /beamlineValues/
+      screeningParams: /screening/params
+      strategyBySpaceGroup: /strategyBySpaceGroup
+      criteriaBySpaceGroup: /criteriaBySpaceGroup
+
+- id: CollectTwoImages
+  type: Node
+  properties: 
+    stepsOnce: true  
+    nestedUriPrefix: /images/
+    inflows:
+      sampleName: /sampleName/
+      beamlineValues: /beamlineValues
+      screeningParams: /screening/params
+    actor: !ref CollectTwoImages.A.Workflow
+    outflows: 
+      imageName1: /path/image1     
+      imageName2: /path/image2
+      flux_photons_per_second: /flux
+
+
+- id: RunStrategyAndScore
+  type: Step 
+  properties:
+    nestedUriPrefix: /score
+    inflows:
+      image1: /path/image1
+      image2: /path/image2
+      beamlineValues: /beamlineValues
+      flux: /flux
+      strategyBySpaceGroup: /strategyBySpaceGroup
+      criteriaBySpaceGroup: /criteriaBySpaceGroup
+    actor: !ref ScoreSample.A.Workflow
+    outflows:
+      score: /score
+      spacegroupNum: /spacegroup/num
+      unitcell: /unitcell
+      highres: /highres
+      runDefinition: /run/definition
+
+- id: Outputs
+  type: OutPortal
+  properties:
+    inflows: 
+      score: /score
+      spacegroupNum: /spacegroup/num
+      unitcell: /unitcell
+      highres: /highres
+      runDefinition: /run/definition
+

@@ -1,0 +1,72 @@
+namespace:
+
+  module: ProcessSample
+  route: Test
+
+imports:
+
+- classpath:/org/restflow/addons/ProcessSample/workflows/ProcessSample.yaml
+
+
+components:
+
+- id: Workflow
+  type: Workflow
+  properties:
+    director: !ref PublishSubscribeDirector
+    inputs:
+      processingParams:
+      molecularReplacementParams:
+      firstImagePath:
+      lastImageNum:
+    nodes:
+    - !lref Inputs
+    - !lref LoadSample
+    - !lref RunProcessSample
+
+- id: Inputs
+  type: InPortal
+  properties:
+    outflows:
+      processingParams: /processingParams
+      molecularReplacementParams: /molecularReplacementParams
+      firstImagePath: /firstImageInDataset
+      lastImageNum: /lastImageNum
+
+- id: LoadSample
+  type: GroovyActorStep
+  properties: 
+    stepsOnce: true  
+    actor.settings:
+      spreadsheet: !ref __SpreadsheetUtils
+    inflows:
+      processingParams: /processingParams
+      molecularReplacementParams: /molecularReplacementParams
+    actor.step: | 
+      import edu.stanford.slac.smb.samples.ProjectList;
+      import org.restflow.addons.samples.project.*;      
+
+      ProjectList projects = spreadsheet.sortSilByProtein('xxxx');
+      groups = projects.proteinProjects;
+      println groups['myo1'].samples.keySet();
+      sample = groups['myo1'].samples['B1'];
+      println sample;
+      sample.strategy = new ProteinSpecification();
+      sample.strategy.processing_parameters= processingParams;
+      sample.strategy.molecular_replacement = molecularReplacementParams;
+    outflows: 
+      sample: /sample 
+
+- id: RunProcessSample
+  type: Step
+  properties:
+    nestedUriPrefix: /TestProcessSample
+    inflows:
+      firstImagePath: /firstImageInDataset
+      lastImageNum: /lastImageNum
+      sample: /sample 
+    actor: !ref ProcessSample.A.Workflow
+
+
+
+

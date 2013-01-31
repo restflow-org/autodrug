@@ -1,0 +1,213 @@
+namespace:
+
+  module: ScreenSample
+  route: A
+
+imports:
+
+- classpath:/common/groovy/actors.yaml
+- classpath:/common/directors.yaml
+- classpath:/common/types.yaml 
+- classpath:/common/support.yaml
+- classpath:/org/restflow/addons/CollectRun/workflows/CollectRun.yaml
+- classpath:/org/restflow/addons/CollectTwoImages/workflows/CollectTwoImages.yaml
+- classpath:/org/restflow/addons/IndexSample/workflows/IndexSample.yaml
+- classpath:/org/restflow/addons/Strategy/workflows/StrategyLookup.yaml
+
+
+
+components:
+
+
+
+- id: Workflow
+  type: Workflow
+  properties: 
+    director: !ref PublishSubscribeDirector
+    inputs:
+      beamlineValues:
+      sample:
+    outputs:
+      runDefinition:
+      score:
+      goodSample:
+    nodes:
+    - !lref Inputs
+    - !lref ExtractBeamlineValues
+    - !lref ExtractScreeningStrategy
+    - !lref MountNextCrystal
+    - !lref IndexSample
+    - !lref UpdateSpreadsheetAndSample
+    - !lref UpdateSpreadsheetWithBadScoreAndWarning
+    - !lref FinalScore
+    - !lref UnselectSample
+    - !lref CheckSampleScore
+    - !lref Outputs
+
+- id: Inputs
+  type: InPortal
+  properties:
+    outflows:
+      sample: /sample
+      beamlineValues: /beamlineValues/
+
+- id: ExtractBeamlineValues
+  type: Step
+  properties: 
+    inflows:
+      beamlineValues: /beamlineValues
+    actor: !ref Beamline.Actor.ExtractBeamlineValues
+    outflows:
+      beamline: /beamline/name
+      activeKey: /activeKey
+
+
+- id: ExtractScreeningStrategy
+  type: GroovyActorNode
+  properties: 
+    inflows:
+      sample: /sample
+    actor.step: |
+      sampleName = sample.name;
+      port = sample.port;
+      screeningParams = sample.strategy.screening_parameters;
+      minimum_score = screeningParams.minimum_score;
+      criteriaBySpaceGroup = sample.strategy.returnSpaceGroupCollectCriteria();
+      strategyBySpaceGroup = sample.strategy.returnSpaceGroupCollectParameters();
+      sil = sample.sil.id.toString();
+      uniqueId = sample.uniqueId.toString(); 
+      spreadsheetRow = sample.row;
+    outflows:
+      screeningParams: /screening/params
+      minimum_score: /minScore/
+      criteriaBySpaceGroup: /criteriaBySpaceGroup
+      strategyBySpaceGroup: /strategyBySpaceGroup
+      sil: /sample-sil
+      uniqueId: /sample-uniqueId
+      spreadsheetRow: /sample-spreadsheet/row
+      sampleName: /sampleName/
+      port: /port
+
+
+- id: MountNextCrystal
+  type: Step
+  properties: 
+    inflows:
+      dewarPort: /port/
+      beamline: /beamline/name      
+      activeKey: /activeKey
+    actor: !ref __MountNextSample
+    outflows:
+      mounted: control:/mounted
+
+
+- id: IndexSample
+  type: Step
+  properties: 
+    nestedUriPrefix: /index/
+    inflows:
+      mounted: control:/mounted
+      sampleName: /sampleName/
+      beamlineValues: /beamlineValues/
+      screeningParams: /screening/params
+      criteriaBySpaceGroup: /criteriaBySpaceGroup
+      strategyBySpaceGroup: /strategyBySpaceGroup
+    actor: !ref IndexSample.A.Workflow
+    outflows:
+      score: /calculatedScore
+      spacegroupNum: /spacegroup/num
+      unitcell: /unitcell
+      highres: /highres
+      runDefinition: /run/definition
+    exceptions:
+      java.lang.Exception: stderr:/screening/failed
+
+- id: UpdateSpreadsheetAndSample
+  type: GroovyActorNode
+  properties:
+    actor.settings:
+      spreadsheet: !ref __SpreadsheetUtils 
+    inflows:
+      sample: /sample
+      score: /calculatedScore
+    actor.state:
+      sample:
+    actor.step: |
+      println "update spreadsheet score " + score;
+      def properties = [Score: score];
+      spreadsheet.updateCrystal( sample.sil.id.toString(), sample.uniqueId.toString(), properties); 
+      sample.result.autoindexResult.score = score;
+    outflows: 
+      score: /ctrl/calculatedScore
+    exceptions:
+      java.lang.Exception: stderr:/spreadsheetUpdateFailed
+
+
+- id: UpdateSpreadsheetWithBadScoreAndWarning
+  type: GroovyActorNode
+  properties:
+    actor.settings:
+      spreadsheet: !ref __SpreadsheetUtils
+    inflows:
+      sample: /sample
+      exception: /screening/failed
+      sil: /sample-sil
+      uniqueId: /sample-uniqueId
+    actor.step: |
+      score = -100;
+      def properties = [Score: score, SystemWarning: exception.message ];
+      spreadsheet.updateCrystal( sil, uniqueId, properties); 
+      //sample.result.autoindexResult.score = score;
+    outflows: 
+      score: /failed/Score
+
+- id: FinalScore
+  type: MergeNode
+  properties: 
+    stepsOnce: true
+    inflows:
+      calculatedScore: /ctrl/calculatedScore
+      badScore: /failed/Score 
+    outflows:
+      score: /final/score
+
+- id: UnselectSample
+  type: Step
+  properties:
+    inflows:
+      activeKey: /activeKey    
+      deselectSamples: /sample-spreadsheet/row
+      beamline: /beamline/name
+      score: control:/final/score
+    actor: !ref __UnselectSamples
+    outflows:
+      done: /flow/unselect
+
+- id: CheckSampleScore
+  type: GroovyActorNode
+  properties:
+    inflows:
+      cscore: /minScore/
+      score: /final/score
+      go: /flow/unselect
+    actor.step: |
+      good = score;
+      done = true;
+      println "check score: " + score;
+      println "minimum score: " + cscore;
+      if ( score.toFloat() < cscore.toFloat() ) {
+        throw new Exception("Sample does not meet minimum criteria");
+      }
+    outflows:
+      good: /passed/score 
+      done: /flow/done
+
+
+- id: Outputs
+  type: OutPortal
+  properties:
+    inflows: 
+      runDefinition: /run/definition
+      score: /passed/score 
+      goodSample: /sample
+

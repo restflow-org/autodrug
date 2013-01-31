@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
+    <info
+        organisation="org.restflow.addons" 
+        module="BeamlineWorkflows"
+        status="integration"> 
+	</info>        
+	        
+   <configurations>
+		<conf name="runtime"  description="Enhances RestFlow with workflows to control the beamline."/>
+      	<conf name="test" extends="runtime" visibility="private" description="for testing"/>      	
+    </configurations>
+	
+    <publications>
+      <artifact name="BeamlineWorkflows" type="jar" ext="jar" />
+     </publications>
+
+	<dependencies>
+
+
+		<dependency org="ssrl" name="YamlSpringLoader" rev="2.7" />
+
+        <dependency org="org.restflow" name="restflow-dataprocessing" conf="runtime" rev="latest.integration"/> 
+
+		<dependency org="ssrl" name="SsrlJavaLib" conf="runtime" rev="1.4.13">
+			<exclude org="org.springframework" module="*" name="*" type="*" ext="*" conf="" matcher="exact"/>
+		</dependency>
+        <dependency org="ssrl" name="WebiceLib" rev="1.2" conf="runtime">
+			<exclude org="org.springframework" module="*" name="*" type="*" ext="*" conf="" matcher="exact"/>
+		</dependency>
+
+	</dependencies>
+</ivy-module>
+  

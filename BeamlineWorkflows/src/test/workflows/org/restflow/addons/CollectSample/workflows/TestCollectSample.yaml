@@ -1,0 +1,12 @@
+namespace:
+
+  module: CollectSample
+  route: Test
+
+imports:
+
+- classpath:/org/restflow/addons/CollectSample/workflows/CollectSample.yaml
+
+components:
+
+#TODO Implement test

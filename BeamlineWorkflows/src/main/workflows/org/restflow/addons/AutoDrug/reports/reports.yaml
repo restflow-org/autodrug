@@ -1,0 +1,14 @@
+namespace:
+
+  module: AutoDrugReport
+  route: A
+
+components:
+
+
+- id: Summary
+  type: GroovyTemplateReporter
+  properties:
+    description: "Report for AutoDrug A workflow"
+    template: !resource classpath:org/restflow/addons/AutoDrug/reports/Report-AutoDrug-Summary.txt
+

@@ -1,0 +1,111 @@
+namespace:
+
+  module: CollectRun
+  route: A
+
+imports:
+
+- classpath:/common/groovy/actors.yaml
+- classpath:/common/directors.yaml
+- classpath:/common/types.yaml 
+- classpath:/common/support.yaml
+- classpath:/org/restflow/addons/CollectRun/actors/CollectRun-actors.yaml
+- classpath:/org/restflow/addons/BeamlineControl/actors/Beamline-actors.yaml
+
+components:
+
+- id: Workflow
+  type: Workflow
+  properties: 
+    director: !ref PublishSubscribeDirector
+    inputs:
+      sampleName:
+      beamlineValues:
+      runDefinition:
+    outputs:
+      directory:
+      firstImageFullPath:
+      lastImage: 
+      firstImage: 
+    nodes:
+    - !lref Inputs
+    - !lref ExtractBeamlineValues
+    - !lref ExtractRunDefinition
+    - !lref CollectData
+    - !lref Outputs
+
+- id: Inputs
+  type: InPortal
+  properties:
+    outflows:
+      beamlineValues: /beamlineValues
+      sampleName: /sample/name
+      runDefinition: /run/definition
+
+- id: ExtractBeamlineValues
+  type: Step
+  properties: 
+    inflows:
+      beamlineValues: /beamlineValues
+    actor: !ref Beamline.Actor.ExtractBeamlineValues
+    outflows:
+      beamline: /beamline/name
+      activeKey: /activeKey
+
+- id: ExtractRunDefinition
+  type: Step
+  properties: 
+    inflows:
+      runDefinition: /run/definition
+    outflows:
+      startAngle: /collect/startAngle/
+      endAngle: /collect/endAngle/
+      phi_delta_degrees: /collect/delta/
+      exposureTime: /collect/exposureTime/
+      energy_ev: /collect/energy/
+      wedge: /collect/wedge/
+      distance: /collect/distance/
+      beamstop_position_mm: /collect/beamstop/
+      attenuation_percent: /collect/attenuation/
+      beam_size_width_mm: /collect/beam_size/width/mm
+      beam_size_height_mm: /collect/beam_size/height/mm
+    actor: !ref CollectRun.Actor.ExtractRunDefinition
+
+- id: CollectData
+  type: Step
+  properties:
+    stepsOnce: true
+    inflows:
+      activeKey: /activeKey    
+      beamline: /beamline/name   
+      sampleName: /sample/name/
+      startAngle: /collect/startAngle/
+      endAngle: /collect/endAngle/
+      delta: /collect/delta/
+      exposureTime: /collect/exposureTime/
+      energy_ev: /collect/energy/
+      wedge: /collect/wedge/
+      distance: /collect/distance/
+      beamstop: /collect/beamstop/
+      attenuation_percent: /collect/attenuation/
+      beam_size_width_mm: /collect/beam_size/width/mm
+      beam_size_height_mm: /collect/beam_size/height/mm
+    constants:
+      inverse: 0
+      first: 0
+    actor: !ref __CollectRun
+    outflows: 
+      dataset: direct:/dataset
+      firstImageFullPath: /firstImageFullPath      
+      lastImage: /lastImageNum
+      firstImage: /firstImageNum
+
+- id: Outputs
+  type: OutPortal
+  properties:
+    inflows: 
+      directory: file:/dataset
+      firstImageFullPath: /firstImageFullPath      
+      lastImage: /lastImageNum
+      firstImage: /firstImageNum
+

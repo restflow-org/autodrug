@@ -1,0 +1,111 @@
+namespace:
+
+  module: ScreenSample
+  route: Test
+
+imports:
+
+- classpath:/org/restflow/addons/ScreenSample/workflows/ScreenSample.yaml
+
+components:
+
+- id: Workflow
+  type: Workflow
+  properties: 
+    director: !ref PublishSubscribeDirector
+    inputs:
+      beamlineValues:
+      sampleName:
+      testDataDir:
+      testDataImageLookupMapPath:
+      screeningParams:
+      spacegroupDependentParams:
+    outputs:
+      runDefinition:
+      score:
+    nodes:
+    - !lref Inputs
+    - !lref LoadSimulationData
+    - !lref LoadSample
+    - !lref ScreenSample
+    - !lref Outputs
+
+- id: Inputs
+  type: InPortal
+  properties:
+    outflows:
+      sampleName: /sampleName
+      beamlineValues: /beamlineValues/
+      testDataDir: /testDataDir
+      testDataImageLookupMapPath: /testDataImageLookupMapPath
+      screeningParams: /screeningParams
+      spacegroupDependentParams: /spacegroupDependentParams
+
+- id: LoadSimulationData
+  type: GroovyActorStep
+  properties:
+    inflows: 
+      testDataDir: /testDataDir
+      testDataImageLookupMapPath: /testDataImageLookupMapPath
+    actor.settings:
+      testData: !ref __TestData
+    actor.step: |
+      import org.yaml.snakeyaml.*;
+      Yaml y = new Yaml();
+      def testDataImageLookupMapFile = new File(testDataImageLookupMapPath);
+      testDataImageLookupMap = y.load(testDataImageLookupMapFile.text); 
+
+      testData['testDataDir']=testDataDir;
+      testData['map']=testDataImageLookupMap;
+    outflows:
+      testData: /testData
+
+
+- id: LoadSample
+  type: GroovyActorStep
+  properties: 
+    stepsOnce: true  
+    actor.settings:
+      spreadsheet: !ref __SpreadsheetUtils
+    inflows:
+      sampleName: /sampleName
+      beamlineValues: /beamlineValues/
+      screeningParams: /screeningParams
+      spacegroupDependentParams: /spacegroupDependentParams
+    actor.step: | 
+      import edu.stanford.slac.smb.samples.ProjectList;
+      import org.restflow.addons.samples.project.*;      
+
+      ProjectList projects = spreadsheet.sortSilByProtein('xxxx');
+      groups = projects.proteinProjects;
+      println groups['myo1'].samples.keySet();
+      sample = groups['myo1'].samples['B1'];
+      println sample;
+      sample.strategy = new ProteinSpecification();
+      sample.strategy.screening_parameters = screeningParams;
+      sample.strategy.spacegroups = spacegroupDependentParams;
+    outflows: 
+      sample: /sample 
+
+
+- id: ScreenSample
+  type: Step
+  properties: 
+    stepsOnce: true  
+    nestedUriPrefix: /testTwoImages/
+    inflows:
+      sample: /sample
+      beamlineValues: /beamlineValues/
+    actor: !ref ScreenSample.A.Workflow
+    outflows: 
+      runDefinition: /run/definition
+      score: /score 
+
+
+- id: Outputs
+  type: OutPortal
+  properties:
+    inflows: 
+      score: /score
+      runDefinition: /run/definition
+

@@ -1,0 +1,15 @@
+!!org.restflow.addons.samples.screen.ScreenParameters
+detector_resolution_angstroms: 1.5     
+energy_ev: 12657
+beam_size_width_height_microns: [100,100]
+beamstop_position_mm: 32
+phi_delta_degrees: 1
+exposure_photons_per_image: 5e10
+minimum_score: 1.4
+rastering_parameters:
+  peak_cutoff_percent: 20
+  exposure_photons_per_image: 5e9
+  beamstop_position_mm: 32
+  detector_resolution_angstroms: 1.5
+  energy_ev: 12657
+  phi_delta_degrees: 1

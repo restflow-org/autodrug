@@ -1,0 +1,14 @@
+
+
+#This is a launching file that completes missing global implementation parameters in the workflow.
+
+imports:
+
+- classpath:/org/restflow/addons/BeamlineControl/workflows/ReadBeamlineValues.yaml
+- classpath:/org/restflow/addons/BeamlineControl/actors/Mock-actors.yaml
+
+components:
+
+- id: ReadBeamlineValues.__ReadBeamlineValues
+  type: BeamlineControl.Mock.Actor.ReadBeamlineValues
+

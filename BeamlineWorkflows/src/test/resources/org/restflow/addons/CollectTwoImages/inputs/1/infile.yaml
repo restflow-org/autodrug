@@ -1,0 +1,4 @@
+beamlineValues: !!org.restflow.addons.beamline.BeamlineValues
+  beamline: BL-SIM
+  activeKey: x-test-x
+sampleName: B1

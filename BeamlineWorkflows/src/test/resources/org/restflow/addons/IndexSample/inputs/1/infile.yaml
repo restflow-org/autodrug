@@ -1,0 +1,48 @@
+beamlineValues: !!org.restflow.addons.beamline.BeamlineValues
+  beamline: BL-SIM
+  activeKey: x-test-x
+  detectorRingSize: 211.5
+  phiSpeedDegPerSec: 20.0
+  energy: !!org.restflow.addons.beamline.Motor
+    name: energy
+    upperLimit: 15100
+    lowerLimit: 10600
+  detector_z: !!org.restflow.addons.beamline.Motor
+    name:  detector_z_corr
+    upperLimit: 650
+    lowerLimit: 182
+  flux_photons_per_second: 61500000000
+  minimumExposure_seconds: 0.2
+  detectorGain_countsPerPhoton: 0.5
+sampleName: B2
+criteriaBySpaceGroup:
+  '143': !!org.restflow.addons.samples.collect.CollectCriteria 
+    priority: 2
+    unit_cell_angstroms_degrees: 90.2 90.2 45.2 90 90 90
+    unit_cell_length_tolerance_percent: 1 
+    minimum_resolution_angstroms: 3.0
+    maximum_mosaicity_degrees: 1.0
+strategyBySpaceGroup:
+  '143': !!org.restflow.addons.samples.collect.CollectParameters
+    detector_resolution_angstroms: 1.5
+    energy_ev: 12657
+    beam_size_width_height_microns: [100,100]
+    beamstop_position_mm: 32
+    phi_delta_degrees: 0.5
+    phi_range_degrees: 10
+    exposure_photons_per_image: 5e10
+screeningParams: !!org.restflow.addons.samples.screen.ScreenParameters
+  detector_resolution_angstroms: 1.5     
+  energy_ev: 12657
+  beam_size_width_height_microns: [100,100]
+  beamstop_position_mm: 32
+  phi_delta_degrees: 1
+  exposure_photons_per_image: 5e10
+  minimum_score: 1.4
+  rastering_parameters:
+    peak_cutoff_percent: 20
+    exposure_photons_per_image: 5e9
+    beamstop_position_mm: 32
+    detector_resolution_angstroms: 1.5
+    energy_ev: 12657
+    phi_delta_degrees: 1

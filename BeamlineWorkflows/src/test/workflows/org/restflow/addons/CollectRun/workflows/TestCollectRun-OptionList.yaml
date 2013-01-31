@@ -1,0 +1,37 @@
+#Fill in global __ variables with beamline
+
+imports:
+
+- classpath:/org/restflow/addons/CollectRun/workflows/TestCollectRun.yaml
+- classpath:/org/restflow/addons/BeamlineControl/actors/Mock-actors.yaml
+
+types:
+
+- id: GroovyActorStep
+  type: GroovyActorNode
+  properties:
+    stepsOnce: true
+
+components:
+
+- id: __MountNextSample
+  type: BeamlineControl.Mock.Actor.MountNextSample
+
+- id: __UnselectSamples
+  type: BeamlineControl.Mock.Actor.UnselectSamples
+
+- id: __LoopCenterAndRaster
+  type: BeamlineControl.Mock.Actor.LoopCenterAndRaster
+
+- id: __CollectTwoImages
+  type: BeamlineControl.Mock.Actor.CollectTwoImages
+      
+
+- id: __CollectRun
+  type: BeamlineControl.Mock.Actor.CollectRun
+
+
+#special global hashmap for passing test data through system unawares
+- id: __TestData
+  className: java.util.HashMap
+  singleton: true

@@ -1,0 +1,367 @@
+namespace:
+  module: BluIce
+
+imports:
+- classpath:/common/types.yaml
+- classpath:/common/tcl/tclActor.yaml
+
+components:
+
+
+
+- id: Actor.LoopCenterAndRaster
+  type: BluIceActor
+  properties:
+    settings:
+      nickName: RestFlow -- Loop Center and Raster
+      axis: gonio_phi
+    usesStepDirectory: true
+    inputs:
+      activeKey:    
+      beamline:
+      rasterOn:
+      peak_cutoff_percent:    
+      energy_ev:      
+      detector_resolution_angstroms:
+      exposure_photons_per_image:
+      beamstop_position_mm:                  
+      delta_degrees:      
+      beamstop_position_mm:
+    step: |
+      set energyMotorName [::config getMotorRunEnergy]
+      set detectorMotorName [::config getMotorRunDistance]      
+      
+      variable collect_default
+      set defaultAttenuation [lindex $collect_default 2]      
+      puts "Raster on: $rasterOn"
+      if {$rasterOn == "true"} {
+        puts "wait_for_good beam"
+        set op_beam [start_waitable_operation waitForGoodBeam]
+        set rval [lindex [wait_for_operation_to_finish $op_beam] 1]
+    
+        puts "FLUX:  $flux"
+        puts $exposure_photons_per_image
+      
+        set op_move [start_waitable_operation moveMotors false \
+           [list attenuation to $defaultAttenuation] \
+           [list beamstop_z to $beamstop_position_mm] \
+           [list resolution to $detector_resolution_angstroms] ]
+        wait_for_operation_to_finish $op_move
+        
+        set op_move_e [start_waitable_operation moveMotors true [list $energyMotorName to $energy_ev] ]
+        wait_for_operation_to_finish $op_move_e
+        
+        set flux_photons_per_second [expr $flux * 1e11]
+        set exposure_seconds [expr $exposure_photons_per_image * $delta_degrees / $flux_photons_per_second  ]
+        
+        raster_run_0 [set $detectorMotorName] $beamstop_z $delta_degrees $exposure_seconds $peak_cutoff_percent
+      } else {
+        #don't need beam to loop center
+        set op_center [start_waitable_operation centerLoop]
+        set rval [lindex [wait_for_operation_to_finish $op_center] 1]
+      }
+      variable save_loop_size
+      set boundingBox $save_loop_size
+    outputs:
+      boundingBox:
+      
+      
+  
+
+- id: Actor.CollectTwoImages
+  type: BluIceActor
+  properties:
+    settings:
+      nickName: RestFlow -- Collect Two Images
+      axis: gonio_phi
+    usesStepDirectory: true
+    inputs:
+      activeKey:    
+      beamline:
+      sampleName:
+      energy_ev:
+      detector_resolution_angstroms:
+      exposure_photons_per_image:
+      delta_degrees:
+      beamstop_position_mm:
+      beam_size_width_mm:
+      beam_size_height_mm:
+    step: |
+      set energyMotorName [::config getMotorRunEnergy]
+      set detectorMotorName [::config getMotorRunDistance]
+      variable $energyMotorName
+      variable $detectorMotorName
+      variable beamstop_z
+            
+      variable collect_default
+      set defaultAttenuation [lindex $collect_default 2]
+      
+      move $energyMotorName to $energy_ev
+      wait_for_devices $energyMotorName
+
+      set op_move [start_waitable_operation moveMotors false \
+         [list attenuation to $defaultAttenuation] \
+         [list beam_size_x to $beam_size_width_mm] \
+         [list beam_size_y to $beam_size_height_mm] \
+         [list beamstop_z to $beamstop_position_mm] ]
+      wait_for_operation_to_finish $op_move
+      
+      puts "wait_for_good beam"
+      set op_beam [start_waitable_operation waitForGoodBeam]
+      set rval [lindex [wait_for_operation_to_finish $op_beam] 1]
+      
+      move resolution to $detector_resolution_angstroms
+      wait_for_devices resolution      
+            
+      puts "FLUX:  $flux"
+      puts $exposure_photons_per_image
+      
+      set flux_photons_per_second [expr $flux * 1e11]
+      set exposure_seconds [expr $exposure_photons_per_image * $delta_degrees / $flux_photons_per_second  ]
+      
+      set dir $_outflowDirectory(images)/${sampleName}
+      #clear out any double slashes from the filename
+      set dir [string map {// / . _} $dir]
+      
+      #give nfs a heads-up locally that this file will exist.  In fact, let's create it ourselves
+      catch {file mkdir $dir}
+      
+      variable detector_type
+      set det [DCS::DetectorBase #auto]
+      $det setType $detectorType
+      set mode [$det getDefaultModeIndex]
+      set extension [$det getImageFileExt $mode]
+      
+      set op [start_waitable_operation collectFrame \
+              0 ${sampleName}_0001 $dir [get_user_name] \
+              $axis shutter \
+              $delta_degrees $exposure_seconds $mode 1 0 $_sessionId]
+      wait_for_operation_to_finish $op
+      videoSnapshot 1 ${dir}/sample1.jpg
+        
+      move gonio_phi by 90
+      wait_for_devices gonio_phi
+      
+            
+      set op [start_waitable_operation collectFrame \
+              0 ${sampleName}_0002 $dir [get_user_name] \
+              $axis shutter \
+              $delta_degrees $exposure_seconds $mode 1 0 $_sessionId]
+      wait_for_operation_to_finish $op
+
+      videoSnapshot 1 ${dir}/sample2.jpg
+      
+      set lastImage ${dir}/${sampleName}_0002.${extension}
+      wait_for_file_exists $lastImage
+      
+      set collectedTwo $dir
+      puts "CollectedTwo: $collectedTwo"
+      set images $collectedTwo
+      set imageName1 $dir/${sampleName}_0001.${extension}
+      set imageName2 $dir/${sampleName}_0002.${extension}
+    outputs:
+      images:
+        type: File
+      imageName1:
+      imageName2:
+      flux_photons_per_second:
+
+
+- id: Actor.CollectRun
+  type: BluIceActor
+  properties:
+    settings:
+      nickName: RestFlow -- Collect Data Set
+      numEnergy: 1      
+      axis: Phi      
+      startFrame: 1
+    usesStepDirectory: true      
+    inputs:
+      activeKey:    
+      beamline:    
+      sampleName:
+      first:
+      startAngle:
+      endAngle:
+      delta:
+      wedge:
+      exposureTime:
+      energy_ev:
+      wedge:
+      distance:
+      beamstop:
+      attenuation_percent:
+      inverse: 
+      sampleName:
+      beam_size_width_mm:
+      beam_size_height_mm:      
+    step: |
+      set energyMotorName [::config getMotorRunEnergy]
+      set op [start_waitable_operation waitForGoodBeam]
+      set rval [lindex [wait_for_operation_to_finish $op] 1]
+      
+      #attenuation is part of the run definition. no need to move it here.
+      set op_move [start_waitable_operation moveMotors false \
+         [list beam_size_x to $beam_size_width_mm] \
+         [list beam_size_y to $beam_size_height_mm] ]
+      wait_for_operation_to_finish $op_move      
+      
+      wait_for_devices beam_size_x beam_size_y
+            
+      #set runCalculator  [::DCS::RunSequenceCalculator \#auto]
+      variable runCalculator
+      
+      set rootFile $sampleName
+      set dir $_outflowDirectory(dataset)/${sampleName}
+      #clear out any double slashes from the filename
+      set dir [string map {// / . _} $dir]
+      
+      #give nfs a heads-up locally that this file will exist.  In fact, let's create it ourselves
+      catch {file mkdir $dir}      
+      
+      variable detector_type
+      set det [DCS::DetectorBase #auto]
+      $det setType $detectorType
+      set mode [$det getDefaultModeIndex]       
+      set extension [$det getImageFileExt $mode]
+      
+      set runDef [list $rootFile ${dir} \
+      	$startFrame $axis \
+      	$startAngle $endAngle $delta $wedge $exposureTime $distance $beamstop $attenuation_percent \
+      	$numEnergy [set $energyMotorName] 0.0 0.0 0.0 0.0 \
+      	$mode $inverse]
+      
+      set op_config [start_waitable_operation runsConfig [get_user_name] addNewRun $runDef]
+      set runNumber [lindex [wait_for_operation_to_finish $op_config] 1]
+            
+      $runCalculator updateRunDefinition [list "status" 0 $runNumber $rootFile $dir \
+        $startFrame $axis \
+        $startAngle $endAngle $delta $wedge $exposureTime $distance $beamstop $attenuation_percent \
+        $numEnergy $energy 0.0 0.0 0.0 0.0 \
+        $mode $inverse]
+      
+      set op_run [start_waitable_operation collectRun $runNumber [get_user_name] 0 $_sessionId]
+      wait_for_operation_to_finish $op_run
+      
+      set op_runsConfig [start_waitable_operation runsConfig [get_user_name] deleteRun $runNumber]
+      wait_for_operation_to_finish $op_runsConfig
+      
+      set lastImage [lindex [$runCalculator returnLastFrame] 0]
+      set firstImage [lindex [$runCalculator getMotorPositionsAtIndex 0] 0]
+      
+      puts "LAST FRAME: ${lastImage}.${extension}"
+      wait_for_file_exists ${dir}/${lastImage}.${extension}
+      
+      set dataset $dir
+      set firstImageFullPath $dir/${firstImage}.${extension}
+    outputs:
+      firstImageFullPath:    
+      lastImage: 
+      firstImage: 
+      dataset:
+        type: File
+
+
+- id: Actor.MountNextSample
+  type: BluIceActor
+  properties:
+    settings:
+      nickName: RestFlow -- Robot Control 
+    inputs:
+      dewarPort:
+      beamline:
+      activeKey:      
+    step: |
+      variable robot_status
+      set portMnted [lindex $robot_status 15]
+      set currentPos [lindex $portMnted 0]
+      set currentCol [lindex $portMnted 1]
+      set currentRow [lindex $portMnted 2]
+      set currentDewarPort ${currentPos}${currentRow}${currentCol}
+      
+      if { $currentDewarPort != $dewarPort} {
+        #only mount and loop center if not currently mounted 
+        set op_mount_sample [start_waitable_operation sequenceManual mount ${dewarPort} $_sessionId]
+        set rval [lindex [wait_for_operation_to_finish $op_mount_sample] 1]
+        set mounted $dewarPort
+      } else {
+        set mounted "$dewarPort (already mounted)"
+      }
+    outputs:
+      mounted:
+
+- id: Actor.UnselectSamples
+  type: BluIceActor
+  properties:
+    settings:
+      nickName: RestFlow -- Unselect Samples 
+    inputs:
+      deselectSamples:
+      beamline:
+      activeKey:
+    step: |
+      variable crystalSelectionList
+      
+      set crystalListStates_ $crystalSelectionList
+      set states [lindex $crystalListStates_ 2]
+      foreach row $deselectSamples {
+        set states [lreplace $states $row $row 0]
+      } 
+      set op [eval start_operation sequenceSetConfig setConfig crystalListStates [list $states] $_sessionId]
+      set done true
+    outputs:
+      done:
+
+      
+- id: Actor.ReadBeamlineValues
+  type: BluIceActor
+  properties:
+    settings:
+      nickName: RestFlow -- Read Beamline Settings 
+    inputs:
+      deselectSamples:
+      beamline:
+    step: |         
+      set det [DCS::Detector::getObject]
+      set detectorRingSize [$det getRingSize 1 0 0]
+      
+      set phi [get_device gonio_phi]
+           
+      set phiSpeedDegPerSec [expr [$phi cget -speed] / [$phi cget -scaleFactor] ]
+      
+      set energyMotorName [::config getMotorRunEnergy]
+      set energyDevice [get_device $energyMotorName]
+      set energyUpperLimitEv [$energyDevice cget -upperLimit]
+      set energyLowerLimitEv [$energyDevice cget -lowerLimit]      
+      
+      set detectorMotorName [::config getMotorRunDistance]
+      set detectorZDevice [get_device $detectorMotorName]
+      set distanceUpperLimitmm [$detectorZDevice cget -upperLimit]
+      set distanceLowerLimitmm [$detectorZDevice cget -lowerLimit]
+      
+      #TODO waiting for bug 1213 for lookup table
+      set detectorGain_countsPerPhoton 0.5
+      
+      #lookup minimum exposure time from dcss
+      variable collect_default
+      set minimumExposure_seconds [lindex $collect_default 3]
+      
+      variable robot_status
+      set portMnted [lindex $robot_status 15]
+      set currentPos [lindex $portMnted 0]
+      set currentCol [lindex $portMnted 1]
+      set currentRow [lindex $portMnted 2]
+      set currentDewarPort ${currentPos}${currentRow}${currentCol}
+    outputs:
+      currentDewarPort:
+      detectorRingSize:
+      phiSpeedDegPerSec:
+      energyUpperLimitEv:
+      energyLowerLimitEv:
+      distanceUpperLimitmm:
+      distanceLowerLimitmm:          
+      detectorGain_countsPerPhoton:
+      minimumExposure_seconds:
+      beamline:
+      activeKey:
+
