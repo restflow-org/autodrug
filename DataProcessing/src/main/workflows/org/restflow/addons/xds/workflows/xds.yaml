@@ -1,0 +1,123 @@
+
+namespace:
+
+  module: xds
+
+imports:
+
+- classpath:org/restflow/addons/xds/actors/xds-actors.yaml
+- classpath:org/restflow/addons/xds/workflows/xdsParams.yaml
+- classpath:/org/restflow/addons/getImgHeader/actors/getImgHeader-actors.yaml
+- classpath:/org/restflow/addons/DataProcessing/actors/DataProcessing-actors.yaml
+
+
+components:
+
+- id: Workflow
+  type: Workflow
+  properties: 
+    director: !ref PublishSubscribeDirector
+    inputs:
+      firstImagePath:
+      lastImageNum:
+      isigin:
+      unitcellForce:
+      highres: 
+      spacegroupNumForce:
+    nodes:
+    - !lref Inputs
+    - !lref GetXdsParams
+    - !lref RunXDS_INIT_COLSPOT_IDXREF
+    - !lref RunXDS_INTEGRATE_CORRECT
+    - !lref XDSParseCorrect
+    - !lref Outputs
+    outputs:
+      mosaicity:
+      unitcell:
+      sgnum:
+      xdsascii:
+
+
+- id: Inputs
+  type: InPortal
+  properties: 
+    outflows: 
+      firstImagePath: /firstImageInDataset
+      lastImageNum: /lastImageNum
+      isigin: /input/isigma
+      unitcellForce: /unitcellForce
+      highres: /highres
+      spacegroupNumForce: /spacegroupIn/num
+
+- id: GetXdsParams
+  type: Step
+  properties:
+    nestedUriPrefix: /params/
+    inflows:
+      firstImagePath: /firstImageInDataset
+      lastImageNum: /lastImageNum
+      unitcell: /unitcellForce
+      highres: /highres
+      spacegroupNum: /spacegroupIn/num
+    actor: !ref xdsParams.Workflow
+    outflows:
+      xdsParams: /xdsParams
+
+- id: RunXDS_INIT_COLSPOT_IDXREF
+  type: Step
+  properties: 
+    constants:
+      JOB: 'XYCORR INIT COLSPOT IDXREF' 
+    inflows: 
+      xdsParams: /xdsParams
+    actor: !ref xds.Actor.RunXds
+    outflows: 
+      xdsdir: file:/xdsdir
+      outtext: file:/xds/stdout.txt
+
+- id: RunXDS_INTEGRATE_CORRECT
+  type: Step
+  properties: 
+    constants:
+      JOB: 'DEFPIX INTEGRATE CORRECT' 
+    inflows:
+      xdsParams: /xdsParams
+      previous_xds_dir:
+        path: /xdsdir
+        expression: file:/xdsdir
+    actor: !ref xds.Actor.RunXds2
+    outflows: 
+      xdsascii: file:/XDS_ASCII.HKL
+      corr: file:/xdsfinal/CORRECT.LP
+      outtext: file:/xdsfinal/stdout.txt
+      unitcell: /unitcell
+      sgnum: /spacegroupOut/num
+
+- id: PrintUnitCell
+  type: Step
+  properties:
+    actor: !ref Crystallography.Actor.PrintUnitCell
+    inflows: 
+      unitcell: /unitcell
+    outflows:
+      view: /unitcell_text
+
+- id: XDSParseCorrect
+  type: Step
+  properties:
+    inflows:
+      corrfile: file:/xdsfinal/CORRECT.LP
+    actor: !ref xds.Actor.XDSParseCorrect
+    outflows:
+      mosaicity: /mosaicity/
+
+      
+- id: Outputs
+  type: OutPortal
+  properties: 
+    inflows:
+      mosaicity: /mosaicity/
+      unitcell: /unitcell
+      sgnum: /spacegroupOut/num
+      xdsascii: file:/XDS_ASCII.HKL
+

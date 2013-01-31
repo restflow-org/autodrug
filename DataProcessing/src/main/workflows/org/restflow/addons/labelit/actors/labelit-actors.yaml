@@ -1,0 +1,206 @@
+namespace:
+
+  module: labelit
+
+imports:
+
+- classpath:/common/scriptActors.yaml
+- classpath:/common/groovy/actors.yaml
+- classpath:/common/bash/actors.yaml
+- classpath:/common/perl/perlActor.yaml
+- classpath:/common/perl/actors.yaml
+- classpath:/common/directors.yaml
+- classpath:/common/types.yaml 
+- classpath:/common/support.yaml
+- classpath:org/restflow/addons/Crystallography/actors/Crystallography-actors.yaml
+
+components:
+
+
+# Beam center x ~ {beamXc}mm, y ~ {beamYc}mm, distance ~ {distc}mm ; 80% mosaicity={mosaicc} deg.
+# Solution ~ SpaceGroup ~ Beam x ~ y ~ distance ~ Resolution ~ Mosaicity ~ RMS
+- id: LabelitParser
+  className: ssrl.workflow.beans.TextScanner
+  properties: 
+    absorbWhiteSpaceSymbol: "~"
+    template: 
+      - 'Solution ~ Metric ~ fit ~ rmsd ~ #spots ~ crystal_system ~ unit_cell ~ volume~
+        {indexResults[]:INDEX_RESULTS}'
+      - |
+        Beam center x ~ {beamXc}mm, y ~ {beamYc}mm, distance ~ {distc}mm ; {TEXT_BLOCK} mosaicity={mosaicc} deg.
+      - |
+        MOSFLM Integration results:
+        {text:TEXT_BLOCK}
+        {integrationResults[]:INTEGRATION_RESULTS}
+      - |
+        No_Indexing_Solution:~({error:TEXT_BLOCK})
+      - |
+        MOSFLM_Warning: MOSFLM logfile declares {merror:TEXT_BLOCK}
+      - |
+        Spotfinder Problem: {spoterror:TEXT_BLOCK}
+      - |
+        InputFileError: {inputerror:TEXT_BLOCK}
+    tags:
+      INDEX_RESULTS: >
+        {smile:STRING} ~ {id:INT} ~ {metric} ~ {fit} ~ {rmsd} ~ {spots} ~ {crystalSystem:TWO_WORDS} ~ {unitCell:UNIT_CELL} ~ {volume} ~
+      UNIT_CELL: >
+        {a} ~ {b} ~ {c} ~ {alpha} ~ {beta} ~ {gamma}
+      INTEGRATION_RESULTS: >
+        :) ~ {id} ~ {spacegroup} ~ {beamX} ~ {beamY} ~ {distance} ~ {resolution} ~ {mosaicity} ~ {rms}
+      TWO_WORDS: >
+        {/\S+\s+\S+/}
+
+
+
+- id: Actor.RunLabelit
+  type: Crystallography.GroovyTemplateScriptRunnerActor
+  properties:
+    usesStepDirectory: true
+    inputs:
+      image1:
+      image2:
+    settings:
+      _runDir: labelit
+      _runFileTemplate: labelit.index distl_permit_binning=True $image1 $image2
+      _envScript: !resource edu/stanford/slac/smb/environment/DataProcessing/env.csh
+      _fileBuilders:
+        'labelit/dataset_preferences.py': 
+          template:
+            beam_search_scope = 0.8
+            difflimit_sigma_cutoff = 1.5
+            rmsd_tolerance = 2.5
+            best_support = True
+      _outputFiles:
+        'labelit/stdout.txt':
+          output: outtext
+          parser: !lref LabelitParser
+        'labelit/stderr.txt':
+          output: errtext
+        'labelit':
+          output: labelitdir
+        'labelit/LABELIT_exceptions':
+          output: labelitExceptions
+          mustExist: false
+    outputs:
+      outtext:
+      errtext:
+      beamXc:
+      beamYc:
+      distc:
+      mosaicc:
+      error:
+      spoterror:
+      merror:
+      inerr:
+      labelitdir:
+      indexResults:
+      integrationResults:
+      labelitExceptions:
+
+- id: Actor.LookupBestResult 
+  type: GroovyActor
+  properties:
+    usesStepDirectory: true
+    inputs:
+      indexResults:
+      integrationResults:
+      labelitdir:
+    step: |
+      bestResult = integrationResults[0];
+      bestIndexResult = indexResults.find {it.id == bestResult.id};
+      bestResult.putAll(bestIndexResult);
+      println bestResult
+      spacegroup = bestResult.spacegroup
+      highres = bestResult.resolution
+      mosaicity = bestResult.mosaicity
+      rms = bestResult.rms
+      unitcell = bestResult.unitCell
+      volume = bestResult.volume;
+      id = bestResult.id
+      def padId = id.toString().padLeft(2,"0")
+      baseDirText = _status.stepDirectory.toString()  
+      matrix = new File ( baseDirText + "/labelitdir/index${padId}.mat")
+      println "xxxxx"+ matrix.toString()
+    outputs:
+      unitcell:
+      spacegroup:
+      highres:
+      volume:
+      rms:
+      id:
+      matrix:
+
+- id: MosflmInputFileParserTemplate
+  className: ssrl.workflow.beans.TextScanner
+  properties:
+    absorbWhiteSpaceSymbol: "~"
+    template: 
+      - GENFILE~{genfile}
+      - MATRIX~{mat}
+      - BEAM~{beam1}~{beam2}
+      - WAVE~{wave}
+      - SYNCHROTRON~POLARIZATION~{polar}
+      - DIVERGENCE~{div1}~{div2}
+      - DISPERSION~{disp}
+      - MOSAICITY~{mosaic}
+      - DISTANCE~{dist}
+      - RESOLUTION~{res}
+      - TWOTHETA~{twotheta}
+      - SYMMETRY~{symm}
+
+
+#- id: Actor.RunLabelitMosflm
+#  type: Crystallography.GroovyTemplateScriptRunnerActor
+#  properties:
+#    usesStepDirectory: true
+#    inputs:
+#      id:
+#      labelitdir:
+#    settings:
+#      _runDir: labelitdir
+#      _runFileTemplate: |
+#        labelit.mosflm_script $id
+#        integration{id}.csh
+#        labelit.stats_distl
+#        <%def padId = id.padleft(2,"0")%>
+#        cp index${padId} index.mfm
+#        cp index${padId}.gen index.gen
+#        cp index${padId}.mat index.mat
+#      _envScript: !resource edu/stanford/slac/smb/environment/DataProcessing/env.csh
+#      _outputFiles:
+#        'labelitdir/stdout.txt':
+#          output: outtext
+#          parser: !lref LabelitParser
+#        'labelitdir/stderr.txt':
+#          output: errtext
+#        'labelitdir':
+#          output: labelitdir
+#        'labelitdir/index.mfm':
+#          output: out
+#          parser: !lref MosflmInputFileParserTemplate 
+#        'labelitdir/index.gen':
+#          output: gen
+#        'labelitdir/index.mat':
+#          output: mat
+#    outputs:
+#      outtext:
+#      errtext:
+#      labelitdir:
+#      out:
+#      gen:
+#      mat:
+#      beam1:
+#      beam2:
+#      wave:
+#      polar:
+#      div1:
+#      div2:
+#      disp:
+#      mosaic:
+#      dist:
+#      res:
+#      twotheta:
+#      symm:
+
+
+

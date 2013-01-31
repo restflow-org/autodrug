@@ -1,0 +1,206 @@
+namespace:
+
+  module: DataProcessing
+
+imports:
+
+- classpath:org/restflow/addons/Crystallography/actors/Crystallography-actors.yaml
+- classpath:/org/restflow/addons/truncate/actors/truncate-actors.yaml
+- classpath:/org/restflow/addons/freeR/actors/freeR-actors.yaml
+
+- classpath:/org/restflow/addons/pointless/workflows/pointless.yaml
+- classpath:/org/restflow/addons/scala/workflows/scala.yaml
+- classpath:/org/restflow/addons/xtriage/workflows/xtriage.yaml
+- classpath:/org/restflow/addons/xds/workflows/xds.yaml
+
+components:
+
+- id: Workflow
+  type: Workflow
+  className: ssrl.workflow.actors.Workflow
+  properties: 
+    director: !ref PublishSubscribeDirector
+    inputs:
+      firstImagePath:
+      lastImageNum:
+      unitcellForce:
+      highres: 
+      spacegroupNumForce:
+      isigin:
+    nodes:
+    - !lref Inputs
+    - !lref Outputs
+#    - !lref CheckOscillation
+#    - !lref Calc90DegImgNum
+#    - !lref WriteLabelitInputFile
+#    - !lref RunLabelit
+#    - !lref ParseLabelitOutputFile
+    - !lref RunXds
+    - !lref RunPointless
+    - !lref RunXtriage
+    - !lref RunScala
+    - !lref RunTruncate
+    - !lref RunFreeR
+    outputs:
+      mtzout: 
+
+- id: Inputs
+  type: InPortal
+  properties: 
+    outflows: 
+      firstImagePath: /firstImageInDataset
+      lastImageNum: /lastImageNum
+      unitcellForce: /unitcellForce
+      highres: /highres
+      spacegroupNumForce: /spacegroupNumForce
+      isigin: /input/isigma
+
+- id: Outputs
+  type: OutPortal
+  properties: 
+    inflows:
+      mtzout: file:/freeR/out.mtz
+
+
+#- id: CheckOscillation
+#  type: Step
+#  properties:
+#    inflows:
+#      imageDir: /img/imageDir/
+#      prefix: /img/prefixString/
+#      imageType: /img/imgTypeName/
+#      imageNumDigits: /img/imgNumDigits/
+#      startNum: /img/first/num
+#      endNum: /img/last/num
+#      env: /env/set/
+#      check_osc: workspace:/script/check_osc.pl
+#    actor: !ref DataProcessing.OscillationChecker 
+#    outflows:
+#      oscNum: /img/oscNum/
+
+
+#- id: Calc90DegImgNum
+#  type: Step
+#  properties:
+#    inflows:
+#      oscStart: /img/header/oscStart/
+#      oscRange: /img/header/oscRange/
+#      firstNum: /img/first/num
+#      lastNum: /img/last/num
+#    actor: !ref DataProcessing.Actor.Calc90DefImgNum
+#    outflows:
+#      output: /img/90DegImgNum/
+
+#- id: WriteLabelitInputFile
+#  type: Step
+#  properties: 
+#    inflows:
+#      template: /img/newImgHash/
+#      start: /img/first/num
+#      end: /img/90DegImgNum/
+#    actor: !ref labelit.Actor.LabelitInputMaker
+#    outflows:
+#      template: file:/labelit/labelit.run
+
+#- id: RunLabelit
+#  type: Step
+#  properties:
+#    inflows:
+#      runfile: file:/labelit/labelit.run
+#      template: /img/newImgHash/
+#      start: /img/first/num
+#      end: /img/90DegImgNum/
+#      env: /env/set/
+#    actor: !ref labelit.Actor.RunLabelit
+#    outflows:
+#      labelitOut: file:/labelit/labelit.out
+
+#- id: ParseLabelitOutputFile
+#  type: Step
+#  properties: 
+#    inflows:
+#      labelitOut: file:/labelit/labelit.out
+#    actor: !ref labelit.Actor.IndexingResultFinder
+#    outflows: 
+#      a: /img/labelit/unitcell/a/
+#      b: /img/labelit/unitcell/b/
+#      c: /img/labelit/unitcell/c/
+#      alpha: /img/labelit/unitcell/alpha/
+#      beta: /img/labelit/unitcell/beta/
+#      gamma: /img/labelit/unitcell/gamma/
+#      spaceGroup: /img/labelit/spaceGroup/
+#      highres: /img/highres/
+
+- id: RunXds
+  type: Step
+  properties:
+    nestedUriPrefix: /xds 
+    inflows:
+      firstImagePath: /firstImageInDataset
+      lastImageNum: /lastImageNum
+      isigin: /input/isigma
+      unitcellForce: /unitcellForce
+      highres: /highres
+      spacegroupNumForce: /spacegroupNumForce
+    actor: !ref xds.Workflow
+    outflows:
+      xdsascii: file:/xdsout/XDS_ASCII.HKL
+
+- id: RunPointless
+  type: Step
+  properties:
+    nestedUriPrefix: /pointless 
+    inflows:
+      xdsascii: file:/xdsout/XDS_ASCII.HKL
+    actor: !ref pointless.Workflow
+    outflows:
+      mtzout: file:/pointless/out.mtz
+
+
+- id: RunXtriage
+  type: Step
+  properties:
+    nestedUriPrefix: /xtriage/
+    inflows:
+      mtz: file:/pointless/out.mtz
+    actor: !ref xtriage.Workflow
+
+
+# outputfiles: ANOMPLOT  CORRELPLOT  NORMPLOT  ROGUEPLOT  ROGUES  scala1.mtz  SCALES
+- id: RunScala
+  type: Step
+  properties: 
+    nestedUriPrefix: /scala/
+    inflows:
+      mtz: file:/pointless/out.mtz
+      isigmaCutoff: /input/isigma
+    actor: !ref scala.Workflow
+    outflows: 
+      mtzout: file:/truncate/scala1.mtz
+      isigCutoffResolution: /trunc/res/
+
+- id: RunTruncate
+  type: Step
+  properties: 
+    inflows:
+      mtzIn: file:/truncate/scala1.mtz
+      res: /trunc/res
+    actor: !ref truncate.Actor.RunTruncate
+    outflows: 
+      outtext: file:/truncate/trunc.out
+      mtzout1: file:/truncate/trunc1.mtz
+
+
+- id: RunFreeR
+  type: Step
+  properties:
+    inflows:
+      mtzIn: file:/truncate/trunc1.mtz
+    actor: !ref freeR.Actor.RunFreeR
+    outflows:
+      outtext: file:/freeR/freeR.out
+      mtzout1: file:/freeR/out.mtz
+
+
+
+      

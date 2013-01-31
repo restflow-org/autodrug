@@ -1,0 +1,214 @@
+namespace:
+
+  module: Strategy
+  route: Lookup
+
+imports:
+
+- classpath:/org/restflow/addons/Strategy/actors/Strategy-actors.yaml
+- classpath:/org/restflow/addons/labelit/workflows/labelit-B.yaml
+- classpath:/org/restflow/addons/mosflm/workflows/mosflm.yaml
+- classpath:/org/restflow/addons/raddose/workflows/raddose.yaml
+
+components:
+
+- id: Workflow
+  type: Workflow
+  className: ssrl.workflow.actors.Workflow
+  properties: 
+    director: !ref PublishSubscribeDirector
+    inputs: 
+      image1:
+      image2:
+      beamlineValues:
+      strategyBySpaceGroup:
+      flux: 
+    nodes:
+    - !lref Inputs
+    - !lref Outputs
+    - !lref ExtractCollectionStrategy
+    - !lref RunLabelit
+    - !lref RunMosflm
+    - !lref CalculateExposureTimeDistanceAndNumImages
+    - !lref BuildRunDefinitionObject
+    - !lref RunRaddose
+    - !lref CheckDose
+    outputs:
+      runDefinition:
+      highres: 
+      unitcell:
+      mosaicity:
+      matrix:
+      highres:
+      spacegroup:
+      spacegroupNum:
+      rms:
+      unitcell:
+
+
+- id: Inputs
+  type: InPortal
+  properties: 
+    outflows: 
+      image1: /path/image1
+      image2: /path/image2
+      beamlineValues: /beamlineValues
+      flux: /flux
+      strategyBySpaceGroup: /strategyBySpaceGroup
+      
+
+
+- id: RunLabelit
+  type: Step 
+  properties:
+    nestedUriPrefix: /labelit
+    inflows:
+      image1: /path/image1
+      image2: /path/image2
+    actor: !ref labelit.B.Workflow
+    outflows:
+      unitcell: /unitcell
+      mosaicity: /mosaicity
+      matrix: file:/matrix
+      highres: /resolution
+      spacegroup: /spacegroup/name
+      spacegroupNum: /spacegroup/num
+      rms: /rms
+
+- id: RunMosflm
+  type: Step 
+  properties:
+    nestedUriPrefix: /mosflm
+    constants:
+      twotheta: '0.0'
+      polarization: '0.9'
+      divergence1: '0.10'
+      divergence2: '0.02'
+      dispersion: '0.0001'
+    inflows:
+      image1: /path/image1
+      image2: /path/image2
+      matrix: file:/matrix
+      mosaicity: /mosaicity
+      resolution: /resolution
+      symmetry: /spacegroup/name
+#      gen: file:/gen
+    actor: !ref mosflm.A.Workflow
+    outflows:
+      phi1: /mosflm/strat/phi1
+      phi2: /mosflm/strat/phi2
+
+
+- id: ExtractCollectionStrategy
+  type: Step
+  properties: 
+    inflows:
+      strategyBySpaceGroup: /strategyBySpaceGroup
+      spacegroupNum: /spacegroup/num
+    actor: !ref Strategy.ExtractCollectionStrategyActor
+    outflows:
+      exposure_photons_per_image: /lookup/exposure/photons_per_degree
+      delta_degrees: /lookup/delta/degrees
+      beamstop_position_mm: /lookup/beamstop/mm
+      phi_range_degrees: /lookup/phi_range/degrees
+      detector_resolution_angstroms: /lookup/detector/resolution/angstroms
+      energy_ev: /lookup/energy/ev
+      beam_size_width_mm: /lookup/beam_size/width/mm
+      beam_size_height_mm: /lookup/beam_size/height/mm      
+
+- id: CalculateExposureTimeDistanceAndNumImages
+  type: Step
+  properties: 
+    inflows:
+      flux: /flux
+      exposure_photons_per_degree: /lookup/exposure/photons_per_degree
+      delta_degrees: /lookup/delta/degrees
+      beamlineValues: /beamlineValues
+      resolution_angstroms: /lookup/detector/resolution/angstroms
+      energy_ev: /lookup/energy/ev
+      startAngle: /mosflm/strat/phi1
+      phi_range: /lookup/phi_range/degrees
+    actor: !ref Strategy.Actor.CalculateExposureTime
+    outflows:
+      exposureTimeSec: /exposureTime
+      attenuation: /attenuation
+      detectorDistancemm: /detector/distance/mm
+      endAngle: /end/degrees
+      numImages: /num/images
+      inverse: /inverse
+      
+
+- id: RunRaddose
+  type: Step 
+  properties:
+    nestedUriPrefix: /raddose
+    inflows:
+      unitcell: /unitcell
+      exposureTime: /exposureTime
+      beamSizeX: /lookup/beam_size/width/mm
+      beamSizeY: /lookup/beam_size/height/mm
+      energy: /lookup/energy/ev
+      flux: /flux
+      numImages: /num/images
+    actor: !ref raddose.A.Workflow
+    outflows:
+      doseTotal: /dose/total/MGy
+
+- id: CheckDose
+  type: GroovyActorNode
+  properties:
+    inflows:
+      doseTotal: /dose/total/MGy
+    actor.step: |
+      println new Date().format('HH:mm:ss') + "   Comparing total dose"
+      if ( doseTotal.toFloat() < 3.0e7f ) {
+        println ""
+        println "Total dose is less than 30 MGy"
+        println ""
+      }
+      else {
+        throw new Exception("Total dose is more than 30 MGy")
+      }
+      ok = true;
+    outflows:
+      ok: /doseOk
+
+
+
+- id: BuildRunDefinitionObject
+  type: Step
+  properties:
+    inflows:
+      energy_ev: /lookup/energy/ev
+      beamstop_position_mm: /lookup/beamstop/mm
+      phi_delta_degrees: /lookup/delta/degrees
+      wedge: /lookup/phi_range/degrees
+      startAngle: /mosflm/strat/phi1
+      endAngle: /end/degrees
+      exposureTime: /exposureTime
+      attenuation: /attenuation
+      distance: /detector/distance/mm
+      inverse: /inverse
+      beam_size_width_mm: /lookup/beam_size/width/mm
+      beam_size_height_mm: /lookup/beam_size/height/mm
+    actor: !ref Strategy.Actor.BuildRunDefinitionObject
+    outflows:
+      runDefinition: /run/definition
+
+
+- id: Outputs
+  type: OutPortal
+  properties: 
+    inflows:
+      unitcell: /unitcell
+      mosaicity: /mosaicity
+      matrix: file:/matrix
+      highres: /resolution
+      spacegroup: /spacegroup/name
+      spacegroupNum: /spacegroup/num
+      highres: /resolution
+      runDefinition: /run/definition
+      rms: /rms
+      ok: /doseOk
+
+ 

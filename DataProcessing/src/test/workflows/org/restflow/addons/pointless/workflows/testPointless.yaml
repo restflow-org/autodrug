@@ -1,0 +1,113 @@
+
+namespace:
+
+  module: pointless 
+  route: Test
+
+imports:
+
+- classpath:org/restflow/addons/pointless/workflows/pointless.yaml
+
+components:
+
+- id: Workflow
+  type: Workflow
+  properties: 
+    director: !ref PublishSubscribeDirector
+    inputs:
+      xdsascii:
+      validatePath:
+    nodes:
+    - !lref Inputs
+    - !lref ConvertFilePathToHandles
+    - !lref RunPointless
+    - !lref AssertOutput
+    - !lref Outputs
+    outputs:
+      sgnum: 
+      unitcell: 
+      sg:
+      mtzout:
+
+- id: Inputs
+  type: InPortal
+  properties: 
+    outflows: 
+      xdsascii: /in/xdsascii/path
+      validatePath: /validatePath
+
+- id: ConvertFilePathToHandles
+  type: Step
+  properties:
+    inflows: 
+      xdsascii: /in/xdsascii/path
+    actor: !inline
+      className: ssrl.workflow.actors.FilePathToHandleActor
+    outflows:
+      xdsasciiFile: file:/in/xds_ascii.HKL
+
+- id: RunPointless
+  type: Step 
+  properties:
+    nestedUriPrefix: /testpointless
+    inflows:
+      xdsascii: file:/in/xds_ascii.HKL
+    actor: !ref pointless.Workflow
+    outflows:
+      sgnum: /pointless/sgnum/
+      sg: /pointless/sg/
+      unitcell: /pointless/unitcell/
+      mtzout: file:/out/out.mtz
+      enant: /pointless/enant/
+
+- id: AssertOutput
+  type: GroovyActorNode
+  properties:
+    stepsOnce: true 
+    actor.step: |
+      import org.yaml.snakeyaml.*;
+      import static java.lang.Math.*
+      Yaml y = new Yaml();      
+      assertValues = y.load( new File(validatePath).text ); 
+      
+      assert spacegroupNum.toFloat() == assertValues.spacegroupNum, "$spacegroupNum != $assertValues.spacegroupNum";
+      assert spacegroup == assertValues.spacegroup, "$spacegroup != $assertValues.spacegroup";
+      def a = unitcell.a.toFloat();
+      def b = unitcell.b.toFloat();
+      def c = unitcell.c.toFloat();
+      def alpha = unitcell.alpha.toFloat();
+      def beta = unitcell.beta.toFloat();
+      def gamma = unitcell.gamma.toFloat();
+      assert abs ( a - assertValues.unitcell.a ) / a * 100 < 0.1, "$a != $assertValues.unitcell.a";
+      assert abs ( b - assertValues.unitcell.b ) / b * 100 < 0.1, "$b != $assertValues.unitcell.b";
+      assert abs ( c - assertValues.unitcell.c ) / c * 100 < 0.1, "$c != $assertValues.unitcell.c";
+      assert abs ( alpha - assertValues.unitcell.alpha ) / alpha * 100 < 0.1, "$alpha != $assertValues.unitcell.alpha";
+      assert abs ( beta - assertValues.unitcell.beta ) / beta * 100 < 0.1, "$beta != $assertValues.unitcell.beta";
+      assert abs ( gamma - assertValues.unitcell.gamma ) / gamma * 100 < 0.1, "$gamma != $assertValues.unitcell.gamma";
+
+      done = true
+    actor.inputs:
+      spacegroupNum:
+      unitcell:
+      validatePath:
+      spacegroup:
+    inflows:
+      spacegroupNum: /pointless/sgnum/
+      spacegroup: /pointless/sg/
+      unitcell: /pointless/unitcell/
+      validatePath: /validatePath
+    outflows:
+      done: control:/done
+
+
+- id: Outputs
+  type: OutPortal
+  properties: 
+    inflows:
+      sgnum: /pointless/sgnum/
+      unitcell: /pointless/unitcell/
+      sg: /pointless/sg/
+      mtzout: file:/out/out.mtz
+      done: control:/done
+
+

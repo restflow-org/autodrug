@@ -1,0 +1,108 @@
+namespace:
+
+  module: labelit
+  route: Test
+
+imports:
+
+- classpath:/org/restflow/addons/labelit/workflows/labelit-B.yaml
+
+components:
+
+- id: Workflow
+  type: Workflow
+  className: ssrl.workflow.actors.Workflow
+  properties: 
+    director: !ref PublishSubscribeDirector
+    inputs: 
+      image1: 
+        description: full path of first image file
+      image2:
+        description: full path of second image file
+      validatePath:
+        description: path to file that contains the results in yaml format for comparison.
+    nodes:
+    - !lref Inputs
+    - !lref RunLabelit
+    - !lref AssertOutput
+
+
+- id: Inputs
+  type: InPortal
+  properties: 
+    outflows: 
+      # full path of first image
+      image1: /img/ImageOne
+      # full path of second image
+      image2: /img/ImageTwo 
+      validatePath: /validatePath
+
+
+- id: RunLabelit
+  type: Step 
+  properties:
+    nestedUriPrefix: /testLabelit
+    inflows:
+      image1: /img/ImageOne
+      image2: /img/ImageTwo
+    actor: !ref labelit.B.Workflow
+    outflows:
+      unitcell: /unitcell
+      highres: /res
+      beamX: /beamX
+      beamY: /beamY
+      dist: /dist
+      mosaicity: /mosaic
+      spacegroup: /spacegroup
+      volume: /volume
+      rms: /rms
+      matrix: file:/matrix
+#      gen: /gen
+
+
+- id: AssertOutput
+  type: GroovyActorNode
+  properties:
+    stepsOnce: true 
+    actor.step: |
+      import org.yaml.snakeyaml.*;
+      import static java.lang.Math.*
+      Yaml y = new Yaml();      
+      assertValues = y.load( new File(validatePath).text ); 
+      
+      assert abs (mosaic.toFloat() - assertValues.mosaic) < 0.01, "$mosaic != $assertValues.mosaic";
+      assert abs (dist.toFloat() - assertValues.dist) < 0.1, "$dist != $assertValues.dist";
+      assert abs (beamX.toFloat() - assertValues.beamX) < 0.1, "$beamX != $assertValues.beamX";
+      assert abs (beamY.toFloat() - assertValues.beamY) < 0.1, "$beamX != $assertValues.beamX";
+      assert abs (rms.toFloat() - assertValues.rms) < 0.001, "$rms != $assertValues.rms";
+      assert spacegroup == assertValues.spacegroup, "$spacegroup != $assertValues.spacegroup";
+   
+      done = true
+    actor.inputs:
+      validatePath:
+      unitcell:
+      id:
+      highres:
+      beamX:
+      beamY:
+      dist:
+      mosaic:
+      spacegroup:
+      volume:
+      rms:
+    inflows:
+      validatePath: /validatePath
+      unitcell: /unitcell
+      highres: /res
+      beamX: /beamX
+      beamY: /beamY
+      dist: /dist
+      mosaic: /mosaic
+      spacegroup: /spacegroup
+      volume: /volume
+      rms: /rms
+    outflows:
+      done: control:/done
+
+
+

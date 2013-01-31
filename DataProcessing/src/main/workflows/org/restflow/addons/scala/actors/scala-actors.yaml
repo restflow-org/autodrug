@@ -1,0 +1,231 @@
+namespace:
+
+  module: scala
+
+imports:
+
+- classpath:/common/scriptActors.yaml
+- classpath:/common/groovy/actors.yaml
+- classpath:/common/bash/actors.yaml
+- classpath:/common/perl/perlActor.yaml
+- classpath:/common/perl/actors.yaml
+- classpath:/common/directors.yaml
+- classpath:/common/types.yaml 
+- classpath:/common/support.yaml
+- classpath:org/restflow/addons/Crystallography/actors/Crystallography-actors.yaml
+- classpath:org/restflow/addons/scala/beans/scalaInputTemplates.yaml
+- classpath:org/restflow/addons/scala/beans/scalaParsers.yaml
+
+components:
+
+- id: Actor.RunScala
+  type: Crystallography.GroovyTemplateScriptRunnerActor
+  properties:
+    usesStepDirectory: true
+    settings:
+      _runFileTemplate: |
+        scala HKLIN $mtzIn.name HKLOUT out.mtz << eof
+        INSCALE OFF
+        eof
+      _envScript: !resource edu/stanford/slac/smb/environment/DataProcessing/env.csh
+      _outputFiles:
+        'out.mtz':
+          output: mtzout
+        'stdout.txt':
+          output: outtext
+          parser: !lref Parser.Scala
+        'stderr.txt':
+          output: errtext
+    inputs:
+      mtzIn:
+    outputs:
+      outtext:
+      errtext:
+      mtzout:
+      result:
+      fatal_warning:
+      isigheader:
+      isigblock:
+      isigoverallblock:
+      isigoverallheader:
+      isigTable:
+      isigmaov:
+
+
+- id: Actor.ScalaOutputFileParser
+  type: GroovyActor
+  properties:
+    settings:
+      scalaparser: !lref Parser.Scala
+    inputs:
+      scalaout: 
+      isigTable:
+    step: |
+      println isigTable;
+      println isigTable[0];
+      
+      def size = isigTable.size();
+      isig = new float[size];
+      res = new float[size];
+      for ( i in 0..size-1 ) { 
+        isig[i] = isigTable[i].mn.toFloat()
+        res[i] = isigTable[i].dmin.toFloat()
+        println "${i} ${res[i]} ${isig[i]}"
+      }
+      
+      isigfinal = isigTable.mn[size-1];
+    outputs:
+      isigfinal:
+      isig:
+      res:
+
+- id: Actor.ScalaSummaryParser
+  type: GroovyActor
+  properties:
+    settings: 
+      scalaparser: !lref Parser.ScalaSummary
+    inputs:
+      scalasum: 
+    step: |
+      println new Date().format('HH:mm:ss') + "   Parsing scala summary";
+      scalaparser.compile();
+      parsed = scalaparser.search(scalasum);
+      oRmeas = parsed.Rmeas_overall;
+      fRmeas = parsed.Rmeas_outer;
+      oCompl = parsed.compl_overall
+      fCompl = parsed.compl_outer
+      oMult = parsed.mult_overall
+      mos = parsed.mosaicity
+      res = parsed.resolution
+      // output info //
+      println "";
+      println "Rmeas overall " + oRmeas + "   Rmeas final shell " + fRmeas;
+      println "Compl overall " + oCompl + "   Compl final shell " + fCompl;
+      println "Multiplicity overall " + oMult 
+      // + "   Mosaicity " + mos;
+      println "";
+    outputs:
+      oRmeas: 
+      fRmeas: 
+      oCompl:
+      fCompl:
+      oMult:
+      mos: 
+      res: 
+
+      
+- id: Actor.SetISigResolution
+  type: GroovyActor
+  properties:
+    inputs:
+      isig:
+      res:
+      inres:
+      isigin:
+    step: |
+      println new Date().format('HH:mm:ss') + "   Determine resolution based on I/Sigma";
+      tres = 0.0
+      //println "isigin: " + isigin
+      if ( isigin.toFloat() != 0.0 ) {
+        // start = isig[0]
+        // tres = inres
+        for ( i = 10; i >=1; i -= 1) {
+          // println "isig " + i + ": " + isig[i]
+          // println "isig " + i + "-1: " + isig[i-1]
+          // println "res " + i + ": " + res[i]
+          if ( (i == 10) && ( isigin.toFloat() <= isig[i-1].toFloat() ) && ( isigin.toFloat() > 0.0 ) ) {
+            // tres = res[i-1].toFloat()
+            break
+          }
+          else if ( ( isigin.toFloat() <= isig[i-1].toFloat() ) && ( isigin.toFloat() > isig[i].toFloat() ) ) {
+            m = ( isig[i-1].toFloat() - isig[i].toFloat() ) / ( res[i-1].toFloat() - res[i].toFloat() )
+            // println "m: " + m
+            b = isig[i-1].toFloat() - ( m.toFloat() * res[i-1].toFloat() )
+            // println "b: " + b
+            // mean I/Sig = m * resolution + b
+            tres = ( isigin.toFloat() - b.toFloat() ) / m.toFloat()
+            // println "tres: " + tres
+            break;
+          }
+          //start = isig[i]
+        }
+        println ""
+        println "Input I/Sigma cutoff: " + isigin
+        println "Resolution from scala: " + inres + "\u212B"
+        println ""
+        println "   Resolution   Avg I/Sigma"
+        for ( i = 0; i < 10; i += 1 ) {
+          println "     " + String.format('%5.2f', res[i].toFloat()) + "         " + String.format('%5.2f', isig[i].toFloat())
+        }
+        println ""
+        if ( tres != 0.0 ) {
+          println "Resolution cutoff: " + String.format('%4.2f', tres) + "\u212B"
+        }
+        else {
+          println "No resolution cutoff"
+        }
+        println ""
+      }
+      // println "resolution for truncate: " + tres
+    outputs:
+      tres: /trunc/res
+
+
+
+- id: Actor.CheckISigma
+  type: GroovyActor
+  properties:
+    inputs:
+      isigin:
+      isig:
+      res:
+      inres:
+    step: |
+      println new Date().format('HH:mm:ss') + "   Determine resolution based on I/Sigma cutoff";
+      tres = 0.0
+      //println "isigin: " + isigin
+      if ( isigin.toFloat() != 0.0 ) {
+        // start = isig[0]
+        // tres = inres
+        for ( i = 10; i >=1; i -= 1) {
+          // println "isig " + i + ": " + isig[i]
+          // println "isig " + i + "-1: " + isig[i-1]
+          // println "res " + i + ": " + res[i]
+          if ( (i == 10) && ( isigin.toFloat() <= isig[i-1].toFloat() ) && ( isigin.toFloat() > 0.0 ) ) {
+            // tres = res[i-1].toFloat()
+            break
+          }
+          else if ( ( isigin.toFloat() <= isig[i-1].toFloat() ) && ( isigin.toFloat() > isig[i].toFloat() ) ) {
+            // extrapolate isigin to a resolution
+            m = ( isig[i-1].toFloat() - isig[i].toFloat() ) / ( res[i-1].toFloat() - res[i].toFloat() )
+            // println "m: " + m
+            b = isig[i-1].toFloat() - ( m.toFloat() * res[i-1].toFloat() )
+            // println "b: " + b
+            // mean I/Sig = m * resolution + b
+            tres = ( isigin.toFloat() - b.toFloat() ) / m.toFloat()
+            // println "tres: " + tres
+            break;
+          }
+          //start = isig[i]
+        }
+        println ""
+        println "Input I/Sigma cutoff: " + isigin
+        println "Resolution from scala: " + inres + "\u212B"
+        println ""
+        println "   Resolution   Avg I/Sigma"
+        for ( i = 0; i < 10; i += 1 ) {
+          println "     " + String.format('%5.2f', res[i].toFloat()) + "         " + String.format('%5.2f', isig[i].toFloat())
+        }
+        println ""
+        if ( tres != 0.0 ) {
+          println "Resolution cutoff: " + String.format('%4.2f', tres) + "\u212B"
+        }
+        else {
+          println "No resolution cutoff"
+        }
+        println ""
+      }
+      // println "resolution for truncate: " + tres
+    outputs:
+      tres: /trunc/res
+

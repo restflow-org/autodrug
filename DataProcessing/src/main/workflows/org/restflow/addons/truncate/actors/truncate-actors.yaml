@@ -1,0 +1,47 @@
+namespace:
+
+  module: truncate
+
+imports:
+
+- classpath:/common/scriptActors.yaml
+- classpath:/common/groovy/actors.yaml
+- classpath:/common/bash/actors.yaml
+- classpath:/common/perl/perlActor.yaml
+- classpath:/common/perl/actors.yaml
+- classpath:/common/directors.yaml
+- classpath:/common/types.yaml 
+- classpath:/common/support.yaml
+- classpath:org/restflow/addons/Crystallography/actors/Crystallography-actors.yaml
+- classpath:org/restflow/addons/truncate/beans/truncateInputTemplates.yaml
+
+
+components:
+
+- id: Actor.RunTruncate
+  type: Crystallography.GroovyTemplateScriptRunnerActor
+  properties:
+    usesStepDirectory: true
+    settings:
+      _runFileTemplate: |
+        truncate HKLIN $mtzIn.name HKLOUT out.mtz << eof
+        truncate yes
+        <%
+        def resolution = Float.parseFloat(res.toString());
+        if ( resolution != 0.0) {
+          println "resolution " + String.format('%4.2f', resolution) + " 40"
+        }%>labout F=FP SIGF=SIGFP
+        eof
+      _envScript: !resource edu/stanford/slac/smb/environment/freeR/env.csh
+      _outputFiles:
+        'out.mtz':
+          output: mtzout1
+        'stdout.txt':
+          output: outtext
+    inputs:
+      mtzIn:
+      res:
+        type: String
+    outputs:
+      outtext:
+      mtzout1:

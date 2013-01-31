@@ -1,0 +1,9 @@
+#for the parser test to see if it can scan the xds output file correctly
+unitcell:
+  a: 92.3
+  b: 92.3
+  c: 46.29
+  alpha: 90
+  beta: 90 
+  gamma: 120
+spacegroupNum: 168

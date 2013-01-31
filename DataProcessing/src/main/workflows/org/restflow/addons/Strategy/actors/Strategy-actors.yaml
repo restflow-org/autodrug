@@ -1,0 +1,146 @@
+namespace:
+
+  module: Strategy
+
+imports:
+
+- classpath:/common/scriptActors.yaml
+- classpath:/common/groovy/actors.yaml
+- classpath:/common/bash/actors.yaml
+- classpath:/common/perl/perlActor.yaml
+- classpath:/common/perl/actors.yaml
+- classpath:/common/directors.yaml
+- classpath:/common/types.yaml 
+- classpath:/common/support.yaml
+- classpath:org/restflow/addons/Crystallography/actors/Crystallography-actors.yaml
+
+components:
+
+- id: ExtractCollectionStrategyActor
+  type: GroovyActor
+  properties: 
+    inputs:
+      strategyBySpaceGroup:
+      spacegroupNum:
+    step: |
+      def smap = strategyBySpaceGroup;
+      if ( ! smap[spacegroupNum].equals(null) ) {
+        strategy = smap[spacegroupNum];
+      } else if ( !smap['P0'].equals(null) ) {
+        strategy = smap['P0'];
+      } else {
+        throw Exception ("No collection parameters for spacegroup: " + spacegroupNum )
+      }
+      energy_ev = strategy.energy_ev;
+      
+      exposure_photons_per_image = strategy.exposure_photons_per_image;
+      delta_degrees = strategy.phi_delta_degrees;   
+      beamstop_position_mm = strategy.beamstop_position_mm;
+      phi_range_degrees = strategy.phi_range_degrees;
+      
+      beam_size_width_microns = strategy.beam_size_width_height_microns[0];
+      beam_size_height_microns = strategy.beam_size_width_height_microns[1];   
+      beam_size_width_mm = beam_size_width_microns / 1000.0;
+      beam_size_height_mm = beam_size_height_microns / 1000.0;
+      
+      detector_resolution_angstroms = strategy.detector_resolution_angstroms;       
+    outputs:
+      exposure_photons_per_image:
+      delta_degrees:
+      beamstop_position_mm:
+      phi_range_degrees:
+      beam_size_width_microns:
+      beam_size_height_microns:
+      beam_size_width_mm:
+      beam_size_height_mm:
+      detector_resolution_angstroms:
+      energy_ev:
+
+- id: Actor.CalculateExposureTime
+  type: GroovyActor
+  properties: 
+    inputs:
+      flux:
+      exposure_photons_per_degree:
+      delta_degrees:
+      resolution_angstroms:
+      energy_ev:
+      beamlineValues:
+      startAngle:
+      phi_range:
+    step: |
+      import static org.restflow.addons.crystallography.calculator.CrystallographyCalculator.*;
+
+      def delta = delta_degrees.toFloat();
+      exposureTimeSec =  delta * exposure_photons_per_degree.toFloat() / flux.toFloat() ;
+      def minimumExposure = beamlineValues.minimumExposure_seconds.toFloat();
+      if ( exposureTimeSec >= minimumExposure ) {
+        attenuation = 0.00;
+      } else {
+        // TODO Check attenuation against available attenuation levels in bluice
+        attenuation = ( minimumExposure - exposureTimeSec ) / minimumExposure * 100.0;
+        exposureTimeSec = minimumExposure;
+      }
+
+      def maxSpeed = beamlineValues.phiSpeedDegPerSec.toFloat();
+      def degreesPerSec = delta / exposureTimeSec;
+      if ( degreesPerSec > maxSpeed ) {
+        throw new Exception("phi speed faster than maximum phi speed")
+      }
+
+      //find the detector distance from the desired resolution at the detector
+      def ringSize_mm = beamlineValues.detectorRingSize;
+      detectorDistancemm = calcDistanceFromResolution ( resolution_angstroms.toFloat(), energy_ev.toFloat(), ringSize_mm.toFloat() );
+      
+      //calculate number of images
+      def wedge = phi_range.toFloat();
+      def start = startAngle.toFloat();
+      endAngle = start + wedge;
+      def imgnum = Math.round( wedge / delta );
+      numImages = imgnum.toInteger();
+      
+      inverse = 0;
+    outputs:
+      exposureTimeSec:
+      attenuation:
+      detectorDistancemm:
+      numImages:
+      endAngle:
+      inverse:
+      
+
+      
+- id: Actor.BuildRunDefinitionObject
+  type: GroovyActor
+  properties: 
+    inputs:
+      energy_ev:
+      beamstop_position_mm:
+      phi_delta_degrees:
+      wedge:
+      startAngle:
+      endAngle:
+      exposureTime:
+      attenuation:
+      distance:
+      inverse:
+      beam_size_width_mm:
+      beam_size_height_mm:
+    step: |
+      import org.restflow.addons.samples.collect.*;
+      runDefinition = new CollectRunDefinition(
+        energy_ev: energy_ev.toFloat(),
+        beamstop_position_mm: beamstop_position_mm.toFloat(),
+        phi_delta_degrees: phi_delta_degrees.toFloat(),
+        wedge: wedge.toFloat(),
+        startAngle: startAngle.toFloat(),
+        endAngle: endAngle.toFloat(),
+        exposureTime: exposureTime.toFloat(),
+        attenuation: attenuation.toFloat(),
+        distance: distance.toFloat(),
+        inverse: inverse,
+        beam_size_width_mm: beam_size_width_mm.toFloat(),
+        beam_size_height_mm: beam_size_height_mm.toFloat() );
+    outputs:
+      runDefinition:
+

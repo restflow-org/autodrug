@@ -1,0 +1,219 @@
+
+ ***** XDS *****  (VERSION  March 15, 2012)              
+ Author: Wolfgang Kabsch
+ Copy licensed until 31-Dec-2012 to
+  academic users for non-commercial applications   
+ No redistribution.
+
+
+ ***** DEFPIX *****  (VERSION  March 15, 2012)              20-Jul-2012
+
+ modifies the initial background image BKGINIT.cbf from the INIT step by
+ labelling detector pixels that should be ignored in the integration step
+ and saves the results as a control image BKGPIX.cbf. Excluded pixels are
+ marked by -3. The control images should be inspected with the XDS-Viewer.
+
+ The pixels are labelled based on parameters in the input file XDS.INP:
+ UNTRUSTED_ELLIPSE=, UNTRUSTED_RECTANGLE=, EXCLUDE_RESOLUTION_RANGE=,
+ INCLUDE_RESOLUTION_RANGE=.
+
+ In addition, DEFPIX attempts to recognize and exclude shaded regions
+ of the detector area that are caused by intruding hardware obscuring
+ x-ray diffraction. For this purpose each pixel value in the table is
+ compared with the mean of all pixels at the same resolution; the result
+ is saved in the control image ABS.cbf. Unshaded pixels should have
+ values around 10000 while shaded regions are recognized by their lower
+ values, typically below 7000. The acceptable value range for unshaded
+ pixels is defined in the input file XDS.INP by the parameter
+ VALUE_RANGE_FOR_TRUSTED_DETECTOR_PIXELS=.
+
+ INCLUDE_RESOLUTION_RANGE=     40.000     2.000
+ VALUE_RANGE_FOR_TRUSTED_DETECTOR_PIXELS=      7000.    30000.
+ RESOLUTION RANGE RECORDED BY DETECTOR (ANGSTROM)    40.000     2.000
+ NUMBER OF PIXELS REMOVED FROM   "BKGINIT.cbf"      2675502
+ NUMBER OF TRUSTED PIXELS IN      "BKGPIX.cbf"      2101370
+ MEAN VALUE OF TRUSTED PIXELS IN  "BKGPIX.cbf"     1078.601
+
+
+ cpu time used                  0.5 sec
+ elapsed wall-clock time        0.6 sec
+
+ ***** INTEGRATE *****  (VERSION  March 15, 2012)              20-Jul-2012
+
+ PROFILE_FITTING= TRUE 
+ FIXED_SCALE_FACTOR= FALSE
+ NAME_TEMPLATE_OF_DATA_FRAMES=/home/scottm/restflow/TestDataProcessing/1/B1_1_?????.cbf CBF
+ DATA_RANGE=       1      20
+ NX=  2463 NY=  2527 QX= 0.17200 QY= 0.17200
+ MINIMUM_VALID_PIXEL_VALUE=     0    OVERLOAD=   1048576
+ BACKGROUND_PIXEL=    6.00      SIGNAL_PIXEL=    3.00
+ MAXIMUM_ERROR_OF_SPOT_POSITION=   3.0
+ MAXIMUM_ERROR_OF_SPINDLE_POSITION=   2.0
+ MINPK=  75.00000
+ STARTING_ANGLE=   0.000 STARTING_FRAME=       1
+ OSCILLATION_RANGE=  0.500000 DEGREES
+ ROTATION_AXIS=  1.00000  0.00000  0.00000
+ X-RAY_WAVELENGTH=   1.00000 ANGSTROM
+ INCIDENT_BEAM_DIRECTION=  0.002354  0.005339  0.999983
+ SPACE_GROUP_NUMBER=  168
+ UNIT_CELL_CONSTANTS=    92.36    92.36    46.32  90.000  90.000 120.000
+ RESOLUTION RANGE RECORDED BY DETECTOR (ANGSTROM)    40.003     2.000
+ NUMBER OF TRUSTED DETECTOR PIXELS    2101370
+ MEAN CONTENTS OF TRUSTED PIXELS IN BACKGROUND TABLE   1078.601
+ MEAN VALUE OF NON-XRAY BACKGROUND (OFFSET)=    0.00
+ NUMBER OF X-RAY COUNTS EQUIVALENT TO PIXEL CONTENTS IN A DATA IMAGE
+ (PIXEL VALUE - OFFSET)/GAIN ,    WITH GAIN=    0.98
+
+
+
+ ******************************************************************************
+                     PROCESSING OF IMAGES        1 ...      10
+ ******************************************************************************
+
+ USING   4 PROCESSORS
+
+ *** DEFINITION OF SYMBOLS ***
+ IER     = ERROR CODE AFTER ACCESSING DATA IMAGE 
+              0: NO ERROR
+             -1: CANNOT OPEN OR READ IMAGE FILE
+             -3: WRONG DATA FORMAT
+ SCALE   = SCALING FACTOR FOR THIS DATA IMAGE
+ NBKG    = NUMBER OF BACKGROUND PIXELS ON DATA IMAGE
+ NOVL    = NUMBER OF OVERLOADED REFLECTIONS ON DATA IMAGE
+ NEWALD  = NUMBER OF REFLECTIONS CLOSE TO THE EWALD SPHERE
+ NSTRONG = NUMBER OF STRONG REFLECTIONS ON DATA IMAGE
+ NREJ    = NUMBER OF UNEXPECTED REFLECTIONS
+ SIGMAB  = BEAM_DIVERGENCE_E.S.D.=SIGMAB 
+ SIGMAR  = REFLECTING_RANGE_E.S.D.=SIGMAR (MOSAICITY)
+
+ IMAGE IER  SCALE     NBKG NOVL NEWALD NSTRONG  NREJ  SIGMAB  SIGMAR
+     1   0  0.991  2052816    0   2029     613    13  0.0379  0.1614
+     2   0  0.992  2053697    0   2036     602    10  0.0383  0.1736
+     3   0  0.989  2051092    0   1998     647    17  0.0373  0.1587
+     4   0  0.989  2053337    0   2017     602    15  0.0384  0.1602
+     5   0  0.990  2054115    0   1994     590    13  0.0393  0.1900
+     6   0  0.990  2054745    0   2004     593    12  0.0383  0.1665
+     7   0  0.988  2055534    0   1965     565     8  0.0388  0.1707
+     8   0  0.989  2055489    0   1999     581    16  0.0379  0.1697
+     9   0  0.989  2056190    0   1987     588    11  0.0384  0.1670
+    10   0  0.989  2052597    0   2030     607    14  0.0383  0.1666
+
+  2572 OUT OF   2667 REFLECTIONS ACCEPTED FOR REFINEMENT
+ REFINED PARAMETERS:  DISTANCE BEAM ORIENTATION CELL                         
+ STANDARD DEVIATION OF SPOT    POSITION (PIXELS)     0.37
+ STANDARD DEVIATION OF SPINDLE POSITION (DEGREES)    0.09
+ CRYSTAL MOSAICITY (DEGREES)     0.168
+ DIRECT BEAM COORDINATES (REC. ANGSTROEM)   0.002475  0.005455  0.999982
+ DETECTOR COORDINATES (PIXELS) OF DIRECT BEAM    1232.09   1261.47
+ DETECTOR ORIGIN (PIXELS) AT                     1228.22   1252.94
+ CRYSTAL TO DETECTOR DISTANCE (mm)       269.14
+ LAB COORDINATES OF DETECTOR X-AXIS  1.000000  0.000000  0.000000
+ LAB COORDINATES OF DETECTOR Y-AXIS  0.000000  1.000000  0.000000
+ LAB COORDINATES OF ROTATION AXIS  1.000000  0.000000  0.000000
+ COORDINATES OF UNIT CELL A-AXIS    89.930    11.562   -17.265
+ COORDINATES OF UNIT CELL B-AXIS   -30.169    -3.606    87.155
+ COORDINATES OF UNIT CELL C-AXIS     5.931   -45.906     0.154
+ REC. CELL PARAMETERS   0.012510  0.012510  0.021604  90.000  90.000  60.000
+ UNIT CELL PARAMETERS     92.300    92.300    46.288  90.000  90.000 120.000
+ SPACE GROUP NUMBER    168
+
+
+ STANDARD DEVIATIONS OF BEAM DIVERGENCE AND REFLECTING RANGE OBTAINED
+ FROM    2572 REFLECTION PROFILES AT 9 POSITIONS ON THE DETECTOR SURFACE.
+ POSITION NUMBER        1      2      3      4      5      6      7      8      9
+ X-COORDINATE (pixel) 1231.0 2148.9 1880.1 1231.0  582.0  313.1  581.9 1231.0 1880.0
+ Y-COORDINATE (pixel) 1263.0 1263.0 1928.9 2204.8 1928.9 1263.0  597.1  321.2  597.0
+ NUMBER                  599    178    224    265    223    172    274    348    281
+ SIGMAB (degree)       0.049  0.052  0.057  0.058  0.057  0.051  0.044  0.044  0.044
+ SIGMAR (degree)       0.134  0.126  0.133  0.134  0.129  0.125  0.133  0.137  0.132
+
+
+   6009 REFLECTION INTENSITIES INTEGRATED BY PROFILE FITTING
+
+    8498 REFLECTIONS SAVED ON FILE "INTEGRATE.HKL"
+
+
+ total cpu time used                 15.8 sec
+ total elapsed wall-clock time        2.3 sec
+
+ ***** CORRECT *****  (VERSION  March 15, 2012)              20-Jul-2012
+
+ INPUT PARAMETER VALUES
+ ----------------------
+ SPACE_GROUP_NUMBER=  168 as used in the INTEGRATE step
+ UNIT_CELL_CONSTANTS=    92.359    92.359    46.319  90.000  90.000 120.000 as used by INTEGRATE
+ FRIEDEL'S_LAW=TRUE 
+ PROFILE_FITTING= TRUE 
+ OVERLOAD=   1048576     MINPK=  75.00000    WFAC1=   1.0
+ INCLUDE_RESOLUTION_RANGE=    40.000     2.000
+ NAME_TEMPLATE_OF_DATA_FRAMES=/home/scottm/restflow/TestDataProcessing/1/B1_1_??
+ DATA_RANGE=       1      20
+ ROTATION_AXIS=  1.000000  0.000000  0.000000
+ OSCILLATION_RANGE=  0.500000
+ STARTING_ANGLE=     0.000     STARTING_FRAME=       1
+ X-RAY_WAVELENGTH=  1.000000
+ INCIDENT_BEAM_DIRECTION=  0.002354  0.005339  0.999983
+ FRACTION_OF_POLARIZATION=   0.900
+ POLARIZATION_PLANE_NORMAL=  0.000000  1.000000  0.000000
+ AIR=   0.00034
+ SILICON=  3.942868 SENSOR_THICKNESS=  0.000000
+ DETECTOR=PILATUS                                           
+ DIRECTION_OF_DETECTOR_X-AXIS=   1.00000   0.00000   0.00000
+ DIRECTION_OF_DETECTOR_Y-AXIS=   0.00000   1.00000   0.00000
+ DETECTOR_DISTANCE=   269.335
+ ORGX=   1228.40  ORGY=   1253.09
+ NX=  2463  NY=  2527    QX=  0.172000  QY=  0.172000
+ BEAM_DIVERGENCE_E.S.D.=   0.037
+ REFLECTING_RANGE_E.S.D.=   0.126
+ MINIMUM_ZETA=     0.050
+ MAXIMUM_ERROR_OF_SPOT_POSITION=   3.0
+ MAXIMUM_ERROR_OF_SPINDLE_POSITION=   2.0
+ MINIMUM_I/SIGMA=   3.0
+ REFLECTIONS/CORRECTION_FACTOR=      50
+ STRICT_ABSORPTION_CORRECTION=FALSE 
+ CORRECTIONS= DECAY MODULATION ABSORPTION                      
+ REFERENCE_DATA_SET=                                                  
+
+
+    8498 REFLECTIONS ON FILE "INTEGRATE.HKL"
+       0 CORRUPTED REFLECTION RECORDS (IGNORED)
+       0 REFLECTIONS INCOMPLETE OR OUTSIDE IMAGE RANGE       1 ...      20
+       0 OVERLOADED REFLECTIONS (IGNORED)
+       0 REFLECTIONS OUTSIDE ACCEPTED RESOLUTION RANGES
+                OR TOO CLOSE TO ROTATION AXIS (IGNORED)
+    8498 REFLECTIONS ACCEPTED
+
+
+ ******************************************************************************
+      MEAN DISCREPANCIES BETWEEN OBSERVED AND CALCULATED SPOT LOCATIONS
+ ******************************************************************************
+
+ The discrepancies in X- and Y-coordinates of the spots are depicted in the
+ two images DX-CORRECTIONS.cbf and DY-CORRECTIONS.cbf for inspection with
+ the XDS-Viewer.
+
+
+ THE DATA COLLECTION STATISTICS REPORTED BELOW ASSUMES:
+ SPACE_GROUP_NUMBER=  168
+ UNIT_CELL_CONSTANTS=    92.30    92.30    46.29  90.000  90.000 120.000
+
+
+ ******************************************************************************
+    CORRECTION PARAMETERS FOR THE STANDARD ERROR OF REFLECTION INTENSITIES
+ ******************************************************************************
+
+ The variance v0(I) of the intensity I obtained from counting statistics is
+ replaced by v(I)=a*(v0(I)+b*I^2). The model parameters a, b are chosen to
+ minimize the discrepancies between v(I) and the variance estimated from
+ sample statistics of symmetry related reflections. This model implicates
+ an asymptotic limit ISa=1/SQRT(a*b) for the highest I/Sigma(I) that the
+ experimental setup can produce (Diederichs (2010) Acta Cryst D66, 733-740).
+
+     a        b          ISa
+ 1.178E+00  1.928E-04   66.35
+
+
+ cpu time used                  1.3 sec
+ elapsed wall-clock time        0.4 sec
+
+ Total elapsed wall-clock time for XDS        3.5 sec

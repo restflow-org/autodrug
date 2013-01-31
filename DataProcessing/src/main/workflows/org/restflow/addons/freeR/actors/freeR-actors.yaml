@@ -1,0 +1,40 @@
+namespace:
+
+  module: freeR
+
+imports:
+
+- classpath:/common/scriptActors.yaml
+- classpath:/common/groovy/actors.yaml
+- classpath:/common/bash/actors.yaml
+- classpath:/common/perl/perlActor.yaml
+- classpath:/common/perl/actors.yaml
+- classpath:/common/directors.yaml
+- classpath:/common/types.yaml 
+- classpath:/common/support.yaml
+- classpath:org/restflow/addons/Crystallography/actors/Crystallography-actors.yaml
+
+components:
+
+- id: Actor.RunFreeR
+  type: Crystallography.GroovyTemplateScriptRunnerActor
+  properties:
+    usesStepDirectory: true
+    settings:
+      _runFileTemplate: |
+        freerflag HKLIN $mtzIn.name HKLOUT out.mtz << eof
+        eof
+      _envScript: !resource edu/stanford/slac/smb/environment/freeR/env.csh
+      _outputFiles:
+        'out.mtz':
+          output: mtzout1
+        'stdout.txt':
+          output: outtext
+    inputs:
+      mtzIn:
+    outputs:
+      outtext:
+      mtzout1:
+
+
+

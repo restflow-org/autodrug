@@ -1,0 +1,51 @@
+namespace:
+
+  module: DataProcessing.plot
+
+imports:
+
+- classpath:/common/scriptActors.yaml
+- classpath:/common/groovy/actors.yaml
+- classpath:/common/bash/actors.yaml
+- classpath:/common/perl/perlActor.yaml
+- classpath:/common/perl/actors.yaml
+- classpath:/common/directors.yaml
+- classpath:/common/types.yaml 
+- classpath:/common/support.yaml
+- classpath:org/restflow/addons/Crystallography/actors/Crystallography-actors.yaml
+- classpath:org/restflow/addons/plot/beans/plotInputTemplates.yaml
+
+
+components: 
+
+
+- id: Actor.PlotOutputWriter
+  type: GroovyActor
+  properties:
+    settings:
+      template: !lref PlotTemplate
+    inputs:
+      x_num:
+      y_num: 
+      x_name: 
+      y_name:
+      plotname:
+      x_axis:
+      y_axis: 
+    step: |
+      def model = [x: x_num, y: y_num]
+      model.xtotal = x_num.size();
+      model.ytotal = y_num.size();
+      model.xname = x_name;
+      model.yname = y_name;
+      model.plotname = plotname
+      model.xaxis = x_axis;
+      model.yaxis = y_axis;
+      import groovy.text.SimpleTemplateEngine
+      def engine = new SimpleTemplateEngine()
+      tempengine = engine.createTemplate(template).make(model)
+      plotfile = tempengine.toString()
+    outputs:
+      plotfile: 
+      
+

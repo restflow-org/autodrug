@@ -1,0 +1,12 @@
+namespace:
+
+  module: xtriage
+
+components: 
+
+- id: InputTemplate.Xtriage
+  className: java.lang.String
+  singleton: true 
+  constructor: 
+  - value: phenix.xtriage $mtzIn log=$logFile
+

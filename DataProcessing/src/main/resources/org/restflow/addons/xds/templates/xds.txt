@@ -1,0 +1,45 @@
+<%def xds = xdsParams%>
+! Job definition parameters
+! 
+NAME_TEMPLATE_OF_DATA_FRAMES= $xds.nameTemplate $xds.nameTemplateFormat
+DATA_RANGE= $xds.start $xds.end
+<% xds.spotRange.each { %>
+SPOT_RANGE= $it.start $it.end
+<%}%>
+JOB= $JOB 
+! 
+! Detector parameters
+! 
+DIRECTION_OF_DETECTOR_X-AXIS= 1.0 0.0 0.0
+DIRECTION_OF_DETECTOR_Y-AXIS= 0.0 1.0 0.0
+TRUSTED_REGION= 0.0 $xds.TRUSTED_REGION
+DETECTOR= $xds.DETECTOR
+MINIMUM_VALID_PIXEL_VALUE= $xds.MINIMUM_VALID_PIXEL_VALUE
+OVERLOAD= $xds.OVERLOAD
+<%
+if ( xds.SENSOR != "" ) println xds.sensor;
+%>!
+NX= $xds.NX NY= $xds.NY QX= $xds.QX QY= $xds.QY
+ORGX= $xds.ORGX ORGY= $xds.ORGY
+!
+! Experiment parameters
+!
+DETECTOR_DISTANCE= $xds.DETECTOR_DISTANCE
+OSCILLATION_RANGE= $xds.OSCILLATION_RANGE
+X-RAY_WAVELENGTH= $xds.header.wavelength
+ROTATION_AXIS= 1.0 0.0 0.0
+INCIDENT_BEAM_DIRECTION= 0.0 0.0 1.0
+FRACTION_OF_POLARIZATION= 0.9
+POLARIZATION_PLANE_NORMAL= 0.0 1.0 0.0
+! AIR= 0.001 
+! 
+! Crystal parameters
+! 
+INCLUDE_RESOLUTION_RANGE= 40 $xds.highres
+FRIEDEL'S_LAW= TRUE
+SPACE_GROUP_NUMBER= $xds.SPACE_GROUP_NUMBER
+UNIT_CELL_CONSTANTS= $xds.unitcell.a $xds.unitcell.b $xds.unitcell.c $xds.unitcell.alpha $xds.unitcell.beta $xds.unitcell.gamma
+!
+MAXIMUM_NUMBER_OF_PROCESSORS= 4 
+MAXIMUM_NUMBER_OF_JOBS= 8
+! 

@@ -1,0 +1,107 @@
+namespace:
+
+  module: Strategy
+  route: Test
+
+imports:
+
+- classpath:/org/restflow/addons/Strategy/workflows/StrategyLookup.yaml
+
+components:
+
+- id: Workflow
+  type: Workflow
+  className: ssrl.workflow.actors.Workflow
+  properties: 
+    director: !ref PublishSubscribeDirector
+    inputs: 
+      image1:
+      image2:
+      beamlineValues:
+      strategyBySpaceGroup:
+      flux: 
+      validatePath:
+        description: path to file that contains the results in yaml format for comparison.
+    nodes:
+    - !lref Inputs
+    - !lref RunStrategy
+    - !lref AssertOutput
+
+- id: Inputs
+  type: InPortal
+  properties: 
+    outflows: 
+      image1: /path/image1
+      image2: /path/image2
+      beamlineValues: /beamlineValues
+      flux: /flux
+      strategyBySpaceGroup: /strategyBySpaceGroup
+      validatePath: /validatePath
+
+- id: RunStrategy
+  type: Step 
+  properties:
+    nestedUriPrefix: /strategy
+    inflows:
+      image1: /path/image1
+      image2: /path/image2
+      beamlineValues: /beamlineValues
+      flux: /flux
+      strategyBySpaceGroup: /strategyBySpaceGroup
+    actor: !ref Strategy.Lookup.Workflow
+    outflows:
+      unitcell: /unitcell
+      mosaicity: /mosaicity
+      matrix: file:/matrix
+      highres: /resolution
+      runDefinition: /run/definition
+      highres: /resolution
+      spacegroup: /spacegroup/name
+      spacegroupNum: /spacegroup/num
+      rms: /rms
+      mosaicity: /mosaicity
+
+
+- id: AssertOutput
+  type: GroovyActorNode
+  properties:
+    stepsOnce: true 
+    actor.step: |
+      import org.yaml.snakeyaml.*;
+      import static java.lang.Math.*
+      Yaml y = new Yaml();      
+      assertValues = y.load( new File(validatePath).text ); 
+      
+      assert spacegroup == assertValues.spacegroup, "$spacegroup != $assertValues.spacegroup";
+      def startAngle=runDefinition.startAngle;
+      def endAngle=runDefinition.endAngle;
+      assert abs ( startAngle - assertValues.startAngle) / startAngle * 100 < 5, "$startAngle != $assertValues.startAngle";
+      assert abs ( endAngle - assertValues.endAngle) / endAngle * 100 < 5, "$endAngle != $assertValues.endAngle";
+ 
+      done = true
+    actor.inputs:
+      validatePath:
+      unitcell:
+      mosaicity:
+      matrix:
+      highres:
+      spacegroup:
+      runDefinition:
+      rms:
+      spacegroupNum:
+      mosaicity:
+    inflows:
+      validatePath: /validatePath
+      unitcell: /unitcell
+      mosaicity: /mosaicity
+      matrix: file:/matrix
+      highres: /resolution
+      spacegroup: /spacegroup/name
+      runDefinition: /run/definition
+      highres: /resolution
+      rms: /rms
+      spacegroupNum: /spacegroup/num
+      mosaicity: /mosaicity
+    outflows:
+      done: control:/done
+

@@ -1,0 +1,72 @@
+namespace:
+
+  module: scala
+
+components: 
+
+- id: Parser.Scala
+  className: ssrl.workflow.beans.TextScanner
+  properties:
+    absorbWhiteSpaceSymbol: "~"
+    tags:
+      ISIG_ROW: '~ {i:INT} ~ {d:FLOAT} ~ {dmin} ~ {rmrg} ~ {rfull} ~ {rcum} ~ {ranom} ~ {nanom} ~ {avi} ~ {sigma} ~ {isig} ~ {sd} ~ {mn} ~ {nmeas} ~ {nref} ~ {ncent} ~ {fr} ~ {nbias}'
+    template:
+      - |
+        ~N 1/resol^2 Dmin(A) Rmrg  Rfull   Rcum  Ranom  Nanom    Av_I  SIGMA I/sigma   sd Mn(I/sd)  Nmeas  Nref  Ncent FRCBIAS  Nbias $$
+        ~
+        ~
+        {isigheader:TEXT_BLOCK}
+        ~$$
+        {isigblock:TEXT_BLOCK}
+        ~$$
+        "><b>For inline graphs use a Java browser</b></applet>
+        ~
+        {isigoverallblock:TEXT_BLOCK}
+        {isigoverallheader:TEXT_BLOCK}
+        ~
+        ~
+        <a name="intensityagreementScala"><h3>Agreement by intensity</h3></a>
+      - 'N ~ 1/d^2 ~ Dmin(A) ~ Rmrg ~ Rfull ~ Rcum ~ Ranom ~ Nanom ~ Av_I ~ SIGMA ~ I/sigma ~ sd ~ Mn(I/sd) ~ Nmeas ~ Nref ~ Ncent ~ FRCBIAS ~ Nbias ~ $$ ~ {isigTable[]:ISIG_ROW} ~ $$'
+      - |
+        ~Overall: ~ {rmrgov} ~ {rfullov} ~ {rcumov} ~ {ranomov} ~ {nanomov} ~ {aviov} ~ {sigmaov} ~ {isigmaov} ~ {sdov} ~ {mnov} ~ {nmeasov} ~ {nrefov} ~ {ncentov} ~ {frcov} ~ {nbov}
+        ~ Rmrg ~ Rfull ~ Rcum ~ Ranom ~ Nanom ~ Av_I ~ SIGMA~I/sigma ~ sd~Mn(I/sd) ~ Nmeas ~ Nref ~ Ncent~FRCBIAS ~ Nbias
+      - |
+        $TEXT:Result:~$$~$$
+        {result:TEXT_BLOCK}
+        $$
+        ~
+        ================================================================================
+      - |
+        $TEXT:Warning:~$$~$$
+        ~
+        {warning:TEXT_BLOCK}
+        $$
+      - |
+        ~====|~WARNING~WARNING~WARNING~WARNING~WARNING~ |====
+        ~ {fatal_warning:TEXT_BLOCK}
+        ~
+        ~
+        ~
+        ~
+        ~
+        ~
+        ~
+        ~
+        ~Initial{stuff:TEXT_BLOCK}
+
+- id: Parser.ScalaSummary
+  className: ssrl.workflow.beans.TextScanner
+  properties:
+    absorbWhiteSpaceSymbol: "~"
+    template: 
+      - |
+        ~ Rmeas~(all~I+~&~I-) ~ {Rmeas_overall} ~ {Rmeas_inner} ~ {Rmeas_outer}
+      - |
+        ~ Completeness ~ {compl_overall} ~ {compl_inner} ~ {compl_outer}
+      - |
+        ~ Multiplicity ~ {mult_overall} ~ {mult_inner} ~ {mult_outer}
+      - |
+        Average mosaicity: ~ {mosaicity}
+      - |
+        ~ Maximum resolution:  ~ {resolution}A
+        

@@ -1,0 +1,213 @@
+namespace:
+
+  module: DataProcessing
+
+components: 
+
+# Solution . SpaceGroup . Beam x . y . distance . Resolution . Mosaicity . RMS
+- id: LabelitParser
+  className: ssrl.workflow.beans.TextScanner
+  properties: 
+    absorbWhiteSpaceSymbol: .
+    template: 
+      - 'Solution . Metric . fit . rmsd . #spots . crystal_system . unit_cell . volume.
+        {indexResults[]:INDEX_RESULTS}'
+      - |
+        MOSFLM Integration results:
+        {text:TEXT_BLOCK}
+        {integrationResults[]:INTEGRATION_RESULTS}
+      - |
+        No_Indexing_Solution:.({error:TEXT_BLOCK})
+      - |
+        MOSFLM_Warning: MOSFLM logfile declares {merror:TEXT_BLOCK}
+    tags:
+      INDEX_RESULTS: >
+        {smile:STRING} . {id:INT} . {metric} . {fit} . {rmsd} . {spots} . {crystalSystem:TWO_WORDS} . {unitCell:UNIT_CELL} . {volume} .
+      UNIT_CELL: >
+        {a} . {b} . {c} . {alpha} . {beta} . {gamma}
+      INTEGRATION_RESULTS: >
+        :) . {id} . {spaceGroup} . {beamX} . {beamY} . {distance} . {resolution} . {mosaicity} . {rms} 
+      TWO_WORDS: >
+        {/\S+\s+\S+/}
+
+- id: ImgHeaderTemplate
+  className: ssrl.workflow.beans.TextScanner
+  properties: 
+    absorbWhiteSpaceSymbol: "~"
+    template:
+      - OVERLOAD_CUTOFF       {overloadCutoff:INT}
+      - HEADER_BYTES          {headerBytes:INT}
+      - DIM                   {dim:INT}
+      - BYTE_ORDER            {byteOrder:STRING}
+      - TYPE                  {type:STRING}
+      - SIZE1                 {size1:INT}
+      - SIZE2                 {size2:INT}
+      - PIXEL_SIZE            {pixelSize:FLOAT}
+      - BIN                   {binning}
+      - ADC                   {adc}
+      - DETECTOR_SN           {serialNo}
+      - TIME                  {time:FLOAT}
+      - DISTANCE              {distance}
+      - PHI                   {phi:FLOAT}
+      - OSC_START             {oscStart:FLOAT}
+      - OSC_RANGE             {oscRange:FLOAT}
+      - WAVELENGTH            {wavelength:FLOAT}
+      - BEAM_CENTER_X         {beamCenterX:FLOAT}
+      - BEAM_CENTER_Y         {beamCenterY:FLOAT}
+      - ACC_TIME              {accTime:INT}
+      - CREV                  {crev:INT}
+      - BIN_TYPE              {binType}
+      - DETECTOR              {detector}
+      - TWO THETA             {theta:FLOAT}
+#     - PIXEL SIZE           {pixelSize:INT}
+#     - OSCILLATION RANGE    {oscRange:FLOAT}
+#     - EXPOSURE TIME        {exposureTime:FLOAT}
+
+# * Space group = 'P 21 21 21' (number     $number)
+- id: PointlessParserTemplate
+  className: ssrl.workflow.beans.TextScanner
+  properties: 
+    absorbWhiteSpaceSymbol: "~"
+    template:  
+      - | 
+        * Number of Batches = {batches}
+      - |
+        * Space group = '{spacegroup:TEXT_BLOCK}' (number ~ {number})
+      - |
+        ~ XDSdataset
+        ~ {unitcell:UNIT_CELL}
+    tags: 
+      UNIT_CELL: >
+        {a} ~ {b} ~ {c} ~ {alpha} ~ {beta} ~ {gamma}
+
+- id: XtriageParserTemplate
+  className: ssrl.workflow.beans.TextScanner
+  properties: 
+    absorbWhiteSpaceSymbol: "~"
+    template: 
+      - |
+        -------------------------------------------------------------------------------
+        Twinning and intensity statistics summary (acentric data):
+        ~
+        {summary:TEXT_BLOCK}
+        ~
+        -------------------------------------------------------------------------------
+
+- id: ScalaParserTemplate
+  className: ssrl.workflow.beans.TextScanner
+  properties:
+    absorbWhiteSpaceSymbol: "~"
+    template:
+      - |
+        ~N 1/resol^2 Dmin(A) Rmrg  Rfull   Rcum  Ranom  Nanom    Av_I  SIGMA I/sigma   sd Mn(I/sd)  Nmeas  Nref  Ncent FRCBIAS  Nbias $$
+        ~
+        ~
+        {isigheader:TEXT_BLOCK}
+        ~$$
+        {isigblock:TEXT_BLOCK}
+        ~$$
+        "><b>For inline graphs use a Java browser</b></applet>
+        ~
+        {isigoverallblock:TEXT_BLOCK}
+        {isigoverallheader:TEXT_BLOCK}
+        ~
+        ~
+        <a name="intensityagreementScala"><h3>Agreement by intensity</h3></a>
+      - |
+        ~ N~1/d^2~Dmin(A)~Rmrg ~ Rfull ~ Rcum ~ Ranom ~ Nanom ~ Av_I ~ SIGMA~I/sigma ~ sd~Mn(I/sd) ~ Nmeas ~ Nref ~ Ncent~FRCBIAS ~ Nbias
+        ~$$
+        ~ 1~{d1} ~ {dmin1} ~ {rmrg1} ~ {rfull1} ~ {rcum1} ~ {ranom1} ~ {nanom1} ~ {avi1} ~ {sigma1} ~ {isig1} ~ {sd1} ~ {mn1} ~ {nmeas1} ~ {nref1} ~ {ncent1} ~ {fr1} ~ {nbias1}
+        ~ 2~{d2} ~ {dmin2} ~ {rmrg2} ~ {rfull2} ~ {rcum2} ~ {ranom2} ~ {nanom2} ~ {avi2} ~ {sigma2} ~ {isig2} ~ {sd2} ~ {mn2} ~ {nmeas2} ~ {nref2} ~ {ncent2} ~ {fr2} ~ {nbias2}
+        ~ 3~{d3} ~ {dmin3} ~ {rmrg3} ~ {rfull3} ~ {rcum3} ~ {ranom3} ~ {nanom3} ~ {avi3} ~ {sigma3} ~ {isig3} ~ {sd3} ~ {mn3} ~ {nmeas3} ~ {nref3} ~ {ncent3} ~ {fr3} ~ {nbias3}
+        ~ 4~{d4} ~ {dmin4} ~ {rmrg4} ~ {rfull4} ~ {rcum4} ~ {ranom4} ~ {nanom4} ~ {avi4} ~ {sigma4} ~ {isig4} ~ {sd4} ~ {mn4} ~ {nmeas4} ~ {nref4} ~ {ncent4} ~ {fr4} ~ {nbias4}
+        ~ 5~{d5} ~ {dmin5} ~ {rmrg5} ~ {rfull5} ~ {rcum5} ~ {ranom5} ~ {nanom5} ~ {avi5} ~ {sigma5} ~ {isig5} ~ {sd5} ~ {mn5} ~ {nmeas5} ~ {nref5} ~ {ncent5} ~ {fr5} ~ {nbias5}
+        ~ 6~{d6} ~ {dmin6} ~ {rmrg6} ~ {rfull6} ~ {rcum6} ~ {ranom6} ~ {nanom6} ~ {avi6} ~ {sigma6} ~ {isig6} ~ {sd6} ~ {mn6} ~ {nmeas6} ~ {nref6} ~ {ncent6} ~ {fr6} ~ {nbias6}
+        ~ 7~{d7} ~ {dmin7} ~ {rmrg7} ~ {rfull7} ~ {rcum7} ~ {ranom7} ~ {nanom7} ~ {avi7} ~ {sigma7} ~ {isig7} ~ {sd7} ~ {mn7} ~ {nmeas7} ~ {nref7} ~ {ncent7} ~ {fr7} ~ {nbias7}
+        ~ 8~{d8} ~ {dmin8} ~ {rmrg8} ~ {rfull8} ~ {rcum8} ~ {ranom8} ~ {nanom8} ~ {avi8} ~ {sigma8} ~ {isig8} ~ {sd8} ~ {mn8} ~ {nmeas8} ~ {nref8} ~ {ncent8} ~ {fr8} ~ {nbias8}
+        ~ 9~{d9} ~ {dmin9} ~ {rmrg9} ~ {rfull9} ~ {rcum9} ~ {ranom9} ~ {nanom9} ~ {avi9} ~ {sigma9} ~ {isig9} ~ {sd9} ~ {mn9} ~ {nmeas9} ~ {nref9} ~ {ncent9} ~ {fr9} ~ {nbias9}
+        ~ 10~{d10} ~ {dmin10} ~ {rmrg10} ~ {rfull10} ~ {rcum10} ~ {ranom10} ~ {nanom10} ~ {avi10} ~ {sigma10} ~ {isig10} ~ {sd10} ~ {mn10} ~ {nmeas10} ~ {nref10} ~ {ncent10} ~ {fr10} ~ {nbias10}
+        ~$$
+        "><b>For inline graphs use a Java browser</b></applet>
+        ~
+        ~Overall: ~ {rmrgov} ~ {rfullov} ~ {rcumov} ~ {ranomov} ~ {nanomov} ~ {aviov} ~ {sigmaov} ~ {isigmaov} ~ {sdov} ~ {mnov} ~ {nmeasov} ~ {nrefov} ~ {ncentov} ~ {frcov} ~ {nbov}
+        ~ Rmrg ~ Rfull ~ Rcum ~ Ranom ~ Nanom ~ Av_I ~ SIGMA~I/sigma ~ sd~Mn(I/sd) ~ Nmeas ~ Nref ~ Ncent~FRCBIAS ~ Nbias
+      - |
+        $TEXT:Result:~$$~$$
+        {result:TEXT_BLOCK}
+        $$
+        ~
+        ================================================================================
+      - |
+        $TEXT:Warning:~$$~$$
+        ~
+        {warning:TEXT_BLOCK}
+        $$
+      - |
+        ~====|~WARNING~WARNING~WARNING~WARNING~WARNING~ |====
+        ~ {fatal_warning:TEXT_BLOCK}
+        ~
+        ~
+        ~
+        ~
+        ~
+        ~
+        ~
+        ~
+        ~Initial{stuff:TEXT_BLOCK}
+
+- id: ScalaSummaryParserTemplate
+  className: ssrl.workflow.beans.TextScanner
+  properties:
+    absorbWhiteSpaceSymbol: "~"
+    template: 
+      - |
+        ~ Rmeas~(all~I+~&~I-) ~ {Rmeas_overall} ~ {Rmeas_inner} ~ {Rmeas_outer}
+      - |
+        ~ Completeness ~ {compl_overall} ~ {compl_inner} ~ {compl_outer}
+      - |
+        ~ Multiplicity ~ {mult_overall} ~ {mult_inner} ~ {mult_outer}
+      - |
+        Average mosaicity: ~ {mosaicity}
+      - |
+        ~ Maximum resolution:  ~ {resolution}A
+        
+- id: XDSErrorParserTemplate
+  className: ssrl.workflow.beans.TextScanner
+  properties:
+    absorbWhiteSpaceSymbol: "~"
+    template:
+      - |
+        ~!!!~ERROR~!!!~{summary:TEXT_BLOCK}
+      - |
+        ~Sorry,~{sorry:TEXT_BLOCK}
+
+- id: XtriageLogFileParserTemplate
+  className: ssrl.workflow.beans.TextScanner
+  properties:
+    absorbWhiteSpaceSymbol: "~"
+    template:
+      - '{header:NZ_TEST_HEADER}{nztest[]:NZ_TEST}'
+      - '{l_header:L_TEST_HEADER}{ltest[]:L_TEST}'
+    tags:
+      NZ_TEST_HEADER: 'z ~ Acentric_observed ~ Acentric_untwinned ~ Centric_observed ~ Centric_untwinned ~ $$ ~ $$ ~'
+      NZ_TEST: "{z:FLOAT} ~ {acob:FLOAT} ~ {acuntw:FLOAT} ~ {cenob:FLOAT} ~ {cenuntw:FLOAT} ~"
+      L_TEST_HEADER: '|l| ~ Observed ~ Acentric_theory ~ Acentric_theory,_perfect_twin ~ $$ ~ $$ ~'
+      L_TEST: '{l:FLOAT} ~ {lobs:FLOAT} ~ {luntw:FLOAT} ~ {ltw:FLOAT} ~'
+
+- id: XDSParserTemplate
+  className: ssrl.workflow.beans.TextScanner
+  properties:
+    absorbWhiteSpaceSymbol: "~"
+    template:
+      - |
+        ~THE DATA COLLECTION STATISTICS REPORTED BELOW ASSUMES:
+        ~SPACE_GROUP_NUMBER= ~ {sgnum}
+        ~UNIT_CELL_CONSTANTS= ~ {a} ~ {b} ~ {c} ~ {alpha} ~ {beta} ~ {gamma}
+
+- id: XDSCorrectLPParserTemplate
+  className: ssrl.workflow.beans.TextScanner
+  properties:
+    absorbWhiteSpaceSymbol: "~"
+    template:
+      - |
+        ~CRYSTAL MOSAICITY (DEGREES) ~ {mosaic}

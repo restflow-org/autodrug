@@ -1,0 +1,125 @@
+namespace:
+
+  module: scalaCmd
+
+imports:
+
+- classpath:org/restflow/addons/scala/workflows/scala.yaml
+
+components:
+
+- id: Workflow
+  type: Workflow
+  properties: 
+    director: !ref PublishSubscribeDirector
+    inputs:
+      mtz:
+        description: full path of mtz file
+      isigmaCutoff:
+    nodes:
+    - !lref Inputs
+    - !lref ConvertFilePathToHandles
+    - !lref RunScala
+    - !lref AssertOutput
+    - !lref Outputs
+    outputs:
+      mtzfile: 
+
+- id: Inputs
+  type: InPortal
+  properties: 
+    outflows: 
+      mtz: /in/mtz/path
+      isigmaCutoff: /in/isigmaCutoff
+
+- id: ConvertFilePathToHandles
+  type: Step
+  properties:
+    inflows: 
+      mtz: /in/mtz/path
+    actor: !inline
+      className: ssrl.workflow.actors.FilePathToHandleActor
+    outflows:
+      mtzFile: file:/in/mr.mtz
+
+- id: RunScala
+  type: Step 
+  properties:
+    nestedUriPrefix: /scala
+    inflows:
+      mtz: file:/in/mr.mtz
+      isigmaCutoff: /in/isigmaCutoff
+    actor: !ref scala.Workflow
+    outflows:
+      mtzout: file:/out/out.mtz
+      result: /out/result
+      oRmeas: /scala/Rmeas_overall/
+      fRmeas: /scala/Rmeas_finalshell/
+      oCompl: /scala/complet_overall/
+      fCompl: /scala/complet_finalshell/
+      oMult: /scala/mult_overall/
+      mos: /scala/mosaicity/
+      res: /scala/resolution/
+      isigfinal: /scala/isig_finalshell/
+      isigoverall: /scala/isig_overall/
+      isig: /scala/isig
+      res: /scala/res
+      isigCutoffResolution: /out/isigcutoff/resolution
+
+- id: AssertOutput
+  type: GroovyActorNode
+  properties:
+    stepsOnce: true 
+    actor.step: |
+      assert mos == '0.13'
+      assert isigoverall == '23.8'
+      assert isigCutoffResolution == 0.0
+      assert isigfinal == '8.5'
+      //assert res == ['6.33', '4.47', '3.65', '3.16', '2.83', '2.58', '2.39', '2.24', '2.11', '2.0']
+      //assert isig == [42.6, 37.9, 37.1, 30.3, 23.6, 17.3, 14.6, 13.1, 11.0, 7.6]
+      done = true
+    actor.inputs:
+      mtzout:
+      result:
+      oRmeas:
+      fRmeas:
+      oCompl:
+      fCompl:
+      oMult:
+      mos:
+      res:
+      isigfinal:
+      isigoverall:
+      isig:
+      res:
+      isigCutoffResolution:
+    inflows:
+      mtzout: file:/out/out.mtz
+      result: /out/result
+      oRmeas: /scala/Rmeas_overall/
+      fRmeas: /scala/Rmeas_finalshell/
+      oCompl: /scala/complet_overall/
+      fCompl: /scala/complet_finalshell/
+      oMult: /scala/mult_overall/
+      mos: /scala/mosaicity/
+      res: /scala/resolution/
+      isigfinal: /scala/isig_finalshell/
+      isigoverall: /scala/isig_overall/
+      isig: /scala/isig
+      res: /scala/res
+      isigCutoffResolution: /out/isigcutoff/resolution
+    outflows:
+      done: control:/done
+
+
+
+
+- id: Outputs
+  type: OutPortal
+  properties: 
+    inflows:
+      done: control:/done
+      mtzfile: file:/out/out.mtz
+
+
+

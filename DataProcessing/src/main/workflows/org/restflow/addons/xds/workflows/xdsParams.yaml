@@ -1,0 +1,181 @@
+
+namespace:
+
+  module: xdsParams
+
+imports:
+
+- classpath:org/restflow/addons/xds/actors/xds-actors.yaml
+- classpath:/org/restflow/addons/getImgHeader/workflows/getImgHeader.yaml
+- classpath:/org/restflow/addons/DataProcessing/actors/DataProcessing-actors.yaml
+
+
+components:
+
+- id: Workflow
+  type: Workflow
+  properties: 
+    director: !ref PublishSubscribeDirector
+    inputs:
+      firstImagePath:
+      lastImageNum:
+      unitcell:
+      highres: 
+      spacegroupNum:
+    nodes:
+    - !lref Inputs
+    - !lref ParseFileName
+    - !lref ParseHeader
+    - !lref CheckResolution 
+    - !lref CalculateDetectorOrigin
+    - !lref DetermineXDSDetectorInfo
+    - !lref DetermineXDSFormatInfo
+    - !lref DetermineXDSSpotRange
+    - !lref BuildXdsParamsMap 
+    - !lref Outputs
+    outputs:
+      xdsParams:
+
+
+- id: Inputs
+  type: InPortal
+  properties: 
+    outflows: 
+      firstImagePath: /firstImageInDataset
+      lastImageNum: /lastImageNum
+      unitcell: /unitcell
+      highres: /highres
+      spacegroupNum: /spacegroup/num
+
+- id: ParseFileName
+  type: Step
+  properties:
+    inflows:
+      firstImagePath: /firstImageInDataset
+      lastImageNum: /lastImageNum
+    actor: !ref xds.Actor.ParseFileName
+    outflows:
+      imgNumFirst: /firstImageNum   
+      xdsFileTemplate: /img/newImgQues/
+
+
+- id: CheckResolution 
+  type: Step
+  properties:
+    inflows:
+      highres: /highres
+    constants:
+      trustedRegion: 1.05
+    actor: !ref xds.Actor.CheckResolution
+    outflows:
+      highres: /xds/resolution/
+      trustedRegion: /xds/trustedRegion/
+
+
+- id: ParseHeader
+  type: Step 
+  properties:
+    nestedUriPrefix: /image/
+    inflows:
+      imagePath: /firstImageInDataset
+    actor: !ref getImgHeader.Workflow
+    outflows:
+      headerMap: /img/header/parsed/
+      oscRange: /oscRange
+      size2: /size2
+      size1: /size1
+      pixelSize: /pixelSize
+      distance: /distance
+
+- id: DetermineXDSDetectorInfo
+  type: Step
+  properties:
+    inflows:
+      header: /img/header/parsed/
+    actor: !ref xds.Actor.DetermineXDSDetectorInfo
+    outflows:
+      detectorName: /xds/input/detector/
+      minPixel: /xds/input/minPixel/
+      overloadCutoff: /xds/input/overloadCutoff/
+      sensor: /xds/input/sensor/
+
+- id: CalculateDetectorOrigin
+  type: Step
+  properties:
+    inflows:
+      detectorName: /xds/input/detector/
+      header: /img/header/parsed/
+    actor: !ref xds.Actor.CalculateDetectorOrigin
+    outflows:
+      originX: /xds/input/originX/
+      originY: /xds/input/originY/
+
+- id: DetermineXDSFormatInfo
+  type: Step
+  properties:
+    inflows: 
+      detectorName: /xds/input/detector/
+    actor: !ref xds.Actor.DetermineXDSFormatInfo
+    outflows:
+      nameTemplateFormat: /xds/input/format/
+
+
+# three ranges, three degrees each
+- id: DetermineXDSSpotRange
+  type: Step
+  properties:
+    inflows:
+      start: /firstImageNum
+      end: /lastImageNum
+      headerMap: /img/header/parsed/
+    actor: !ref xds.Actor.DetermineXDSSpotRange
+    outflows:
+      spotRange: /xds/input/spotRange/
+
+
+- id: BuildXdsParamsMap 
+  type: GroovyActorNode
+  properties: 
+    inflows:
+      header: /img/header/parsed/
+      nameTemplate: /img/newImgQues/
+      nameTemplateFormat: /xds/input/format/
+      start: /firstImageNum
+      end: /lastImageNum
+      spotRange: /xds/input/spotRange/
+      DETECTOR: /xds/input/detector/ 
+      MINIMUM_VALID_PIXEL_VALUE: /xds/input/minPixel/
+      OVERLOAD: /xds/input/overloadCutoff/
+      SENSOR: /xds/input/sensor/
+      ORGX: /xds/input/originX/
+      ORGY: /xds/input/originY/
+      highres: /xds/resolution/
+      TRUSTED_REGION: /xds/trustedRegion/
+      SPACE_GROUP_NUMBER: /spacegroup/num
+      unitcell: /unitcell
+      OSCILLATION_RANGE: /oscRange/
+      NX: /size2
+      NY: /size1
+      QX: /pixelSize
+      QY: /pixelSize
+      DETECTOR_DISTANCE: /distance
+    actor.step: |
+      xdsParams = [:];
+      _inputs.each { k,v -> xdsParams[k]=v; }
+    outflows:
+      xdsParams: /out/xdsParams
+
+
+
+- id: Outputs
+  type: OutPortal
+  properties: 
+    inflows:
+      xdsParams: /out/xdsParams
+
+
+
+
+
+
+

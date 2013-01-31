@@ -1,0 +1,144 @@
+namespace:
+
+  module: MolecularReplacement
+
+imports:
+
+- classpath:/common/scriptActors.yaml
+- classpath:/common/groovy/actors.yaml
+- classpath:/common/bash/actors.yaml
+- classpath:/common/perl/perlActor.yaml
+- classpath:/common/perl/actors.yaml
+- classpath:/common/directors.yaml
+- classpath:/common/types.yaml 
+- classpath:/common/support.yaml
+- classpath:org/restflow/addons/Crystallography/map/spacegroup.yaml
+- classpath:org/restflow/addons/Crystallography/map/enant.yaml
+- classpath:org/restflow/addons/Crystallography/actors/Crystallography-actors.yaml
+- classpath:org/restflow/addons/MolecularReplacement/actors/MolecularReplacement-actors.yaml
+- classpath:org/restflow/addons/MolecularReplacement/templates/MolecularReplacement-parserTemplate.yaml
+- classpath:org/restflow/addons/MolecularReplacement/templates/MolecularReplacement-inputTemplate.yaml
+- classpath:org/restflow/addons/Molrep/workflows/Molrep.yaml
+- classpath:org/restflow/addons/refmac/workflows/refmac.yaml
+- classpath:org/restflow/addons/fftMap/actors/fftMap-actors.yaml
+- classpath:org/restflow/addons/peakMax/actors/peakMax-actors.yaml
+
+components:
+
+- id: Workflow
+  type: Workflow
+  className: ssrl.workflow.actors.Workflow
+  properties: 
+    director: !ref PublishSubscribeDirector
+    inputs:
+      pdb:
+        description: full path to pdb file for protein homologous to target
+      mtz:
+        description: full path of mtz file
+      rcutoff: 
+        description: resolution cutoff
+      numCycles:
+        default: 10
+        description: number of cycles for Refmac refinement; default is 5
+      refiType:
+        default: REST
+        description: type of Refmac refinement; REST - restrained refinement; RIGI - rigid body refinement
+      cif:
+        default: ~
+        nullable: true
+    nodes:
+    - !ref MolecularReplacement.Inputs
+    - !ref MolecularReplacement.Outputs
+    - !ref MolecularReplacement.RunMolrep
+    - !ref MolecularReplacement.RunRefmac
+    - !ref MolecularReplacement.RunFFTMap
+    - !ref MolecularReplacement.RunPeakmax_3sigma
+    - !ref MolecularReplacement.RunPeakmax_5sigma
+    outputs:
+      mtzfile: 
+      pdbfile: 
+
+
+- id: Inputs
+  type: InPortal
+  properties: 
+    outflows: 
+      numCycles: /refmac/cycles/
+      refiType: /refmac/refitype/
+      pdb: file:/molrep/mr.pdb
+      mtz: file:/molrep/mr.mtz
+      rcutoff: /rcutoff
+      cif: file:/in/refmac/cif
+
+- id: Outputs
+  type: OutPortal
+  properties: 
+    inflows:
+      mtzfile: file:/refmac/refmac_1.mtz
+      pdbfile: file:/refmac/refmac_1.pdb
+
+- id: RunMolrep
+  type: Step 
+  properties:
+    nestedUriPrefix: /molrep/
+    inflows:
+      MTZFile: file:/molrep/mr.mtz
+      PDBFile: file:/molrep/mr.pdb
+    actor: !ref Molrep.Workflow
+    outflows:
+      mtzfile: file:/refmac/mr.mtz
+      pdbfile: file:/refmac/molrep.pdb
+
+
+- id: RunRefmac
+  type: Step 
+  properties:
+    nestedUriPrefix: /refmac/
+    inflows:
+      mtz: file:/refmac/mr.mtz
+      pdb: file:/refmac/molrep.pdb
+      numCycles: /refmac/cycles/
+      rcutoff: /rcutoff
+      refiType: /refmac/refitype/
+      cif: file:/in/refmac/cif
+    actor: !ref refmac.Workflow
+    outflows:
+      mtzfile: file:/refmac/refmac_1.mtz
+      pdbfile: file:/refmac/refmac_1.pdb
+      RfactorOk: /out/RfactorOk
+
+- id: RunFFTMap
+  type: Step 
+  properties:
+    inflows:
+      mtz: file:/refmac/refmac_1.mtz
+    actor: !ref fftMap.fftMapRunnerActor 
+    outflows:
+      mapfile: file:/peakmax/refmac_1.map
+
+- id: RunPeakmax_3sigma
+  type: Step 
+  properties:
+    inflows:
+      mapfile: file:/peakmax/refmac_1.map
+    constants:
+      sigma: 3.0
+    actor: !ref peakMax.peakMaxRunnerActor
+    outflows:
+      peaks: /peakmax/numpeaks/{sigma}
+      stdout: file:/peakmax/peakmax3pt0.out
+
+- id: RunPeakmax_5sigma
+  type: Step 
+  properties:
+    inflows:
+      mapfile: file:/peakmax/refmac_1.map
+    constants:
+      sigma: 5.0
+    actor: !ref peakMax.peakMaxRunnerActor
+    outflows:
+      peaks: /peakmax/numpeaks/{sigma}
+      stdout: file:/peakmax/peakmax5pt0.out
+
+
+

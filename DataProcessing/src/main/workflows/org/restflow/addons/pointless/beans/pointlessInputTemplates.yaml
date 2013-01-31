@@ -1,0 +1,15 @@
+namespace:
+
+  module: pointless
+
+components: 
+
+- id: PointlessInputTemplate
+  className: java.lang.String 
+  singleton: true 
+  constructor: 
+  - value: |
+      pointless << eof
+      XDSIN $xdsascii
+      HKLOUT $pointmtz
+      eof

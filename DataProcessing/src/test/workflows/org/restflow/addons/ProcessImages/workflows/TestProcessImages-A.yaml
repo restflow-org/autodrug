@@ -1,0 +1,63 @@
+namespace:
+
+  module: ProcessImages
+  route: Test
+
+imports:
+
+- classpath:/org/restflow/addons/ProcessImages/workflows/ProcessImages-A.yaml
+
+components:
+
+- id: Workflow
+  type: Workflow
+  className: ssrl.workflow.actors.Workflow
+  properties: 
+    director: !ref PublishSubscribeDirector
+    inputs:
+      firstImagePath:
+      lastImageNum:
+      unitcellForce:
+      highres: 
+      spacegroupNumForce:
+      isigin:
+      mr_model:
+      alt_mr_model:
+      cif:
+      rcutoff:
+    nodes:
+    - !lref Inputs
+    - !lref RunProcessImages
+
+- id: Inputs
+  type: InPortal
+  properties: 
+    outflows: 
+      firstImagePath: /firstImageInDataset
+      lastImageNum: /lastImageNum
+      unitcellForce: /unitcellForce
+      highres: /highres
+      spacegroupNumForce: /spacegroupNumForce
+      isigin: /input/isigma
+      mr_model: /mr_model/path
+      alt_mr_model: /alt_mr_model/path/
+      cif: /cif/path
+      rcutoff: /in/rcutoff
+
+- id: RunProcessImages
+  type: Step
+  properties:
+    nestedUriPrefix: /ProcessImages
+    inflows:
+      firstImagePath: /firstImageInDataset
+      lastImageNum: /lastImageNum
+      isigin: /input/isigma
+      unitcellForce: /unitcellForce
+      highres: /highres
+      spacegroupNumForce: /spacegroupNumForce
+      mr_model: /mr_model/path
+      alt_mr_model: /alt_mr_model/path/
+      rcutoff: /in/rcutoff
+    actor: !ref ProcessImages.A.Workflow
+
+      

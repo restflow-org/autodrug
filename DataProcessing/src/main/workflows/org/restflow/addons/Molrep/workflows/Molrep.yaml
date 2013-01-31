@@ -1,0 +1,79 @@
+namespace:
+
+  module: Molrep
+
+imports:
+
+- classpath:/common/scriptActors.yaml
+- classpath:/common/groovy/actors.yaml
+- classpath:/common/bash/actors.yaml
+- classpath:/common/perl/perlActor.yaml
+- classpath:/common/perl/actors.yaml
+- classpath:/common/directors.yaml
+- classpath:/common/types.yaml 
+- classpath:/common/support.yaml
+- classpath:org/restflow/addons/Molrep/actors/Molrep-actors.yaml
+- classpath:org/restflow/addons/Crystallography/actors/Crystallography-actors.yaml
+
+components:
+
+- id: Workflow
+  type: Workflow
+  className: ssrl.workflow.actors.Workflow
+  properties: 
+    director: !ref PublishSubscribeDirector
+    inputs:
+      PDBFile:
+        description: full path to pdb file for protein homologous to target
+      MTZFile:
+        description: full path of mtz file
+    nodes:
+    - !ref Molrep.Inputs
+    - !ref Molrep.Outputs
+    - !ref Molrep.RunMolrep
+    outputs:
+      mtzfile: 
+      pdbfile: 
+
+- id: Inputs
+  type: InPortal
+  properties: 
+    outflows: 
+      PDBFile: file:/in/mr.pdb
+      MTZFile: file:/in/mr.mtz
+
+- id: Outputs
+  type: OutPortal
+  properties: 
+    inflows:
+      mtzfile: file:/out/mr.mtz
+      pdbfile: file:/out/mr.pdb
+
+- id: RunMolrep
+  type: Step 
+  properties: 
+    inflows:
+      mtzIn: file:/in/mr.mtz
+      pdbIn: file:/in/mr.pdb
+    actor: !ref Molrep.Actor.RunMolrep
+    outflows:
+      outtext: file:/run/molrep.out
+      mrmtz: file:/out/mr.mtz
+      crd: file:/run/molrep.crd
+      molpdb1: file:/run/molrep.pdb
+      molpdb2: file:/out/mr.pdb
+      doc: file:/run/molrep.doc
+      btc: file:/run/molrep.btc
+      rf: file:/run/molrep_rf.tab
+      xml: file:/run/molrep.xml
+      mrcrd: file:/run/mr.crd
+
+- id: ParseMolrepOutputFile
+  type: Step
+  properties:
+    inflows:
+      doc: file:/run/molrep.doc
+    actor: !lref MolrepOutputFileParser
+    outflows:
+      warning: /run/warning
+

@@ -1,0 +1,90 @@
+namespace:
+
+  module: DataProcessing
+
+imports:
+
+- classpath:/common/scriptActors.yaml
+- classpath:/common/groovy/actors.yaml
+- classpath:/common/bash/actors.yaml
+- classpath:/common/perl/perlActor.yaml
+- classpath:/common/directors.yaml
+- classpath:/common/types.yaml 
+- classpath:/common/support.yaml
+- classpath:org/restflow/addons/Crystallography/map/spacegroup.yaml
+- classpath:org/restflow/addons/Crystallography/map/enant.yaml
+- classpath:org/restflow/addons/Crystallography/actors/Crystallography-actors.yaml
+- classpath:/org/restflow/addons/DataProcessing/beans/inputTemplate.yaml
+- classpath:/org/restflow/addons/DataProcessing/beans/parserTemplate.yaml
+
+components: 
+
+- id: Actor.SetEnvironment
+  type: GroovyActor
+  properties:
+    inputs: 
+      env_script:
+    step: |
+      println new Date().format('HH:mm:ss') + "   Setting up environment for DataProcessing";
+      cmd1 = "chmod +x $env_script";
+      cmd1.execute().text;
+      
+      setenvCmd = ['tcsh', '-c', env_script];
+      ProcessBuilder pb = new ProcessBuilder(setenvCmd).redirectErrorStream(true);
+      env = pb.start().text.split('\n');
+    outputs:
+      env:
+
+      
+- id: Actor.Calc90DegImgNum
+  type: GroovyActor
+  properties:
+    inflows:
+      oscStart:
+      oscRange:
+      firstNum:
+      lastNum:
+    step: |
+      println new Date().format('HH:mm:ss') + "   Calculating image number 90 degrees from " + firstNum;
+      degImg = 90.0 / oscRange.toFloat();
+      output = firstNum.toInteger() + degImg.toInteger();
+      if (output > lastNum.toInteger()) {
+        println new Date().format('HH:mm:ss') + "   Calculated image number is " + output;
+        output = lastNum.toInteger();
+        println new Date().format('HH:mm:ss') + "   Image number is beyond range, will use " + output + " for LABELIT";
+      }
+      else {
+        println new Date().format('HH:mm:ss') + "   90 degree image number is " + output;
+      }
+    outputs:
+      output:
+
+
+- id: OscillationChecker
+  type: BashActor
+  properties:
+    inputs:
+      imageDir:
+      prefix:
+      imageType:
+      imageNumDigits:
+      startNum:
+      endNum:
+      check_osc:
+        type: File
+      env: 
+    step: |
+      echo `date +%T` '  Checking oscillation angles between image number' ${startNum} 'and' ${endNum}
+      `chmod +x ${check_osc}`
+      oscNum=`${check_osc} ${imageDir} ${prefix} ${imageType} ${imageNumDigits} ${startNum} ${endNum}`
+      # echo ${check_osc} ${imageDir} ${prefix} ${imageType} ${imageNumDigits} ${startNum} ${endNum}
+      # echo 'oscNum' ${oscNum}
+      if [ $oscNum -ne 0 ] ; then
+        echo `date +%T` '  There is a jump in the oscillation angle after image number' ${oscNum} 
+      else echo `date +%T` '  No jump in oscillation angles.'
+      fi
+    outputs:
+      oscNum: 
+
+
+      

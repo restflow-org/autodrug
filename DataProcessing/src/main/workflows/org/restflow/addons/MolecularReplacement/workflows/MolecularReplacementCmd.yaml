@@ -1,0 +1,95 @@
+namespace:
+
+  module: MolecularReplacementCmd
+
+imports:
+
+- classpath:org/restflow/addons/MolecularReplacement/workflows/MolecularReplacement.yaml
+
+components:
+
+- id: Workflow
+  type: Workflow
+  properties: 
+    director: !ref PublishSubscribeDirector
+    inputs:
+      pdb:
+        description: full path to pdb file for protein homologous to target
+      mtz:
+        description: full path of mtz file
+      rcutoff: 
+        description: resolution cutoff
+      numCycles:
+        default: 10
+        description: number of cycles for Refmac refinement; default is 5
+      refiType:
+        default: REST
+        description: type of Refmac refinement; REST - restrained refinement; RIGI - rigid body refinement
+      cif:
+        default: ~
+        nullable: true
+    nodes:
+    - !ref MolecularReplacementCmd.Inputs
+    - !ref MolecularReplacementCmd.ConvertFilePathToHandles
+    - !ref MolecularReplacementCmd.RunMolecularReplacement
+    - !ref MolecularReplacementCmd.Outputs
+    outputs:
+      mtzfile: 
+      pdbfile: 
+
+- id: Inputs
+  type: InPortal
+  properties: 
+    outflows: 
+      pdb: /in/pdb/path
+      mtz: /in/mtz/path
+      cif: /in/cif/path
+      numCycles: /in/cycles/
+      rcutoff: /in/rcutoff
+      refiType: /in/refitype/
+
+- id: ConvertFilePathToHandles
+  type: Step
+  properties:
+    inflows: 
+      pdb: /in/pdb/path
+      mtz: /in/mtz/path
+      cif: /in/cif/path
+    actor: !inline
+      className: ssrl.workflow.actors.FilePathToHandleActor
+      properties:
+        inputs:
+          _template:
+          mtz:
+          pdb:
+          cif:
+            nullable: true
+    outflows:
+      pdbFile: file:/mr.pdb
+      mtzFile: file:/mr.mtz
+      cifFile: file:/protein.cif
+
+- id: RunMolecularReplacement
+  type: Step 
+  properties:
+    nestedUriPrefix: /MolecularReplacement/
+    inflows:
+      mtz: file:/mr.mtz
+      pdb: file:/mr.pdb
+      numCycles: /in/cycles/
+      rcutoff: /in/rcutoff
+      refiType: /in/refitype/
+      cif: file:/protein.cif
+    actor: !ref MolecularReplacement.Workflow
+    outflows:
+      mtzfile: file:/out/mr.mtz
+      pdbfile: file:/out/mr.pdb
+
+- id: Outputs
+  type: OutPortal
+  properties: 
+    inflows:
+      mtzfile: file:/out/mr.mtz
+      pdbfile: file:/out/mr.pdb
+
+

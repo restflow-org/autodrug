@@ -1,0 +1,143 @@
+namespace:
+
+  module: ProcessImages
+  route: A
+
+imports:
+
+- classpath:/org/restflow/addons/ProcessImages/actors/ProcessImages-actors.yaml
+
+components:
+
+- id: Workflow
+  type: Workflow
+  properties: 
+    director: !ref PublishSubscribeDirector
+    inputs:
+      firstImagePath:
+      lastImageNum:
+      unitcellForce:
+      highres:
+      spacegroupNumForce:
+      isigin:
+      mr_model:
+      alt_mr_model:
+        nullable: true
+      cif:
+      rcutoff:
+    nodes:
+    - !lref Inputs
+    - !lref ConvertFilePathToHandles
+    - !lref RunDataProcessing
+    - !lref MolecularReplacementTry1
+    - !lref MolecularReplacementTry2    
+    - !lref CheckAlternateModelAvailable
+
+- id: Inputs
+  type: InPortal
+  properties:
+    outflows:
+      firstImagePath: /firstImageInDataset
+      lastImageNum: /lastImageNum
+      unitcellForce: /unitcellForce
+      highres: /highres
+      spacegroupNumForce: /spacegroupNumForce
+      isigin: /input/isigma
+      mr_model: /mr_model/path
+      alt_mr_model: /alt_mr_model/path/
+      cif: /cif/path
+      rcutoff: /in/rcutoff
+
+- id: ConvertFilePathToHandles
+  type: Step
+  properties:
+    inflows: 
+      mrModel: /mr_model/path
+      altMrModel: /alt_mr_model/path
+      cif: /cif/path
+    actor: !inline
+      className: ssrl.workflow.actors.FilePathToHandleActor
+      properties:
+        inputs:
+          mrModel:
+          altMrModel:
+            nullable: true
+          cif:
+            nullable: true
+    outflows:
+      mrModelFile: file:/mr.pdb
+      altMrModelFile: file:/alt_mr.pdb
+      cifFile: /protein.cif
+
+
+- id: RunDataProcessing
+  type: Step
+  properties:
+    nestedUriPrefix: /dataProcessing 
+    inflows:
+      firstImagePath: /firstImageInDataset
+      lastImageNum: /lastImageNum
+      isigin: /input/isigma
+      unitcellForce: /unitcellForce
+      highres: /highres
+      spacegroupNumForce: /spacegroupNumForce
+    actor: !ref DataProcessing.Workflow
+    outflows:
+      mtzout: file:/mtzfile/mr.mtz
+
+
+- id: MolecularReplacementTry1
+  type: Step 
+  properties:
+    nestedUriPrefix: /MolecularReplacement/
+    constants:
+      refiType: REST
+      numCycles: 10
+    inflows:
+      mtz: file:/mtzfile/mr.mtz
+      pdb: file:/mr.pdb
+      rcutoff: /in/rcutoff
+      cif: file:/protein.cif
+    actor: !ref MolecularReplacement.Workflow
+    outflows: 
+      mtzfile: file:/refmac/refmac_1.mtz
+      pdbfile: file:/refmac/refmac_1.pdb
+    exceptions:
+      java.lang.Exception: stderr:/firstModelFailed/
+
+- id: CheckAlternateModelAvailable
+  type: Step
+  properties:
+    inflows:
+      pdb: file:/alt_mr.pdb
+    actor: !ref Crystallography.Actor.EndFlowOnEmpty
+    actor.inputs:
+      pdb:
+        nullable: true
+    actor.outputs:
+      pdb:
+    outflows:
+      pdb: file:/alternateModelAvailable
+
+
+- id: MolecularReplacementTry2
+  type: Step 
+  properties:
+    nestedUriPrefix: /MolecularReplacementAlternate/
+    constants:
+      refiType: REST
+      numCycles: 10
+    inflows:
+      firstMolecularReplacementFailed: control:/firstModelFailed/
+      pdb: file:/alternateModelAvailable
+      mtz: file:/mtzfile/mr.mtz
+      rcutoff: /in/rcutoff
+      cif: file:/protein.cif
+    actor: !ref MolecularReplacement.Workflow
+    outflows: 
+      mtzfile: file:/refmac/refmac_alt_1.mtz
+      pdbfile: file:/refmac/refmac_alt_1.pdb 
+    exceptions:
+      java.lang.Exception: stderr:/2ndModelFailed/
+
+

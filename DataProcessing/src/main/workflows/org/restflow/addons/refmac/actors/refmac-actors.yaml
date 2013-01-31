@@ -1,0 +1,159 @@
+namespace:
+
+  module: refmac 
+
+imports:
+
+- classpath:org/restflow/addons/Crystallography/map/spacegroup.yaml
+- classpath:org/restflow/addons/Crystallography/actors/Crystallography-actors.yaml
+
+components: 
+
+
+- id: RefmacRunner
+  type: Crystallography.GroovyTemplateScriptRunnerActor
+  properties:
+    usesStepDirectory: true
+    settings:
+      _runFileTemplate: |
+        refmac hklin $mtz.name xyzin $pdb.name hklout hklout.mtz xyzout xyzout.pdb <% if (cif != null) print "lib_in $cif.name" %> << eof
+        MAKE HYDROGENS NO
+        REFI TYPE $refitype
+        NCYCLES $ncycles
+        WEIGHT AUTO
+        END
+        eof
+      _envScript: !resource edu/stanford/slac/smb/environment/refmac/env.csh
+      _outputFiles:
+        'hklout.mtz':
+          output: hklout
+        'xyzout.pdb':
+          output: xyzout
+        'stderr.txt':
+          output: stderr
+          parser: !lref ErrorParser
+        'stdout.txt':
+          output: outtext
+    inputs:
+      mtz:
+      pdb:
+      cif:
+        nullable: true
+      ncycles:
+      refitype:
+    outputs:
+      outtext: 
+      stderr:
+      hklout:
+      xyzout:
+
+- id: RefmacOutputFileParser
+  type: GroovyActor
+  properties:
+    settings:
+      parser: !lref OutputParser
+    inputs:
+      refmacOut: 
+    step: |
+      println new Date().format('HH:mm:ss') + "   Parsing refmac output";
+      parser.compile();
+      parsed = parser.search (refmacOut.text);
+      sg = parsed.refsg;
+      rsg = parsed.rsg;
+      cell = parsed.cell;
+      res = parsed.res2;
+      refanalysis = parsed.analysis;
+      y_ref = [refanalysis.rfact, refanalysis.rfree];
+      x_ref = [refanalysis.ncyc];
+      y_ref_name = ["R-factor", "R-free"];
+      x_ref_name = ["Cycle"]
+      ref_plotname = "R-factor vs. cycle"
+      ref_yaxis = "stat"
+      ref_xaxis = "cycle";
+      // println x_ref;
+      // println y_ref;
+      refmacSum = parsed.rfactors;
+      // output info //
+      println "";
+      println "Refmac final results: "
+      println refmacSum;
+      println "";
+    outputs:
+      res: 
+      cell: 
+      rsg:
+      refmacSum:
+      x_ref:
+      y_ref:
+      x_ref_name:
+      y_ref_name: 
+      ref_plotname: 
+      ref_xaxis:
+      ref_yaxis:
+
+- id: RefmacRStatParser
+  type: GroovyActor
+  properties:
+    settings:
+      parser: !lref RStatParser
+    inputs:
+      refmacSum:
+    step: |
+      println new Date().format('HH:mm:ss') + "   Parsing R statistics";
+      parser.compile();
+      parsed = parser.search(refmacSum);
+      rinit = parsed.rfactinit;
+      rfin = parsed.rfactfin;
+      rfreeinit = parsed.rfreeinit;
+      rfreefin = parsed.rfreefin;
+      // output info //
+      println "";
+      println "R initial: " + rinit + "   R final: " + rfin;
+      println "R free initial: " + rfreeinit + "   R free final: " + rfreefin;
+      println "";
+    outputs:
+      rinit:
+      rfin:
+      rfreeinit: 
+      rfreefin:
+
+- id: Actor.ExtractRcutoff
+  type: GroovyActor
+  properties:
+    inputs: 
+      molecular_replacement:
+    step: |
+      println new Date().format('HH:mm:ss') + "   Determining R measure cutoff from input file";
+      rcut = molecular_replacement.r_measure_cutoff_percent.toFloat() / 100.0
+      println ""
+      println "R cutoff: " + rcut
+      println ""
+    outputs:
+      rcut:
+      
+- id: Actor.CheckRStat
+  type: GroovyActor
+  properties:
+    inputs:
+      rcutoff:
+      rfin:
+    step: |
+      println new Date().format('HH:mm:ss') + "   Checking R factor cutoff";
+      // debugging
+      // println "Cutoff " + rcutoff
+      // println "R " + rfin
+      if ( rfin.toFloat() > rcutoff.toFloat() ) {
+        println ""
+        println "R final does not pass cutoff from input file"
+        println "" 
+        throw new Exception("Final R factor greater than cutoff")
+      }
+      else {
+        println ""
+        println "R final passes cutoff from input file"
+        println ""
+        RfactorOk = true
+      }
+    outputs:
+      RfactorOk:
+     

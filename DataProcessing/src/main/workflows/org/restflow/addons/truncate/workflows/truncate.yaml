@@ -1,0 +1,6 @@
+
+
+imports:
+
+- classpath:/DataProcessing/truncate/truncateActors.yaml
+- classpath:/DataProcessing/truncate/truncateInputTemplates.yaml

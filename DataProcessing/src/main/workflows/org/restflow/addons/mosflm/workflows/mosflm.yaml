@@ -1,0 +1,145 @@
+namespace:
+
+  module: mosflm
+  route: A
+
+imports:
+
+- classpath:/org/restflow/addons/mosflm/actors/mosflm-actors.yaml
+- classpath:/org/restflow/addons/getImgHeader/workflows/getImgHeader.yaml
+
+components:
+
+#TODO Find out if gen file is necessary.
+
+- id: Workflow
+  type: Workflow
+  className: ssrl.workflow.actors.Workflow
+  properties: 
+    director: !ref DataDrivenJobDependencyDirector
+    inputs: 
+      image1: 
+        description: full path of first image file
+      image2:
+        description: full path of second image file
+      matrix:
+      polarization:
+      divergence1:
+      divergence2:
+      dispersion:
+      mosaicity:
+      resolution:
+      twotheta:
+      symmetry:
+#      gen:
+    nodes:
+    - !lref Inputs
+    - !lref RunMosflm
+    - !lref ParseFileName
+    - !lref ParseHeader
+    - !lref CheckNoErrors
+    - !lref Outputs
+    outputs:
+      phi1:
+      phi2:
+
+
+- id: Inputs
+  type: InPortal
+  properties: 
+    outflows: 
+      # full path of first image
+      image1: /img/image1
+      # full path of second image
+      image2: /img/image2
+      matrix: file:/index.mat
+      polarization: /polarization
+      divergence1: /divergence1
+      divergence2: /divergence2
+      dispersion: /dispersion
+      mosaicity: /mosaicity
+      resolution: /resolution
+      twotheta: /twotheta
+      symmetry: /symmetry
+#      gen: file:/index.gen
+
+- id: ParseFileName
+  type: Step
+  properties:
+    inflows:
+      firstImagePath: /img/image1
+    actor: !ref mosflm.Actor.ParseFileName
+    outflows:
+      imgNumFirst: /firstImageNum   
+      hashTemplate: /img/mosflm/template/
+      dir: /img/dir
+
+
+- id: ParseHeader
+  type: Step 
+  properties:
+    nestedUriPrefix: /image/
+    inflows:
+      imagePath: /img/image1
+    actor: !ref getImgHeader.Workflow
+    outflows:
+      headerMap: /img/header/parsed/
+      oscRange: /oscRange
+      size2: /size2
+      size1: /size1
+      distance: /distance
+      beamCenterX: /beam1
+      beamCenterY: /beam2
+      wavelength: /wavelength
+      gain: /detector/gain/counts_per_photon
+
+- id: RunMosflm
+  type: Step
+  properties:
+    inflows:
+#      gen:
+#        expression: file:/index.gen
+      matrix:
+        expression: file:/index.mat
+      hashTemplate: /img/mosflm/template/
+      dir: /img/dir
+      imgNumFirst: /firstImageNum   
+      beam1: /beam1
+      beam2: /beam2
+      wavelength: /wavelength
+      distance: /distance
+      gain: /detector/gain/counts_per_photon
+      polarization: /polarization
+      divergence1: /divergence1
+      divergence2: /divergence2
+      dispersion: /dispersion
+      mosaicity: /mosaicity
+      resolution: /resolution
+      twotheta: /twotheta
+      symmetry: /symmetry
+    actor: !ref mosflm.Actor.RunMosflm
+    outflows:
+      phi1: /phi1
+      phi2: /phi2
+      errtext: file:/mosflm/stderr.txt
+
+
+- id: CheckNoErrors
+  type: Step
+  properties:
+    inflows:
+      errtext: file:/mosflm/stderr.txt
+    actor: !ref Crystallography.Actor.AssertInputsEmpty
+    actor.inputs:
+      errtext:
+        nullable: true
+    outflows:
+      ok: /noerrors/
+
+- id: Outputs
+  type: OutPortal
+  properties: 
+    inflows:
+      ok: control:/noerrors/
+      phi1: /phi1
+      phi2: /phi2

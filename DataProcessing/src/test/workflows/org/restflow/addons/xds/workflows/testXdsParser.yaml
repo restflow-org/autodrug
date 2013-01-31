@@ -1,0 +1,98 @@
+namespace:
+
+  module: xds
+  route: TestParser 
+
+imports:
+
+- classpath:/common/types.yaml 
+- classpath:/common/directors.yaml
+- classpath:/common/groovy/actors.yaml
+#- classpath:org/restflow/addons/xds/actors/xds-actors.yaml
+- classpath:org/restflow/addons/xds/beans/xdsParsers.yaml
+
+components:
+
+- id: Workflow
+  type: Workflow
+  properties: 
+    director: !ref PublishSubscribeDirector
+    inputs:
+      xdsStdoutPath:
+      validatePath:
+    nodes:
+    - !lref Inputs
+    - !lref RunParser
+    - !lref AssertOutput
+
+- id: Inputs
+  type: InPortal
+  properties: 
+    outflows: 
+      xdsStdoutPath: /xds/stdoutPath
+      validatePath: /validatePath
+
+- id: RunParser
+  type: GroovyActorStep
+  properties:
+    actor.settings: 
+      parser: !ref xds.Parser.XDS
+    actor.inputs:
+      parser:
+      xdsStdoutPath:
+      validatePath:
+    inflows:
+      xdsStdoutPath: /xds/stdoutPath
+      validatePath: /validatePath
+    actor.step: |
+      parser.compile();
+      def stdoutFile = new File(xdsStdoutPath);
+      results =  parser.search( stdoutFile.text );
+      println results;
+      results.each { k,v ->
+        this.getBinding().setProperty(k,v);
+      } 
+    outflows:
+      results: /results
+      unitcell: /unitcell
+      sgnum: /spacegroup/num
+
+
+- id: AssertOutput
+  type: GroovyActorNode
+  properties:
+    stepsOnce: true 
+    actor.step: |
+      import org.yaml.snakeyaml.*;
+      import static java.lang.Math.*
+      Yaml y = new Yaml();      
+      assertValues = y.load( new File(validatePath).text ); 
+      
+      assert spacegroupNum.toFloat() == assertValues.spacegroupNum, "$spacegroupNum != $assertValues.spacegroupNum";
+      def a = unitcell.a.toFloat();
+      def b = unitcell.b.toFloat();
+      def c = unitcell.c.toFloat();
+      def alpha = unitcell.alpha.toFloat();
+      def beta = unitcell.beta.toFloat();
+      def gamma = unitcell.gamma.toFloat();
+      assert abs ( a - assertValues.unitcell.a ) / a * 100 < 0.1, "$a != $assertValues.unitcell.a";
+      assert abs ( b - assertValues.unitcell.b ) / b * 100 < 0.1, "$b != $assertValues.unitcell.b";
+      assert abs ( c - assertValues.unitcell.c ) / c * 100 < 0.1, "$c != $assertValues.unitcell.c";
+      assert abs ( alpha - assertValues.unitcell.alpha ) / alpha * 100 < 0.1, "$alpha != $assertValues.unitcell.alpha";
+      assert abs ( beta - assertValues.unitcell.beta ) / beta * 100 < 0.1, "$beta != $assertValues.unitcell.beta";
+      assert abs ( gamma - assertValues.unitcell.gamma ) / gamma * 100 < 0.1, "$gamma != $assertValues.unitcell.gamma";
+ 
+      done = true
+    actor.inputs:
+      validatePath:
+      unitcell:
+      spacegroupNum:
+    inflows:
+      unitcell: /unitcell
+      spacegroupNum: /spacegroup/num
+      validatePath: /validatePath
+    outflows:
+      done: control:/done
+
+
+

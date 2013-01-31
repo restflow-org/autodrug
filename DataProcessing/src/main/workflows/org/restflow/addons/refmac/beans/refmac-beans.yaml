@@ -1,0 +1,41 @@
+namespace:
+
+  module: refmac
+
+components: 
+
+- id: OutputParser
+  className: ssrl.workflow.beans.TextScanner
+  properties:
+    absorbWhiteSpaceSymbol: "~"
+    template: 
+      - |
+        Cell from mtz : ~ {cell:TEXT_BLOCK}
+        Space group from mtz:~number~- ~{refsg:INT};~name~-~{rsg:TEXT_BLOCK}
+      - '{header:ANALYSIS_HEADER}{analysis[]:ANALYSIS}'
+      - |
+        ~ $TEXT:Result: ~ $$ ~ Final ~ results ~ $$
+        {rfactors:TEXT_BLOCK}
+        ~ $$
+      - | 
+        Resolution limits ~ = ~ {res1:FLOAT} ~ {res2:FLOAT}
+    tags:
+      ANALYSIS_HEADER: '~ Ncyc ~ Rfact ~ Rfree ~ FOM ~ -LL ~ -LLfree ~ rmsBOND ~ zBOND ~ rmsANGL ~ zANGL ~ rmsCHIRAL ~ $$ ~ $$ ~'
+      ANALYSIS: "~ {ncyc:INT} ~ {rfact:FLOAT} ~ {rfree:FLOAT} ~ {fom:FLOAT} ~ {LL} ~ {LLfree:FLOAT} ~ {rmsBond:FLOAT} ~ {zBond:FLOAT} ~ {rmsAngl:FLOAT} ~ {zAngl:FLOAT} ~ {rmsChiral:FLOAT}"
+
+- id: ErrorParser
+  className: ssrl.workflow.beans.TextScanner
+  properties:
+    absorbWhiteSpaceSymbol: "~"
+    template: 
+    - |
+      ===>~Error:~{error:TEXT_BLOCK}
+
+- id: RStatParser
+  className: ssrl.workflow.beans.TextScanner
+  properties:
+    absorbWhiteSpaceSymbol: "~"
+    template:
+      - |
+        ~ R~factor ~ {rfactinit} ~ {rfactfin}
+        ~ R~free ~ {rfreeinit} ~ {rfreefin}

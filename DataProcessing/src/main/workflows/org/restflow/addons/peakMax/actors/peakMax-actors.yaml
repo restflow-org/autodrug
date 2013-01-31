@@ -1,0 +1,88 @@
+namespace:
+
+  module: peakMax
+
+imports:
+
+- classpath:org/restflow/addons/Crystallography/actors/Crystallography-actors.yaml
+
+components: 
+
+- id: peakMaxRunnerActor
+  type: Crystallography.GroovyTemplateScriptRunnerActor
+  singleton: false
+  properties:
+    usesStepDirectory: true
+    inputs:
+      mapfile:
+      sigma:
+    settings:
+      _envScript: !resource edu/stanford/slac/smb/environment/MolecularReplacement/env.csh
+      _runFileTemplate: |
+        peakmax MAPIN $mapfile.name << eof
+        THRESHOLD RMS $sigma
+        NUMPEAKS 50
+        OUTPUT PDB
+        RESIDUE WAT
+        ATNAME OW
+        CHAIN X
+        eof
+      _outputFiles:
+        'stdout.txt':
+          output: stdout
+          parser: !lref PeakmaxParserTemplate
+    outputs:
+      peaks:
+      stdout:
+
+- id: PeakmaxParserTemplate
+  className: ssrl.workflow.beans.TextScanner
+  singleton: false
+  properties:
+    absorbWhiteSpaceSymbol: "~"
+    template:
+      - |
+        ~There~are ~ {peaks}~peaks~higher~than~the~threshold ~ {value1}~( ~ {sigma}~*sigma)
+      - |
+        ~ Order No. Site Height/Rms ~ Grid ~ Fractional coordinates ~ Orthogonal coordinates
+        {peaklist1:PEAK}
+        {peaklist2:PEAK}
+        {peaklist3:PEAK}
+        {peaklist4:PEAK}
+        {peaklist5:PEAK}
+    tags:
+      PEAK: >
+        ~{peak:TEXT_BLOCK}
+
+- id: PeakmaxOutputFileParser 
+  type: GroovyActor
+  properties: 
+    settings: 
+      parser: !lref PeakmaxParserTemplate
+    inputs:
+      outfile:
+    step: |
+      println new Date().format('HH:mm:ss') + "   Parsing Peakmax calculation";
+      parser.compile();
+      parsed = parser.search(outfile.text);
+      peaks = parsed.num;
+      sigma = parsed.sigma;
+      peaklist1 = parsed.peaklist1.peak
+      peaklist2 = parsed.peaklist2.peak
+      peaklist3 = parsed.peaklist3.peak
+      peaklist4 = parsed.peaklist4.peak
+      peaklist5 = parsed.peaklist5.peak
+      // output info //
+      println "";
+      println "There are " + peaks + " peaks higher than " + sigma + " sigma";
+      println "";
+      println "Order No. Site Height/Rms    Grid    Fractional coordinates    Orthogonal coordinates"
+      println "   " + peaklist1
+      println "   " + peaklist2
+      println "   " + peaklist3
+      println "   " + peaklist4
+      println "   " + peaklist5
+      println ""
+    outputs:
+      peaks: 
+      sigma: 

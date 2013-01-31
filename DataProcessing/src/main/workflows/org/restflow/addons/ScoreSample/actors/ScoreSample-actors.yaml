@@ -1,0 +1,159 @@
+namespace:
+
+  module: ScoreSample
+
+imports:
+
+- classpath:/common/scriptActors.yaml
+- classpath:/common/groovy/actors.yaml
+- classpath:/common/bash/actors.yaml
+- classpath:/common/perl/perlActor.yaml
+- classpath:/common/perl/actors.yaml
+- classpath:/common/directors.yaml
+- classpath:/common/types.yaml 
+- classpath:/common/support.yaml
+- classpath:org/restflow/addons/Crystallography/actors/Crystallography-actors.yaml
+
+components:
+
+- id: Actor.ExtractFileInfo
+  type: GroovyActor
+  properties:
+    inputs:
+      env:
+      fileOne:
+      fileTwo:
+    step: |
+      println new Date().format('HH:mm:ss') + "   Extracting names from " + fileOne;
+      // begin extracting directory //
+      dirindex = fileOne.lastIndexOf("/");
+      if ( dirindex == -1 ) {
+        dirName = "";
+      } else {
+        dirName = fileOne.substring(0, dirindex+1);
+      }
+      nameOnly = fileOne.substring(dirindex+1);
+      // end extracting directory //
+      ptIndex = nameOnly.indexOf(".");
+      imgTypeName = nameOnly.substring(ptIndex+1);
+      pos = nameOnly.lastIndexOf("_");
+      prefixString = nameOnly.substring(0, pos);
+      imgNumString = nameOnly.substring(pos + 1, ptIndex);
+      imgNum = nameOnly.substring(pos + 1, ptIndex).toInteger();
+      imgNumDigits = ptIndex - pos - 1;
+    outputs: 
+      dirName:
+      nameOnly:
+      imgTypeName:
+      prefixString:
+      imgNum:
+      imgNumString:
+      imgNumDigits:
+
+
+- id: Actor.CompareCriteria
+  type: GroovyActor
+  properties:
+    inputs:
+      labelitdir:
+      id:
+      crit:
+      unitcell:
+      sg:
+      highres:
+      mosaicity:
+    step: |
+      import static java.lang.Math.*;
+      println new Date().format('HH:mm:ss') + "   Checking collection criteria";
+      a=unitcell.a.toFloat();
+      b=unitcell.b.toFloat();
+      c=unitcell.c.toFloat();
+      alpha=unitcell.alpha.toFloat();
+      beta=unitcell.beta.toFloat();
+      gamma=unitcell.gamma.toFloat();
+      
+      spaceGroup = sg;
+      println ""
+      if ( crit[spaceGroup].equals(null) && crit['0'].equals(null) ) {
+        // labelit space group is not listed in input file; no 'P0' for any space group
+        sgscore = -1.0
+        throw new Exception( "Space group does not match any space group in input file" )
+      }
+      else if ( crit[spaceGroup].equals(null) && !crit['0'].equals(null) ) {
+        // has 'P0' tag for any space group
+        if ( highres.toFloat() > crit['P0'].minimum_resolution_angstroms.toFloat() ) {
+          // labelit high resolution higher than allowed by input file
+          sgscore = -1.0
+          println "Resolution worse than allowed by minimum resolution in input file"
+        } 
+        else if ( mosaicity.toFloat() > crit['0'].maximum_mosaicity_degrees.toFloat() ) {
+        sgscore = -1.0
+        println "Mosaicity larger than maximum allowed by input file"
+        }
+        else {
+          sgscore = crit['0'].priority
+          println "Collection criteria from input file are met"
+        }
+      }
+      else if ( !crit[spaceGroup].equals(null) && crit['0'].equals(null) ){
+        // space group exists
+        // compare unit cell length to ones in input file
+        unitcellCriteria = crit[spaceGroup].unit_cell_angstroms_degrees.split()
+        sga = unitcellCriteria[0].toFloat()
+        sgb = unitcellCriteria[1].toFloat()
+        sgc = unitcellCriteria[2].toFloat()
+        toll = crit[spaceGroup].unit_cell_length_tolerance_percent.toFloat() / 100.0
+        adiff = abs( sga - a ) / sga
+        bdiff = abs( sgb - b ) / sgb
+        cdiff = abs( sgc - c ) / sgc
+        if ( mosaicity.toFloat() > crit[spaceGroup].maximum_mosaicity_degrees.toFloat() ) {
+          sgscore = -1.0
+          println "Mosaicity larger than maximum allowed by input file"
+        }
+        else if ( highres.toFloat() > crit[spaceGroup].minimum_resolution_angstroms.toFloat() ) {
+          // labelit high resolution higher than allowed by input file
+          sgscore = -1.0
+          println "Resolution worse than allowed by minimum resolution in input file"
+        }
+        else if ( (adiff > toll) || (bdiff > toll) || (cdiff > toll) ) {
+          sgscore = -1.0
+          println "Unit cell length difference greater than allowed by tolerance in input file"
+        } 
+        else {
+          // passes all criteria; set this part of the score to be the space group rank
+          sgscore = crit[spaceGroup].priority
+          println "Collection criteria from input file are met"
+        }
+      }
+      println ""
+    outputs:
+      sgscore:
+
+
+- id: Actor.CreateScore
+  type: GroovyActor
+  properties:
+    inputs:
+      sgscore:
+      rms:
+      resolution:
+      mosaicity:
+    step: |
+      import static java.lang.Math.*
+      println new Date().format('HH:mm:ss') + "   Calculating sample score";
+      //if sg = C2 && unit_cell - a/b/c/100 < unit_cell_threshold, score = 1.0 - (0.7 x exp(-4/d)) - (1.5 xrmsr) - (0.2 x mu) 
+      //if sg = C222 && unit_cell - a/b/c/100 < unit_cell_threshold, score = 5.0 - (0.7 x exp(-4/d)) - (1.5 xrmsr) - (0.2 x mu)
+      println ""
+      if ( sgscore.toFloat() == -1.0 ) {
+        totscore = -1.0
+        println "Sample score: " + totscore + "   (does not meet collection criteria)"
+      }
+      else {
+        totscore = sgscore.toFloat() - ( 0.7 * exp( -4.0 / resolution.toFloat() ) ) - ( 1.5 * rms.toFloat() ) - ( 0.2 * mosaicity.toFloat() )
+        println "Sample score: " + totscore 
+      }
+      println ""
+    outputs:
+      totscore:
+
+

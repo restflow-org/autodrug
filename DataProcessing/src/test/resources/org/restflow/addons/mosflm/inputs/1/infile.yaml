@@ -1,0 +1,8 @@
+polarization: '0.9'
+divergence1:  '0.100'
+divergence2: '0.020'
+dispersion: '0.0001'
+mosaicity: '0.040'
+resolution: '1.789336'
+twotheta: '0.0'
+symmetry: P3

@@ -1,0 +1,370 @@
+namespace:
+
+  module: xds
+
+imports:
+
+- classpath:/common/scriptActors.yaml
+- classpath:/common/groovy/actors.yaml
+- classpath:/common/bash/actors.yaml
+- classpath:/common/perl/perlActor.yaml
+- classpath:/common/perl/actors.yaml
+- classpath:/common/directors.yaml
+- classpath:/common/types.yaml 
+- classpath:/common/support.yaml
+- classpath:org/restflow/addons/Crystallography/actors/Crystallography-actors.yaml
+- classpath:org/restflow/addons/xds/beans/xdsInputTemplates.yaml
+- classpath:org/restflow/addons/xds/beans/xdsParsers.yaml
+
+components:
+
+- id: Actor.ParseFileName
+  type: GroovyActor
+  properties:
+    inputs:
+      firstImagePath:
+      lastImageNum:
+    step: |
+      import ssrl.workflow.beans.TextScanner;
+
+      first = new File(firstImagePath);
+      dir = first.parent;
+
+      TextScanner s = new TextScanner();
+      s.addDefaultTags();
+      s.setTemplate(["{root}_{run:INT}_{num:INT}.{ext}".toString()]);
+      s.compile();
+      def fileParts = s.search( first.name );
+      
+      //set up a scanner that only checks for num
+      TextScanner f = new TextScanner();
+      f.addDefaultTags();
+      f.setTemplate(["${fileParts.root}_${fileParts.run}_{num:INT}.${fileParts.ext}".toString()]);
+      f.compile();
+
+      def images = new File( dir ).listFiles( [accept:{file-> f.search(file.name).num != null }] as FileFilter ).toList()
+      
+      def questions = "?" * fileParts.num.size();
+      xdsFileTemplate = "$dir/${fileParts.root}_${fileParts.run}_${questions}.${fileParts.ext}".toString();
+      imgNumFirst = fileParts.num.toInteger();
+      imgExtension = fileParts.ext;
+    outputs:
+      xdsFileTemplate: 
+      imgNumFirst:
+      dir:
+      imgExtension:
+
+
+- id: Actor.CalculateDetectorOrigin
+  type: GroovyActor
+  properties:
+    inputs:
+      header:
+      detectorName:
+    step: |
+      if (detectorName == "ADSC") {
+        originX = header.beamCenterX.toFloat() / header.pixelSize.toFloat();
+        originY = header.size1.toInteger() - header.beamCenterY.toFloat() / header.pixelSize.toFloat();
+      }
+      else if (detectorName == "PILATUS") {
+        originX = header.size2.toInteger() - header.beamCenterX.toFloat() / header.pixelSize.toFloat();
+        originY = header.size1.toInteger() - header.beamCenterY.toFloat() / header.pixelSize.toFloat();
+      }
+      else if (detectorName == "MARCCD") {
+        originX = header.size2.toInteger() - header.beamCenterX.toFloat() / header.pixelSize.toFloat();
+        originY = header.size1.toInteger() - header.beamCenterY.toFloat() / header.pixelSize.toFloat();
+      }
+    outputs:
+      originX:
+      originY:
+
+
+- id: Actor.XDSInputMaker
+  type: GroovyActor
+  properties:
+    settings: 
+      xdsInputTemplate: !lref InputTemplate.XDS
+    inputs: 
+      getImgHeader: 
+      nameTemplate: 
+      nameTemplateFormat: 
+      start:
+      end: 
+      spotRange: 
+      detectorName:
+      minPixel: 
+      overloadCutoff: 
+      sensor: 
+      sizeX:
+      sizeY:
+      pixelSize: 
+      originX:
+      originY:
+      highres: 
+      two: 
+      trustedRegion:
+      spg: 
+      unitc: 
+      # wait for files
+      prevrun: 
+    step: |
+      // create the model to fill in the template //      
+      def model = [nameTemplate: nameTemplate, format: nameTemplateFormat];
+      model.putAll([start: start, end: end]);
+      
+      // set spot ranges //
+      if (spotRange.length == 2) {
+        model.putAll([spotRange: [[start: spotRange[0], end: spotRange[1]]]]);
+      }
+      else if (spotRange.length == 4) {
+        model.putAll([spotRange: [[start: spotRange[0], end: spotRange[1]], [start: spotRange[2], end: spotRange[3]]]]);
+      }
+      else if (spotRange.length == 6) {
+        model.putAll([spotRange: [[start: spotRange[0], end: spotRange[1]], [start: spotRange[2], end: spotRange[3]], [start: spotRange[4], end: spotRange[5]]]]);
+      }
+      model.putAll([detector: detectorName, minPixel: minPixel, overloadCutoff: overloadCutoff, sensor: sensor]);
+      model.putAll([sizeX: sizeX, sizeY: sizeY, pixelSize: pixelSize, originX: originX, originY: originY]);
+      model.putAll([distance: getImgHeader.distance, oscRange: getImgHeader.oscRange, wavelength: getImgHeader.wavelength]);
+      model.highRes = highres;
+      // model.spaceGroupNum = spaceGroupNum;
+      // model.putAll([a: a, b: b, c: c, alpha: alpha, beta: beta, gamma: gamma])
+      // model.putAll(labelit.unitCell);
+      model.two = two;
+      model.trusted = trustedRegion;
+      model.space_group = spg;
+      model.unit_cell = unitc; 
+      
+      // create xds input file //
+      import groovy.text.SimpleTemplateEngine;
+      def engine = new SimpleTemplateEngine();
+      template1 = engine.createTemplate(xdsInputTemplate).make(model);
+      template = template1.toString();
+    outputs:
+      template: 
+
+- id: Actor.XDSConvFileMaker
+  type: GroovyActor
+  properties:
+    settings: 
+      xdsInputTemplate: !lref InputTemplate.XDSConvFile
+    step: |
+      def model = [wilson: "TRUE"];
+      model.friedel = "TRUE";
+      import groovy.text.SimpleTemplateEngine;
+      def engine = new SimpleTemplateEngine();
+      template1 = engine.createTemplate(xdsInputTemplate).make(model);
+      filename = template1.toString();
+    outputs:
+      filename: 
+
+- id: Actor.XDSScaleFileMaker
+  type: GroovyActor
+  properties:
+    settings: 
+      xdsInputTemplate: !lref InputTemplate.XDSScaleFile
+    step: |
+      def model = [merge: "TRUE"];
+      model.friedel = "TRUE";
+      import groovy.text.SimpleTemplateEngine;
+      def engine = new SimpleTemplateEngine();
+      file1 = engine.createTemplate(xdsInputTemplate).make(model);
+      filename = file1.toString();
+    outputs:
+      filename:
+
+- id: Actor.RunXds
+  type: Crystallography.GroovyTemplateScriptRunnerActor
+  properties:
+    usesStepDirectory: true
+    settings:
+      _runDir: xdsdir
+      _runFileTemplate: xds_par 
+      _envScript: !resource edu/stanford/slac/smb/environment/DataProcessing/env.csh
+      _fileBuilders:
+        'XDS.INP': 
+          template: !resource org/restflow/addons/xds/templates/xds.txt
+      _outputFiles:
+        'xdsdir/stdout.txt':
+          output: outtext
+          parser: !lref Parser.XDS
+          mustExist: true
+        'xdsdir/stderr.txt':
+          output: errtext
+        'xdsdir':
+          output: xdsdir
+    inputs:
+      xdsParams:
+      JOB:
+    outputs:
+      outtext:
+      errtext:
+      errors:
+      xdsdir:
+
+
+
+
+- id: Actor.RunXds2
+  type: Crystallography.GroovyTemplateScriptRunnerActor
+  properties:
+    usesStepDirectory: true
+    settings:
+      _runDir: xdsdir
+      _runFileTemplate: xds_par 
+      _envScript: !resource edu/stanford/slac/smb/environment/DataProcessing/env.csh
+      _fileBuilders:
+        'XDS.INP': 
+          template: !resource org/restflow/addons/xds/templates/xds.txt
+      _outputFiles:
+        'xdsdir/XDS_ASCII.HKL':
+          output: xdsascii 
+          mustExist: false
+        'xdsdir/CORRECT.LP':
+          output: corr 
+          mustExist: false
+        'xdsdir/stdout.txt':
+          output: outtext
+          parser: !lref Parser.XDSError 
+          parser: !lref Parser.XDS
+        'xdsdir/stderr.txt':
+          output: errtext
+    inputs:
+      xdsParams:
+      JOB:
+      previous_xds_dir:
+    outputs:
+      xdsascii:
+      outtext:
+      errtext:
+      corr:
+      errors:
+      unitcell:
+      sgnum:
+
+
+- id: Actor.DetermineXDSDetectorInfo
+  type: GroovyActor
+  properties:
+    inputs:
+      header:
+    step: |
+      if (header.detector.contains("MARCCD")) {
+        detectorName = "MARCCD";
+        minPixel = 1;
+        overloadCutoff = 65000;
+        sensor = "!";
+      }
+      else if (header.detector.contains("PILATUS")) {
+        detectorName = "PILATUS";
+        minPixel = 0;
+        overloadCutoff = 1048576;
+        sensor = "SENSOR_THICKNESS= 0.32";
+      }
+      else if (header.detector.contains("ADSC")) {
+        detectorName = "ADSC";
+        minPixel = 1;
+        overloadCutoff = 65000;
+        sensor = "!";
+      }
+    outputs:
+      detectorName:
+      minPixel:
+      overloadCutoff:
+      sensor:
+
+      
+- id: Actor.DetermineXDSFormatInfo
+  type: GroovyActor
+  properties:
+    inputs: 
+      detectorName:
+    step: |
+      if (detectorName == "PILATUS") {
+        nameTemplateFormat = "CBF";
+      }
+      else if (detectorName == "MARCCD") {
+        nameTemplateFormat = "DIRECT TIFF";
+      }
+      else {
+        nameTemplateFormat = "";
+      }
+    outputs:
+      nameTemplateFormat:
+
+# three ranges, three degrees each
+- id: Actor.DetermineXDSSpotRange
+  type: GroovyActor
+  properties:
+    inputs:
+      start:
+      end:
+      headerMap:
+    step: |
+      def osc = headerMap.oscRange;
+      numdiff = (3.0 / osc).toInteger()
+      
+      end1 = (start as Integer) + numdiff
+      end3 = (start as Integer) + (90.0 / osc).toInteger()
+      
+      if (end3 > (end as Integer) ) {
+        end3 = end as Integer
+      }
+      
+      start3 = end3 - numdiff
+      start2 = (( start3 + end1 ) / 2).toInteger() 
+      end2 = start2 + numdiff
+      
+      spotRange = [ [ 'start' :start, 'end': end1], ['start':start2,'end':end2] , ['start':start3,'end':end3] ]
+    outputs:
+      spotRange:
+
+- id: Actor.RunXscale
+  type: GroovyActor
+  properties:
+    inputs:
+      xdsdir:
+    step: |
+      println new Date().format('HH:mm:ss') + "   Running XSCALE";
+      cmdline = "sh -c xscale_par";
+      //println cmdline
+      proc = cmdline.execute(env, new File(xdsdir.parent + "/" + xdsdir.name + "/"));
+      xdsout = proc.text;
+      outdir = new File(xdsdir.parent + "/" + xdsdir.name + "/")
+    outputs:
+      xdsout:
+      outdir:
+      ascii:
+
+- id: Actor.XDSParseCorrect
+  type: GroovyActor
+  properties:
+    settings:
+      parser: !lref Parser.XDSCorrectLP
+    inputs:
+      corrfile:
+    step: |
+      println new Date().format('HH:mm:ss') + "   Parsing XDS CORRECT.LP";
+      parser.compile();
+      parsed = parser.search(corrfile.text);
+      mosaicity = parsed.mosaic;
+      println "\nMosaicity: " + mosaicity + "\n";
+    outputs:
+      mosaicity:
+      
+     
+- id: Actor.CheckResolution 
+  type: GroovyActor
+  properties:
+    inputs:
+      highres:
+      trustedRegion:
+      subtract:
+        default: 0.0
+    step: |
+      highres.toFloat() - subtract;
+      trustedRegion = 1.05;
+    outputs:
+      highres:
+      trustedRegion:
+
+

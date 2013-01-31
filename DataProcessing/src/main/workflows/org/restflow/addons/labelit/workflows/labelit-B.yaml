@@ -1,0 +1,225 @@
+namespace:
+
+  module: labelit
+  route: B
+
+imports:
+
+- classpath:/org/restflow/addons/labelit/actors/labelit-actors.yaml
+
+components:
+
+- id: Workflow
+  type: Workflow
+  className: ssrl.workflow.actors.Workflow
+  properties: 
+    director: !ref DataDrivenJobDependencyDirector
+    inputs: 
+      image1: 
+        description: full path of first image file
+      image2:
+        description: full path of second image file
+      ccriteria:
+    nodes:
+    - !lref Inputs
+    - !lref Outputs
+    - !lref RunLabelit
+    - !lref LookupBestResult
+    - !lref CheckNoErrors
+    - !lref BlockNulls
+    - !lref PrintUnitCell
+    - !lref LookupSpaceGroupNumber
+    outputs:
+      unitcell:
+      highres:
+      beamX:
+      beamY:
+      dist:
+      mosaicity:
+      spacegroup:
+      volume:
+      rms:
+      spacegroupNum:
+      matrix:
+#      gen:
+#      polarity:
+#      divergence1:
+#      divergence2:
+#      dispersion:
+#      symmetry: 
+
+- id: Inputs
+  type: InPortal
+  properties: 
+    outflows: 
+      # full path of first image
+      image1: /img/ImageOne
+      # full path of second image
+      image2: /img/ImageTwo
+
+- id: RunLabelit
+  type: Step 
+  properties:
+    inflows:
+      image1: /img/ImageOne
+      image2: /img/ImageTwo
+    actor: !ref labelit.Actor.RunLabelit
+    outflows:
+      errtext: file:/labelit/stderr.txt
+      error: /labelit-noindex/error 
+      labelitExceptions: file:/labelit/exceptions
+      spoterror: /labelit-spotfinder/error 
+      merror: /labelit-mosflm/error 
+      inerr: /labelit-inputfile/error 
+      labelitdir: file:/labelitdir/
+      beamXc: /beamX_
+      beamYc: /beamY_
+      distc: /dist_
+      mosaicc: /mosaic_
+      indexResults: //indexResults_
+      integrationResults: //integrationResults_
+
+- id: BlockNulls
+  type: Step
+  properties:
+    inflows:
+      beamXc: /beamX_
+      beamYc: /beamY_
+      distc: /dist_
+      mosaicc: /mosaic_
+      indexResults: /indexResults_
+      integrationResults: /integrationResults_
+    actor: !ref Crystallography.Actor.EndFlowOnEmpty
+    actor.inputs:
+      beamXc:
+        nullable: true
+      beamYc:
+        nullable: true
+      distc:
+        nullable: true
+      mosaicc:
+        nullable: true
+      indexResults:
+        nullable: true
+      integrationResults:
+        nullable: true
+    actor.outputs:
+      beamXc:
+      beamYc:
+      distc:
+      mosaicc:
+      indexResults:
+      integrationResults:
+    outflows:
+      beamXc: /beamX
+      beamYc: /beamY
+      distc: /dist
+      mosaicc: /mosaic
+      indexResults: /indexResults
+      integrationResults: /integrationResults
+
+- id: CheckNoErrors
+  type: Step
+  properties:
+    inflows:
+      labelitExceptions: file:/labelit/exceptions
+      errtext: file:/labelit/stderr.txt
+      spoterror: /labelit-spotfinder/error 
+      merror: /labelit-mosflm/error 
+      inerr: /labelit-inputfile/error 
+      error: /labelit-noindex/error 
+    actor: !ref Crystallography.Actor.AssertInputsEmpty
+    actor.inputs:
+      errtext:
+        nullable: true
+      spoterror:
+        nullable: true
+      merror:
+        nullable: true
+      inerr:
+        nullable: true
+      error:
+        nullable: true
+      labelitExceptions:
+        nullable: true
+    outflows:
+      ok: /noerrors/
+
+- id: LookupBestResult
+  type: Step
+  properties:
+    inflows:
+      indexResults: /indexResults
+      integrationResults: /integrationResults
+      labelitdir: file:/labelitdir/
+    actor: !ref labelit.Actor.LookupBestResult
+    outflows:
+      unitcell: /unitcell
+      spacegroup: /spacegroup
+      highres: /res
+      volume: /volume
+      rms: /rms
+      id: /id
+      matrix: file:/mosflm/index.mat
+
+
+- id: LookupSpaceGroupNumber
+  type: Step
+  properties: 
+    inflows:
+      spaceGroup: /spacegroup
+    actor: !ref Crystallography.SpaceGroup_StringToNumber
+    outflows:
+      spaceGroupNum: /spacegroupNum
+
+#- id: RunLabelitMosflmScript
+#  type: Step
+#  properties:
+#    inflows:
+#      labelitdir: file:/labelitdir/
+#      id: //id
+#    actor: !ref labelit.Actor.RunLabelitMosflm
+#    outflows:
+#      gen: file:/mosflm/index.gen
+#      mat: file:/mosflm/index.mat
+#      polar: /mosflm/polar
+#      div1: /mosflm/div1
+#      div2: /mosflm/div2
+#      disp: /mosflm/disp
+#      dist: /mosflm/dist
+#      symm: /mosflm/symm
+
+- id: PrintUnitCell
+  type: Step
+  properties:
+    actor: !ref Crystallography.Actor.PrintUnitCell
+    inflows: 
+      unitcell: /unitcell
+    outflows:
+      view: /unitcell_text
+
+
+- id: Outputs
+  type: OutPortal
+  properties: 
+    inflows:
+      ok: control:/noerrors/
+      unitcell: /unitcell
+      highres: /res
+      beamX: /beamX
+      beamY: /beamY
+      dist: /dist
+      mosaicity: /mosaic
+      spacegroup: /spacegroup
+      volume: /volume
+      rms: /rms
+      spacegroupNum: /spacegroupNum
+      matrix: file:/mosflm/index.mat
+#      gen: file:/mosflm/index.gen
+#      polarity: /mosflm/polar
+#      divergence1: /mosflm/div1
+#      divergence2: /mosflm/div2
+#      dispersion: /mosflm/disp
+#      symmetry: /mosflm/symm
+
+

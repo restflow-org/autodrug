@@ -1,0 +1,144 @@
+
+namespace:
+
+  module: scala
+
+imports:
+
+- classpath:org/restflow/addons/scala/actors/scala-actors.yaml
+- classpath:org/restflow/addons/Crystallography/actors/Crystallography-actors.yaml
+
+components:
+
+- id: Workflow
+  type: Workflow
+  properties: 
+    director: !ref PublishSubscribeDirector
+    inputs:
+      mtz:
+        description: full path of mtz file
+      isigmaCutoff:
+    nodes:
+    - !lref Inputs
+    - !lref RunScala
+    - !lref ParseScalaOutputFile 
+    - !lref ParseScalaSummary
+    - !lref CheckISigma
+    - !lref CheckNoErrors
+    - !lref Outputs
+    outputs:
+      mtzout: 
+      result:
+      oRmeas:
+      fRmeas:
+      oCompl:
+      fCompl:
+      oMult:
+      mos:
+      isigfinal:
+      isigoverall:
+      res:
+      isigCutoffResolution: /isigcutoff/resolution
+
+- id: Inputs
+  type: InPortal
+  properties: 
+    outflows: 
+      mtz: file:/in/mr.mtz
+      isigmaCutoff: /in/isigmaCutoff
+
+- id: RunScala
+  type: Step
+  properties: 
+    inflows:
+      mtzIn: file:/in/mr.mtz
+    actor: !ref scala.Actor.RunScala
+    outflows: 
+      mtzout: file:/out/out.mtz
+      outtext: file:/out/out.txt
+      errtext: file:/out/err.txt
+      result: /out/result
+      fatal_warning: /out/fatal_warning
+      isigheader: /out/isigheader
+      isigblock: /out/isigblock
+      isigoverallblock: /out/isigoverallblock
+      isigoverallheader: /out/isigoverallheader
+      result: /summary/
+      isigTable: /isigTable/
+      isigmaov: /isig_overall/
+
+- id: ParseScalaOutputFile
+  type: Step
+  properties:
+    inflows:
+      scalaout: file:/out/out.txt
+      isigTable: /isigTable/
+    actor: !ref scala.Actor.ScalaOutputFileParser
+    outflows:
+      isigfinal: /isig_finalshell/
+      isig: /isig
+      res: /res
+
+- id: ParseScalaSummary
+  type: Step
+  properties: 
+    inflows:
+      scalasum: /summary/
+    actor: !ref scala.Actor.ScalaSummaryParser
+    outflows: 
+      oRmeas: /Rmeas_overall/
+      fRmeas: /Rmeas_finalshell/
+      oCompl: /complet_overall/
+      fCompl: /complet_finalshell/
+      oMult: /mult_overall/
+      mos: /mosaicity/
+      res: /resolution/
+
+
+- id: CheckISigma
+  type: Step
+  properties:
+    inflows:
+      isigin: /in/isigmaCutoff
+      isig: /isig
+      res: /res
+      inres: /resolution/
+    actor: !ref scala.Actor.CheckISigma
+    outflows:
+      tres: /isigcutoff/resolution
+
+- id: CheckNoErrors
+  type: Step
+  properties:
+    inflows:
+      errtext: file:/out/err.txt
+      fatal_warning: /out/fatal_warning
+    actor: !ref Crystallography.Actor.AssertInputsEmpty
+    actor.inputs:
+      errtext:
+        nullable: true
+      fatal_warning:
+        nullable: true
+    outflows:
+      ok: /noerrors/
+
+
+- id: Outputs
+  type: OutPortal
+  properties: 
+    inflows:
+      mtzout: file:/out/out.mtz
+      result: /out/result
+      result: /summary/
+      oRmeas: /Rmeas_overall/
+      fRmeas: /Rmeas_finalshell/
+      oCompl: /complet_overall/
+      fCompl: /complet_finalshell/
+      oMult: /mult_overall/
+      mos: /mosaicity/
+      res: /resolution/
+      isigfinal: /isig_finalshell/
+      isigoverall: /isig_overall/
+      isigCutoffResolution: /isigcutoff/resolution
+      ok: control:/noerrors/
+

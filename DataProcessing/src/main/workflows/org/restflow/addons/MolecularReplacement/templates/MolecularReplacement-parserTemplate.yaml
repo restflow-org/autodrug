@@ -1,0 +1,81 @@
+namespace:
+
+  module: MolecularReplacement
+
+components: 
+
+- id: RefmacParserTemplate
+  className: ssrl.workflow.beans.TextScanner
+  properties:
+    absorbWhiteSpaceSymbol: "~"
+    template: 
+      - |
+        Cell from mtz : ~ {cell:TEXT_BLOCK}
+        Space group from mtz:~number~- ~{refsg:INT};~name~-~{rsg:TEXT_BLOCK}
+      - '{header:ANALYSIS_HEADER}{analysis[]:ANALYSIS}'
+      - |
+        ~ $TEXT:Result: ~ $$ ~ Final ~ results ~ $$
+        {rfactors:TEXT_BLOCK}
+        ~ $$
+      - | 
+        Resolution limits ~ = ~ {res1:FLOAT} ~ {res2:FLOAT}
+    tags:
+      ANALYSIS_HEADER: '~ Ncyc ~ Rfact ~ Rfree ~ FOM ~ -LL ~ -LLfree ~ rmsBOND ~ zBOND ~ rmsANGL ~ zANGL ~ rmsCHIRAL ~ $$ ~ $$ ~'
+      ANALYSIS: "~ {ncyc:INT} ~ {rfact:FLOAT} ~ {rfree:FLOAT} ~ {fom:FLOAT} ~ {LL} ~ {LLfree:FLOAT} ~ {rmsBond:FLOAT} ~ {zBond:FLOAT} ~ {rmsAngl:FLOAT} ~ {zAngl:FLOAT} ~ {rmsChiral:FLOAT}"
+
+- id: RefmacErrorParserTemplate
+  className: ssrl.workflow.beans.TextScanner
+  properties:
+    absorbWhiteSpaceSymbol: "~"
+    template: 
+    - |
+      ===>~Error:~{error:TEXT_BLOCK}
+
+- id: MolrepParserTemplate
+  className: ssrl.workflow.beans.TextScanner
+  properties:
+    absorbWhiteSpaceSymbol: "~"
+    template:
+      - |
+        Sol_ WARNING: {warning:TEXT_BLOCK}
+
+- id: RStatParserTemplate
+  className: ssrl.workflow.beans.TextScanner
+  properties:
+    absorbWhiteSpaceSymbol: "~"
+    template:
+      - |
+        ~ R~factor ~ {rfactinit} ~ {rfactfin}
+        ~ R~free ~ {rfreeinit} ~ {rfreefin}
+
+- id: PhaserMatthParserTemplate
+  className: ssrl.workflow.beans.TextScanner
+  properties: 
+    absorbWhiteSpaceSymbol: .
+    template: 
+      - . {ncs} . {num} . {molecwt} . {vm} . {solvent} . <== most probable
+
+- id: XDSErrorParserTemplate
+  className: ssrl.workflow.beans.TextScanner
+  properties:
+    absorbWhiteSpaceSymbol: "~"
+    template:
+      - |
+        ~!!!~ERROR~!!!~{summary:TEXT_BLOCK}
+      - |
+        ~Sorry,~{sorry:TEXT_BLOCK}
+
+
+
+- id: XtriageLogFileParserTemplate
+  className: ssrl.workflow.beans.TextScanner
+  properties:
+    absorbWhiteSpaceSymbol: "~"
+    template:
+      - '{header:NZ_TEST_HEADER}{nztest[]:NZ_TEST}'
+      - '{l_header:L_TEST_HEADER}{ltest[]:L_TEST}'
+    tags:
+      NZ_TEST_HEADER: 'z ~ Acentric_observed ~ Acentric_untwinned ~ Centric_observed ~ Centric_untwinned ~ $$ ~ $$ ~'
+      NZ_TEST: "{z:FLOAT} ~ {acob:FLOAT} ~ {acuntw:FLOAT} ~ {cenob:FLOAT} ~ {cenuntw:FLOAT} ~"
+      L_TEST_HEADER: '|l| ~ Observed ~ Acentric_theory ~ Acentric_theory,_perfect_twin ~ $$ ~ $$ ~'
+      L_TEST: '{l:FLOAT} ~ {lobs:FLOAT} ~ {luntw:FLOAT} ~ {ltw:FLOAT} ~'

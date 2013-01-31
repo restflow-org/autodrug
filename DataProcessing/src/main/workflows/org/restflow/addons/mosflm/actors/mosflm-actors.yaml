@@ -1,0 +1,121 @@
+namespace:
+
+  module: mosflm
+
+imports:
+
+- classpath:/common/scriptActors.yaml
+- classpath:/common/groovy/actors.yaml
+- classpath:/common/bash/actors.yaml
+- classpath:/common/perl/perlActor.yaml
+- classpath:/common/perl/actors.yaml
+- classpath:/common/directors.yaml
+- classpath:/common/types.yaml 
+- classpath:/common/support.yaml
+- classpath:org/restflow/addons/Crystallography/actors/Crystallography-actors.yaml
+
+components:
+
+- id: Actor.ParseFileName
+  type: GroovyActor
+  properties:
+    inputs:
+      firstImagePath:
+    step: |
+      import ssrl.workflow.beans.TextScanner;
+
+      first = new File(firstImagePath);
+      dir = first.parent;
+
+      TextScanner s = new TextScanner();
+      s.addDefaultTags();
+      s.setTemplate(["{root}_{num:INT}.{ext}".toString()]);
+      s.compile();
+      def fileParts = s.search( first.name );
+      
+      def hashes = "#" * fileParts.num.size();
+      hashTemplate = "${fileParts.root}_${hashes}.${fileParts.ext}".toString();
+      imgNumFirst = fileParts.num.toInteger();
+      imgExtension = fileParts.ext;
+    outputs:
+      hashTemplate: 
+      imgNumFirst:
+      dir:
+      imgExtension:
+
+
+- id: MosflmStrategyParserTemplate
+  className: ssrl.workflow.beans.TextScanner
+  properties:
+    absorbWhiteSpaceSymbol: "~"
+    template: 
+      - ~From~ {phi1:FLOAT} to~ {phi2:FLOAT} degrees
+
+
+- id: Actor.RunMosflm
+  type: Crystallography.GroovyTemplateScriptRunnerActor
+  properties:
+    usesStepDirectory: true
+    inputs:
+      gen:
+      matrix:
+      hashTemplate:
+      dir:
+      imgNumFirst:
+      beam1:
+      beam2:
+      wavelength:
+      distance:
+      gain:
+      polarization:
+      divergence1:
+      divergence2:
+      dispersion:
+      mosaicity:
+      resolution:
+      twotheta:
+      symmetry:
+    settings:
+      _runFileTemplate: |
+        ipmosflm << eof 
+        TITLE strategy.mfm strategy
+        DIRECTORY $dir
+        TEMPLATE $hashTemplate
+        IMAGE $imgNumFirst
+        #detector
+        BIAS 1
+        GAIN $gain
+        NULLPIX 5
+        OVERLOAD NOVER 1 CUTOFF 65500
+        #GENFILE
+        NEWMAT index_new.mat
+        BEAM $beam2 $beam1
+        WAVE $wavelength
+        SYNCHROTRON POLARIZATION $polarization
+        DIVERGENCE $divergence1 $divergence2
+        DISPERSION $dispersion
+        MOSAICITY $mosaicity
+        DISTANCE $distance
+        RESOLUTION $resolution
+        TWOTHETA $twotheta
+        SYMMETRY $symmetry
+        MATRIX $matrix.name
+        go
+        strategy auto
+        go
+        stats
+        exit
+        eof
+      _envScript: !resource edu/stanford/slac/smb/environment/DataProcessing/env.csh
+      _outputFiles:
+        'stdout.txt':
+          output: outtext
+          parser: !lref MosflmStrategyParserTemplate
+        'stderr.txt':
+          output: errtext
+    outputs:
+      outtext:
+      errtext:
+      phi1:
+      phi2:
+

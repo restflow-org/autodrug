@@ -1,0 +1,82 @@
+namespace:
+
+  module: Samples
+
+imports:
+
+- classpath:/common/groovy/actors.yaml
+- classpath:/common/types.yaml 
+- classpath:/common/support.yaml
+
+components:
+
+- id: Actor.ExtractScreeningStrategy
+  type: GroovyActor
+  properties: 
+    inputs:
+      screeningParams:
+    step: |
+      def strategy = screeningParams;
+      energy_ev = strategy.energy_ev;
+      energy_kev = energy_ev / 1000.0
+      def detectorRes = strategy.detector_resolution_angstroms;
+      exposure_photons_per_image = strategy.exposure_photons_per_image;
+      
+      
+      beam_size_width_microns = strategy.beam_size_width_height_microns[0];
+      beam_size_height_microns = strategy.beam_size_width_height_microns[1];
+      beam_size_width_mm = beam_size_width_microns / 1000.0;
+      beam_size_height_mm = beam_size_height_microns / 1000.0;
+      
+      beamstop_position_mm = strategy.beamstop_position_mm;
+      
+      detector_resolution_angstroms = strategy.detector_resolution_angstroms; 
+      delta_degrees = strategy.phi_delta_degrees;
+      
+      rastering_parameters = strategy.rastering_parameters;
+      
+      minimum_score = strategy.minimum_score
+      
+      //println "extract strategy";
+      //println "delta degrees " + delta_degrees;
+    outputs:
+      energy_ev:
+      energy_kev:
+      exposure_photons_per_image:
+      beam_size_width_microns:
+      beam_size_height_microns:
+      beam_size_width_mm:
+      beam_size_height_mm:
+      detector_resolution_angstroms:
+      beamstop_position_mm:
+      delta_degrees:
+      rastering_parameters:
+      minimum_score: 
+
+
+- id: Actor.ExtractRasteringParameters
+  type: GroovyActor
+  properties: 
+    inputs:
+      rastering_parameters:
+    step: |
+      active = rastering_parameters.active;
+      peak_cutoff_percent = rastering_parameters.peak_cutoff_percent;    
+      energy_ev = rastering_parameters.energy_ev;
+      energy_kev = energy_ev / 1000.0
+      exposure_photons_per_image = rastering_parameters.exposure_photons_per_image;
+      beamstop_position_mm = rastering_parameters.beamstop_position_mm;
+      detector_resolution_angstroms = rastering_parameters.detector_resolution_angstroms; 
+      delta_degrees = rastering_parameters.phi_delta_degrees; 
+    outputs:
+      active:
+      peak_cutoff_percent:
+      energy_ev:
+      energy_kev:
+      exposure_photons_per_image:
+      detector_resolution_angstroms:
+      beamstop_position_mm:
+      delta_degrees:
+
+      
+

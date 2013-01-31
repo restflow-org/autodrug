@@ -1,0 +1,14 @@
+exposureTime: 0.40983
+beamSizeX: 0.1
+beamSizeY: 0.1
+energy: 12657.0
+flux: 4.9999999E10
+numImages: 20
+unitcell:
+  a: 90.43
+  b: 90.43
+  c: 45.28
+  alpha: 90
+  beta: 90
+  gamma: 120
+

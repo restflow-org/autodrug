@@ -1,0 +1,33 @@
+
+namespace:
+
+  module: xtriage
+
+components:
+
+- id: Parser.XtriageLogFile
+  className: ssrl.workflow.beans.TextScanner
+  properties:
+    absorbWhiteSpaceSymbol: "~"
+    template:
+      - '{header:NZ_TEST_HEADER}{nztest[]:NZ_TEST}'
+      - '{l_header:L_TEST_HEADER}{ltest[]:L_TEST}'
+    tags:
+      NZ_TEST_HEADER: 'z ~ Acentric_observed ~ Acentric_untwinned ~ Centric_observed ~ Centric_untwinned ~ $$ ~ $$ ~'
+      NZ_TEST: "{z:FLOAT} ~ {acob:FLOAT} ~ {acuntw:FLOAT} ~ {cenob:FLOAT} ~ {cenuntw:FLOAT} ~"
+      L_TEST_HEADER: '|l| ~ Observed ~ Acentric_theory ~ Acentric_theory,_perfect_twin ~ $$ ~ $$ ~'
+      L_TEST: '{l:FLOAT} ~ {lobs:FLOAT} ~ {luntw:FLOAT} ~ {ltw:FLOAT} ~'
+
+
+- id: Parser.Xtriage
+  className: ssrl.workflow.beans.TextScanner
+  properties: 
+    absorbWhiteSpaceSymbol: "~"
+    template: 
+      - |
+        -------------------------------------------------------------------------------
+        Twinning and intensity statistics summary (acentric data):
+        ~
+        {summary:TEXT_BLOCK}
+        ~
+        -------------------------------------------------------------------------------

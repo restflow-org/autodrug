@@ -1,0 +1,86 @@
+namespace:
+
+  module: getImgHeader
+
+imports:
+
+- classpath:/common/scriptActors.yaml
+- classpath:/common/groovy/actors.yaml
+- classpath:/common/bash/actors.yaml
+- classpath:/common/perl/perlActor.yaml
+- classpath:/common/perl/actors.yaml
+- classpath:/common/directors.yaml
+- classpath:/common/types.yaml 
+- classpath:/common/support.yaml
+- classpath:/org/restflow/addons/getImgHeader/beans/getImgHeaderParsers.yaml
+- classpath:org/restflow/addons/Crystallography/actors/Crystallography-actors.yaml
+
+components:
+
+- id: Actor.RunGetImgHeader
+  type: Crystallography.GroovyTemplateScriptRunnerActor
+  properties:
+    usesStepDirectory: true
+    settings:
+      _runFileTemplate: |
+        getImgHeader $imagePath
+      _envScript: !resource edu/stanford/slac/smb/environment/DataProcessing/env.csh
+      _outputFiles:
+        'stdout.txt':
+          output: outtext
+          parser: !lref Parser.ImgHeader
+        'stderr.txt':
+          output: errtext
+    inputs:
+      imagePath:
+    outputs:
+      outtext:
+      errtext:
+      oscStart:
+      oscRange:
+      size1:
+      size2: 
+      beamCenterX: 
+      beamCenterY: 
+      pixelSize: 
+      detector:
+      distance:
+      wavelength:
+
+
+- id: Actor.BuildHeaderMap
+  type: GroovyActor
+  properties:
+    step: |
+      headerMap = ['oscStart': oscStart.toFloat(), 'oscRange': oscRange.toFloat(), 'size1': size1.toInteger(), 'size2': size2.toInteger(), 'beamCenterX': beamCenterX.toFloat(), 'beamCenterY': beamCenterY.toFloat(), 'pixelSize': pixelSize.toFloat(), 'detector': detector, 'distance':distance, 'wavelength':wavelength, 'gain':gain ]
+    inputs:
+      oscStart:
+      oscRange:
+      size1:
+      size2:
+      beamCenterX:
+      beamCenterY:
+      pixelSize:
+      detector:
+      distance:
+      wavelength:
+      gain:
+    outputs:
+      headerMap:
+
+#see bug 1213
+- id: Actor.LookupGain
+  type: GroovyActor 
+  properties:
+    inputs:
+      detector:
+    step:
+      if (detector == "PILATUS" || detector == "MAR325") {
+        gain = 0.35
+      } else {
+        gain = 0.5
+      }
+    outputs:
+      gain:
+
+

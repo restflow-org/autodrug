@@ -1,0 +1,442 @@
+# File created by MIFit
+data_comp_list
+loop_
+_chem_comp.id
+_chem_comp.three_letter_code
+_chem_comp.name
+_chem_comp.group
+_chem_comp.number_atoms_all
+_chem_comp.number_atoms_nh
+_chem_comp.desc_level
+TLK  TLK  'TLK'  non-polymer  64  64  .
+data_comp_TLK
+loop_
+_chem_comp_atom.comp_id
+_chem_comp_atom.atom_id
+_chem_comp_atom.type_symbol
+_chem_comp_atom.type_energy
+_chem_comp_atom.partial_charge
+_chem_comp_atom.x
+_chem_comp_atom.y
+_chem_comp_atom.z
+ TLK    C1     C     C  0.000  -3.768   16.716  -11.388
+ TLK    O1     O     O  0.000  -3.361   15.449  -11.282
+ TLK    O2     O     O  0.000  -3.998   17.166  -12.632
+ TLK    C2     C   CH2  0.000  -3.057   16.892  -13.713
+ TLK    C3     C   CH2  0.000  -1.612   16.960  -13.191
+ TLK    C5     C  CSP1  0.000   2.150   14.013  -12.937
+ TLK    C6     C   CSP  0.000   1.319   14.872  -13.015
+ TLK    C7     C   CH2  0.000   0.418   15.779  -13.087
+ TLK   O11     O    O2  0.000  -1.011   15.651  -13.199
+ TLK    N1     N     N  0.000  -3.932   17.552  -10.433
+ TLK    C9     C   CH1  0.000  -3.880   17.361  -8.999
+ TLK   C10     C     C  0.000  -5.316   17.400  -8.506
+ TLK    O3     O     O  0.000  -6.101   18.359  -9.003
+ TLK   C11     C   CH3  0.000  -3.014   18.428  -8.317
+ TLK    N2     N     N  0.000  -5.788   16.533  -7.654
+ TLK   C12     C   CH1  0.000  -7.132   16.730  -7.090
+ TLK   C13     C     C  0.000  -7.026   16.596  -5.591
+ TLK    O4     O     O  0.000  -6.755   15.363  -5.180
+ TLK   C14     C   CH1  0.000  -8.183   15.775  -7.730
+ TLK   C15     C   CH3  0.000  -9.524   15.650  -6.955
+ TLK   C16     C   CH3  0.000  -8.433   16.056  -9.213
+ TLK    N3     N     N  0.000  -7.209   17.614  -4.817
+ TLK   C17     C   CH1  0.000  -7.155   17.584  -3.337
+ TLK   C18     C   CH1  0.000  -8.465   17.739  -2.559
+ TLK    O5     O   OH1  0.000  -8.836   19.113  -2.586
+ TLK   C19     C   CH2  0.000  -6.051   18.442  -2.734
+ TLK   C20     C   CR6  0.000  -4.785   17.943  -3.379
+ TLK   C21     C  CR16  0.000  -4.203   18.604  -4.467
+ TLK   C22     C  CR16  0.000  -4.214   16.776  -2.893
+ TLK   C23     C  CR16  0.000  -3.050   18.088  -5.061
+ TLK   C24     C  CR16  0.000  -3.072   16.260  -3.476
+ TLK   C25     C  CR16  0.000  -2.479   16.896  -4.574
+ TLK   C26     C     C  0.000  -10.582   11.551   4.907
+ TLK    O6     O     O  0.000  -9.379   11.014   4.722
+ TLK    O7     O     O  0.000  -11.178   11.375   6.090
+ TLK   C27     C   CH2  0.000  -10.429   11.005   7.280
+ TLK   C28     C   CH2  0.000  -10.506   9.492   7.568
+ TLK   O12     O    O2  0.000  -9.588   8.499   8.072
+ TLK   C30     C   CSP  0.000  -9.788   8.321   9.464
+ TLK   C31     C   CSP  0.000  -9.580   8.003   10.799
+ TLK   C32     C   CH1  0.000  -9.393   7.732   11.854
+ TLK    N4     N     N  0.000  -11.239   12.207   4.034
+ TLK   C34     C   CH1  0.000  -11.040   12.193   2.591
+ TLK   C35     C     C  0.000  -10.365   13.500   2.327
+ TLK    O8     O     O  0.000  -10.881   14.565   2.959
+ TLK   C36     C   CH3  0.000  -12.341   12.125   1.778
+ TLK    N5     N     N  0.000  -9.355   13.569   1.544
+ TLK   C37     C   CH1  0.000  -9.027   14.873   1.045
+ TLK   C38     C     C  0.000  -8.871   14.784  -0.467
+ TLK    O9     O     O  0.000  -8.104   13.863  -1.009
+ TLK   C39     C   CH1  0.000  -7.804   15.500   1.748
+ TLK   C40     C   CH3  0.000  -7.778   15.365   3.268
+ TLK   C41     C   CH3  0.000  -6.508   14.852   1.256
+ TLK    N6     N     N  0.000  -9.502   15.618  -1.149
+ TLK   C42     C   CH1  0.000  -9.843   15.600  -2.548
+ TLK   C43     C   CH1  0.000  -9.645   16.969  -3.147
+ TLK   O10     O   OH1  0.000  -10.799   17.718  -2.757
+ TLK   C44     C   CH2  0.000  -11.270   15.113  -2.804
+ TLK   C45     C   CR6  0.000  -11.447   13.658  -2.532
+ TLK   C46     C  CR16  0.000  -12.468   13.242  -1.689
+ TLK   C47     C  CR16  0.000  -10.612   12.713  -3.153
+ TLK   C48     C  CR16  0.000  -12.627   11.886  -1.447
+ TLK   C49     C  CR16  0.000  -10.778   11.353  -2.920
+ TLK   C50     C  CR16  0.000  -11.796   10.951  -2.054
+loop_
+_chem_comp_tree.comp_id
+_chem_comp_tree.atom_id
+_chem_comp_tree.atom_back
+_chem_comp_tree.atom_forward
+_chem_comp_tree.connect_type
+ TLK    C1   n/a    N1 START
+ TLK    N1    C1    C9 .
+ TLK    C9    N1   C10 .
+ TLK   C10    C9    N2 .
+ TLK    N2   C10   C12 .
+ TLK   C12    N2   C13 .
+ TLK   C13   C12    N3 .
+ TLK    N3   C13   C17 .
+ TLK   C17    N3   C18 .
+ TLK   C18   C17    O5 .
+ TLK    O5   C18     . .
+ TLK   C43   C18   O10 .
+ TLK   O10   C43     . .
+ TLK   C42   C43    N6 .
+ TLK    N6   C42   C38 .
+ TLK   C38    N6    O9 .
+ TLK    O9   C38     . .
+ TLK   C37   C38    N5 .
+ TLK    N5   C37   C35 .
+ TLK   C35    N5    O8 .
+ TLK    O8   C35     . .
+ TLK   C34   C35    N4 .
+ TLK    N4   C34   C26 .
+ TLK   C26    N4    O6 .
+ TLK    O6   C26     . .
+ TLK    O7   C26   C27 .
+ TLK   C27    O7   C28 .
+ TLK   C28   C27   O12 .
+ TLK   O12   C28   C30 .
+ TLK   C30   O12   C31 .
+ TLK   C31   C30   C32 .
+ TLK   C32   C31     . .
+ TLK   C36   C34     . .
+ TLK   C39   C37   C40 .
+ TLK   C40   C39     . .
+ TLK   C41   C39     . .
+ TLK   C44   C42   C45 .
+ TLK   C45   C44   C46 .
+ TLK   C46   C45   C48 .
+ TLK   C48   C46   C50 .
+ TLK   C50   C48   C49 .
+ TLK   C49   C50   C47 .
+ TLK   C47   C49     . .
+ TLK   C19   C17   C20 .
+ TLK   C20   C19   C21 .
+ TLK   C21   C20   C23 .
+ TLK   C23   C21   C25 .
+ TLK   C25   C23   C24 .
+ TLK   C24   C25   C22 .
+ TLK   C22   C24     . .
+ TLK    O4   C13     . .
+ TLK   C14   C12   C15 .
+ TLK   C15   C14     . .
+ TLK   C16   C14     . .
+ TLK    O3   C10     . .
+ TLK   C11    C9     . .
+ TLK    O1    C1     . .
+ TLK    O2    C1    C2 .
+ TLK    C2    O2    C3 .
+ TLK    C3    C2   O11 .
+ TLK   O11    C3    C7 .
+ TLK    C7   O11    C6 .
+ TLK    C6    C7    C5 .
+ TLK    C5    C6     . END
+ TLK    N1    C1     . ADD
+ TLK    O1    C1     . ADD
+ TLK    O2    C1     . ADD
+loop_
+_chem_comp_bond.comp_id
+_chem_comp_bond.atom_id_1
+_chem_comp_bond.atom_id_2
+_chem_comp_bond.type
+_chem_comp_bond.value_dist
+_chem_comp_bond.value_dist_esd
+ TLK   C10    N2     double   1.280  0.020
+ TLK   C10    O3     single   1.330  0.020
+ TLK   C12   C13     single   1.510  0.020
+ TLK   C12   C14     single   1.530  0.020
+ TLK   C13    N3     double   1.280  0.020
+ TLK   C13    O4     single   1.330  0.020
+ TLK   C14   C15     single   1.530  0.020
+ TLK   C14   C16     single   1.530  0.020
+ TLK   C17   C18     single   1.530  0.020
+ TLK   C17   C19     single   1.530  0.020
+ TLK   C18   C43     single   1.530  0.020
+ TLK   C18    O5     single   1.430  0.020
+ TLK   C19   C20     single   1.510  0.020
+ TLK    C1    N1     double   1.280  0.020
+ TLK    C1    O1     single   1.330  0.020
+ TLK    C1    O2     single   1.330  0.020
+ TLK   C20   C21   aromatic   1.390  0.020
+ TLK   C20   C22   aromatic   1.390  0.020
+ TLK   C21   C23   aromatic   1.390  0.020
+ TLK   C22   C24   aromatic   1.390  0.020
+ TLK   C23   C25   aromatic   1.390  0.020
+ TLK   C24   C25   aromatic   1.390  0.020
+ TLK   C26    N4     double   1.280  0.020
+ TLK   C26    O6     single   1.330  0.020
+ TLK   C26    O7     single   1.330  0.020
+ TLK   C27   C28     single   1.530  0.020
+ TLK   C28   O12     single   1.430  0.020
+ TLK    C2    C3     single   1.530  0.020
+ TLK   C30   C31     triple   1.180  0.020
+ TLK   C31   C32     single   1.470  0.020
+ TLK   C34   C35     single   1.510  0.020
+ TLK   C34   C36     single   1.530  0.020
+ TLK   C35    N5     double   1.280  0.020
+ TLK   C35    O8     single   1.330  0.020
+ TLK   C37   C38     single   1.510  0.020
+ TLK   C37   C39     single   1.530  0.020
+ TLK   C38    N6     double   1.280  0.020
+ TLK   C38    O9     single   1.330  0.020
+ TLK   C39   C40     single   1.530  0.020
+ TLK   C39   C41     single   1.530  0.020
+ TLK    C3   O11     single   1.430  0.020
+ TLK   C42   C43     single   1.530  0.020
+ TLK   C42   C44     single   1.530  0.020
+ TLK   C43   O10     single   1.430  0.020
+ TLK   C44   C45     single   1.510  0.020
+ TLK   C45   C46   aromatic   1.390  0.020
+ TLK   C45   C47   aromatic   1.390  0.020
+ TLK   C46   C48   aromatic   1.390  0.020
+ TLK   C47   C49   aromatic   1.390  0.020
+ TLK   C48   C50   aromatic   1.390  0.020
+ TLK   C49   C50   aromatic   1.390  0.020
+ TLK    C5    C6     triple   1.180  0.020
+ TLK    C6    C7     single   1.470  0.020
+ TLK    C7   O11     single   1.430  0.020
+ TLK    C9   C10     single   1.510  0.020
+ TLK    C9   C11     single   1.530  0.020
+ TLK    N1    C9     single   1.460  0.020
+ TLK    N2   C12     single   1.460  0.020
+ TLK    N3   C17     single   1.460  0.020
+ TLK    N4   C34     single   1.460  0.020
+ TLK    N5   C37     single   1.460  0.020
+ TLK    N6   C42     single   1.460  0.020
+ TLK   O12   C30     single   1.210  0.020
+ TLK    O2    C2     single   1.450  0.020
+ TLK    O7   C27     single   1.450  0.020
+loop_
+_chem_comp_angle.comp_id
+_chem_comp_angle.atom_id_1
+_chem_comp_angle.atom_id_2
+_chem_comp_angle.atom_id_3
+_chem_comp_angle.value_angle
+_chem_comp_angle.value_angle_esd
+ TLK    O1    C1    O2  116.350 3.000
+ TLK    O1    C1    N1  126.855 3.000
+ TLK    O2    C1    N1  116.774 3.000
+ TLK    C1    O2    C2  120.862 3.000
+ TLK    O2    C2    C3  110.254 3.000
+ TLK    C2    C3   O11  110.486 3.000
+ TLK    C5    C6    C7  179.086 3.000
+ TLK    C6    C7   O11  129.798 3.000
+ TLK    C3   O11    C7  109.454 3.000
+ TLK    C1    N1    C9  130.423 3.000
+ TLK    N1    C9   C10  106.511 3.000
+ TLK    N1    C9   C11  111.647 3.000
+ TLK   C10    C9   C11  111.812 3.000
+ TLK    C9   C10    O3  116.967 3.000
+ TLK    C9   C10    N2  122.497 3.000
+ TLK    O3   C10    N2  120.526 3.000
+ TLK   C10    N2   C12  119.489 3.000
+ TLK    N2   C12   C13  107.752 3.000
+ TLK    N2   C12   C14  112.141 3.000
+ TLK   C13   C12   C14  113.652 3.000
+ TLK   C12   C13    O4  113.854 3.000
+ TLK   C12   C13    N3  121.020 3.000
+ TLK    O4   C13    N3  125.119 3.000
+ TLK   C12   C14   C15  115.258 3.000
+ TLK   C12   C14   C16  113.323 3.000
+ TLK   C15   C14   C16  110.929 3.000
+ TLK   C13    N3   C17  125.274 3.000
+ TLK    N3   C17   C18  118.316 3.000
+ TLK    N3   C17   C19  114.248 3.000
+ TLK   C18   C17   C19  111.222 3.000
+ TLK   C17   C18    O5  108.119 3.000
+ TLK   C17   C18   C43  114.482 3.000
+ TLK    O5   C18   C43  106.145 3.000
+ TLK   C17   C19   C20  104.667 3.000
+ TLK   C19   C20   C21  121.734 3.000
+ TLK   C19   C20   C22  118.344 3.000
+ TLK   C21   C20   C22  119.898 3.000
+ TLK   C20   C21   C23  119.975 3.000
+ TLK   C20   C22   C24  120.426 3.000
+ TLK   C21   C23   C25  120.035 3.000
+ TLK   C22   C24   C25  120.728 3.000
+ TLK   C23   C25   C24  118.926 3.000
+ TLK    O6   C26    O7  118.246 3.000
+ TLK    O6   C26    N4  125.360 3.000
+ TLK    O7   C26    N4  116.379 3.000
+ TLK   C26    O7   C27  121.892 3.000
+ TLK    O7   C27   C28  112.136 3.000
+ TLK   C27   C28   O12  135.116 3.000
+ TLK   C28   O12   C30  109.852 3.000
+ TLK   O12   C30   C31  162.197 3.000
+ TLK   C30   C31   C32  178.500 3.000
+ TLK   C26    N4   C34  127.099 3.000
+ TLK    N4   C34   C35  103.196 3.000
+ TLK    N4   C34   C36  114.150 3.000
+ TLK   C35   C34   C36  109.138 3.000
+ TLK   C34   C35    O8  115.932 3.000
+ TLK   C34   C35    N5  120.774 3.000
+ TLK    O8   C35    N5  123.294 3.000
+ TLK   C35    N5   C37  116.254 3.000
+ TLK    N5   C37   C38  108.408 3.000
+ TLK    N5   C37   C39  113.080 3.000
+ TLK   C38   C37   C39  113.253 3.000
+ TLK   C37   C38    O9  120.652 3.000
+ TLK   C37   C38    N6  116.847 3.000
+ TLK    O9   C38    N6  122.501 3.000
+ TLK   C37   C39   C40  115.538 3.000
+ TLK   C37   C39   C41  110.644 3.000
+ TLK   C40   C39   C41  105.565 3.000
+ TLK   C38    N6   C42  129.940 3.000
+ TLK    N6   C42   C43  110.096 3.000
+ TLK    N6   C42   C44  112.801 3.000
+ TLK   C43   C42   C44  110.197 3.000
+ TLK   C18   C43   C42  113.986 3.000
+ TLK   C18   C43   O10  104.745 3.000
+ TLK   C42   C43   O10  105.149 3.000
+ TLK   C42   C44   C45  113.019 3.000
+ TLK   C44   C45   C46  119.388 3.000
+ TLK   C44   C45   C47  120.333 3.000
+ TLK   C46   C45   C47  120.254 3.000
+ TLK   C45   C46   C48  118.915 3.000
+ TLK   C45   C47   C49  120.855 3.000
+ TLK   C46   C48   C50  120.858 3.000
+ TLK   C47   C49   C50  118.230 3.000
+ TLK   C48   C50   C49  120.873 3.000
+loop_
+_chem_comp_tor.comp_id
+_chem_comp_tor.id
+_chem_comp_tor.atom_id_1
+_chem_comp_tor.atom_id_2
+_chem_comp_tor.atom_id_3
+_chem_comp_tor.atom_id_4
+_chem_comp_tor.value_angle
+_chem_comp_tor.value_angle_esd
+ TLK CONST_000   C19   C20   C21   C23  180.000  0.000
+ TLK CONST_001   C22   C20   C21   C23  0.000  0.000
+ TLK CONST_002   C20   C21   C23   C25  0.000  0.000
+ TLK CONST_003   C21   C23   C25   C24  0.000  0.000
+ TLK CONST_004   C22   C24   C25   C23  0.000  0.000
+ TLK CONST_005   C20   C22   C24   C25  0.000  0.000
+ TLK CONST_006   C19   C20   C22   C24  180.000  0.000
+ TLK CONST_007   C21   C20   C22   C24  0.000  0.000
+ TLK CONST_008   C44   C45   C46   C48  180.000  0.000
+ TLK CONST_009   C47   C45   C46   C48  0.000  0.000
+ TLK CONST_010   C45   C46   C48   C50  0.000  0.000
+ TLK CONST_011   C46   C48   C50   C49  0.000  0.000
+ TLK CONST_012   C47   C49   C50   C48  0.000  0.000
+ TLK CONST_013   C45   C47   C49   C50  0.000  0.000
+ TLK CONST_014   C44   C45   C47   C49  180.000  0.000
+ TLK CONST_015   C46   C45   C47   C49  0.000  0.000
+ TLK CONST_016    O1    C1    O2    C2  0.000  0.000
+ TLK CONST_017    C9    N1    C1    O1  0.000  0.000
+ TLK CONST_018    C1    O2    C2    C3  0.000  0.000
+ TLK CONST_019    O2    C2    C3   O11  0.000  0.000
+ TLK CONST_020    C2    C3   O11    C7  0.000  0.000
+ TLK CONST_021   O11    C7    C6    C5  0.000  0.000
+ TLK CONST_022    C3   O11    C7    C6  0.000  0.000
+ TLK CONST_023   C10    C9    N1    C1  0.000  0.000
+ TLK CONST_024    O3   C10    C9    N1  0.000  0.000
+ TLK CONST_025   C12    N2   C10    C9  0.000  0.000
+ TLK CONST_026   C13   C12    N2   C10  0.000  0.000
+ TLK CONST_027    O4   C13   C12    N2  0.000  0.000
+ TLK CONST_028    N2   C12   C14   C15  0.000  0.000
+ TLK CONST_029   C17    N3   C13   C12  0.000  0.000
+ TLK CONST_030   C18   C17    N3   C13  0.000  0.000
+ TLK CONST_031    O5   C18   C17    N3  0.000  0.000
+ TLK CONST_032    N3   C17   C19   C20  0.000  0.000
+ TLK CONST_033   C17   C18   C43   C42  0.000  0.000
+ TLK CONST_034   C17   C19   C20   C21  0.000  0.000
+ TLK CONST_035    O6   C26    O7   C27  0.000  0.000
+ TLK CONST_036   C34    N4   C26    O6  0.000  0.000
+ TLK CONST_037   C26    O7   C27   C28  0.000  0.000
+ TLK CONST_038    O7   C27   C28   O12  0.000  0.000
+ TLK CONST_039   C27   C28   O12   C30  0.000  0.000
+ TLK CONST_040   C28   O12   C30   C31  0.000  0.000
+ TLK CONST_041   O12   C30   C31   C32  0.000  0.000
+ TLK CONST_042   C35   C34    N4   C26  0.000  0.000
+ TLK CONST_043    O8   C35   C34    N4  0.000  0.000
+ TLK CONST_044   C37    N5   C35   C34  0.000  0.000
+ TLK CONST_045   C38   C37    N5   C35  0.000  0.000
+ TLK CONST_046    O9   C38   C37    N5  0.000  0.000
+ TLK CONST_047    N5   C37   C39   C40  0.000  0.000
+ TLK CONST_048   C42    N6   C38   C37  0.000  0.000
+ TLK CONST_049   C43   C42    N6   C38  0.000  0.000
+ TLK CONST_050   C18   C43   C42    N6  0.000  0.000
+ TLK CONST_051    N6   C42   C44   C45  0.000  0.000
+ TLK CONST_052   C42   C44   C45   C46  0.000  0.000
+loop_
+_chem_comp_chir.comp_id
+_chem_comp_chir.id
+_chem_comp_chir.atom_id_centre
+_chem_comp_chir.atom_id_1
+_chem_comp_chir.atom_id_2
+_chem_comp_chir.atom_id_3
+_chem_comp_chir.volume_sign
+ TLK      chir_01    C9   C10   C11    N1      both
+ TLK      chir_02   C12   C13   C14    N2      both
+ TLK      chir_03   C17   C18   C19    N3      both
+ TLK      chir_04   C18   C17   C43    O5      both
+ TLK      chir_05   C34   C35   C36    N4      both
+ TLK      chir_06   C37   C38   C39    N5      both
+ TLK      chir_07   C42   C43   C44    N6      both
+ TLK      chir_08   C43   C18   C42   O10      both
+loop_
+_chem_comp_plane_atom.comp_id
+_chem_comp_plane_atom.plane_id
+_chem_comp_plane_atom.atom_id
+_chem_comp_plane_atom.dist_esd
+ TLK plan-01   C20 0.020
+ TLK plan-01   C19 0.020
+ TLK plan-01   C21 0.020
+ TLK plan-01   C22 0.020
+ TLK plan-01   C23 0.020
+ TLK plan-01   C25 0.020
+ TLK plan-01   C24 0.020
+ TLK plan-02   C45 0.020
+ TLK plan-02   C44 0.020
+ TLK plan-02   C46 0.020
+ TLK plan-02   C47 0.020
+ TLK plan-02   C48 0.020
+ TLK plan-02   C50 0.020
+ TLK plan-02   C49 0.020
+ TLK plan-03    C1 0.020
+ TLK plan-03    O1 0.020
+ TLK plan-03    O2 0.020
+ TLK plan-03    N1 0.020
+ TLK plan-04   C10 0.020
+ TLK plan-04    C9 0.020
+ TLK plan-04    O3 0.020
+ TLK plan-04    N2 0.020
+ TLK plan-05   C13 0.020
+ TLK plan-05   C12 0.020
+ TLK plan-05    O4 0.020
+ TLK plan-05    N3 0.020
+ TLK plan-06   C26 0.020
+ TLK plan-06    O6 0.020
+ TLK plan-06    O7 0.020
+ TLK plan-06    N4 0.020
+ TLK plan-07   C35 0.020
+ TLK plan-07   C34 0.020
+ TLK plan-07    O8 0.020
+ TLK plan-07    N5 0.020
+ TLK plan-08   C38 0.020
+ TLK plan-08   C37 0.020
+ TLK plan-08    O9 0.020
+ TLK plan-08    N6 0.020

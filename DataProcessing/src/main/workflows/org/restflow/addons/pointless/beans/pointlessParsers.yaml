@@ -1,0 +1,22 @@
+namespace:
+
+  module: pointless
+
+components: 
+
+# * Space group = 'P 21 21 21' (number     $number)
+- id: Parser.Pointless
+  className: ssrl.workflow.beans.TextScanner
+  properties: 
+    absorbWhiteSpaceSymbol: "~"
+    template:  
+      - | 
+        * Number of Batches = {batches}
+      - |
+        * Space group = '{spacegroup:TEXT_BLOCK}' (number ~ {number})
+      - |
+        ~ XDSdataset
+        ~ {unitcell:UNIT_CELL}
+    tags: 
+      UNIT_CELL: >
+        {a} ~ {b} ~ {c} ~ {alpha} ~ {beta} ~ {gamma}

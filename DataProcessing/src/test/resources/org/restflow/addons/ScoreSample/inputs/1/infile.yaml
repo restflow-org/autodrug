@@ -1,0 +1,32 @@
+criteriaBySpaceGroup:
+  '143': !!org.restflow.addons.samples.collect.CollectCriteria
+    priority: 2
+    unit_cell_angstroms_degrees: 90.2 90.2 45.2 90 90 90
+    unit_cell_length_tolerance_percent: 1 
+    minimum_resolution_angstroms: 3.0
+    maximum_mosaicity_degrees: 1.0
+beamlineValues: !!org.restflow.addons.beamline.BeamlineValues
+  beamline: BL11-1
+  detectorRingSize: '211.5'
+  phiSpeedDegPerSec: '20.0'
+  energy: !!org.restflow.addons.beamline.Motor
+    name: 
+    upperLimit:
+    lowerLimit:
+  detector_z: !!org.restflow.addons.beamline.Motor
+    name:
+    upperLimit:
+    lowerLimit:
+  flux_photons_per_second: 
+  minimumExposure_seconds: '0.2'
+strategyBySpaceGroup:
+  '143': !!org.restflow.addons.samples.collect.CollectParameters
+    detector_resolution_angstroms: 1.5
+    energy_ev: 12657
+    beam_size_width_height_microns: [100,100]
+    beamstop_position_mm: 32
+    phi_delta_degrees: 0.5
+    phi_range_degrees: 10
+    exposure_photons_per_image: 5e10
+flux: 6.05E10  
+

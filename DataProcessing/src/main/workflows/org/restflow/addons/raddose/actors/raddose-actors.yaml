@@ -1,0 +1,66 @@
+namespace:
+
+  module: raddose
+
+imports:
+
+- classpath:/common/scriptActors.yaml
+- classpath:/common/groovy/actors.yaml
+- classpath:/common/bash/actors.yaml
+- classpath:/common/perl/perlActor.yaml
+- classpath:/common/perl/actors.yaml
+- classpath:/common/directors.yaml
+- classpath:/common/types.yaml 
+- classpath:/common/support.yaml
+- classpath:org/restflow/addons/Crystallography/actors/Crystallography-actors.yaml
+
+components:
+
+
+- id: RaddoseParserTemplate
+  className: ssrl.workflow.beans.TextScanner
+  properties:
+    absorbWhiteSpaceSymbol: "~"
+    template: 
+      - Total absorbed dose (Gy) ~ {doseTotal}
+      - Absorbed dose per image (Gy) ~ {dosePerImage}
+
+- id: Actor.RunRaddose
+  type: Crystallography.GroovyTemplateScriptRunnerActor
+  properties:
+    usesStepDirectory: true
+    inputs:
+      unitcell:
+      exposureTime:
+      beamSizeX:
+      beamSizeY:
+      energy_ev:
+      flux:
+      numImages:
+    settings:
+      _runFileTemplate: |
+        raddose << eof
+        CELL $unitcell.a $unitcell.b $unitcell.c $unitcell.alpha $unitcell.beta $unitcell.gamma
+        SOLVENT 0.5
+        CRYSTAL 0.1 0.1 0.1
+        BEAM $beamSizeX $beamSizeY
+        ENERGY <% print energy_ev.toFloat() / 1000.0 %>
+        PHOSEC $flux
+        GAUSS $beamSizeX $beamSizeY
+        IMAGES $numImages
+        EXPOSURE $exposureTime
+        END
+        eof
+      _envScript: !resource edu/stanford/slac/smb/environment/DataProcessing/env.csh
+      _outputFiles:
+        'stdout.txt':
+          output: outtext
+          parser: !lref RaddoseParserTemplate
+        'stderr.txt':
+          output: errtext
+    outputs:
+      outtext:
+      errtext:
+      doseTotal:
+      dosePerImage:
+

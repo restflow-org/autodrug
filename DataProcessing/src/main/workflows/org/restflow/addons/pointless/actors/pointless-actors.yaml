@@ -1,0 +1,48 @@
+namespace:
+
+  module: pointless
+
+imports:
+
+- classpath:/common/scriptActors.yaml
+- classpath:/common/groovy/actors.yaml
+- classpath:/common/bash/actors.yaml
+- classpath:/common/perl/perlActor.yaml
+- classpath:/common/perl/actors.yaml
+- classpath:/common/directors.yaml
+- classpath:/common/types.yaml 
+- classpath:/common/support.yaml
+- classpath:org/restflow/addons/Crystallography/actors/Crystallography-actors.yaml
+- classpath:org/restflow/addons/pointless/beans/pointlessInputTemplates.yaml
+- classpath:org/restflow/addons/pointless/beans/pointlessParsers.yaml
+
+components:
+
+- id: Actor.RunPointless
+  type: Crystallography.GroovyTemplateScriptRunnerActor
+  properties:
+    usesStepDirectory: true
+    settings:
+      _runFileTemplate: |
+        pointless -copy << eof
+        XDSIN $xdsascii.name
+        HKLOUT out.mtz
+        eof
+      _envScript: !resource edu/stanford/slac/smb/environment/DataProcessing/env.csh
+      _outputFiles:
+        'out.mtz':
+          output: mtzout
+        'stdout.txt':
+          output: outtext
+          parser: !lref Parser.Pointless
+        'stderr.txt':
+          output: errtext
+    inputs:
+      xdsascii:
+    outputs:
+      mtzout:
+      outtext:
+      errtext:
+      unitcell:
+      number:
+

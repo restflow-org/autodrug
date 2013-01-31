@@ -1,0 +1,69 @@
+namespace:
+
+  module: xtriage
+  route: Test
+
+imports:
+
+- classpath:org/restflow/addons/xtriage/workflows/xtriage.yaml
+
+components:
+
+- id: Workflow
+  type: Workflow
+  properties: 
+    director: !ref PublishSubscribeDirector
+    inputs:
+      mtz:
+        description: full path of mtz file
+    nodes:
+    - !lref Inputs
+    - !lref ConvertFilePathToHandles
+    - !lref RunXtriage
+    - !lref Outputs
+    outputs:
+      xtriageSum:
+      xtriageTwin:
+      ztest:
+      ltest:
+
+- id: Inputs
+  type: InPortal
+  properties: 
+    outflows: 
+      mtz: /in/mtz/path
+
+- id: ConvertFilePathToHandles
+  type: Step
+  properties:
+    inflows: 
+      mtz: /in/mtz/path
+    actor: !inline
+      className: ssrl.workflow.actors.FilePathToHandleActor
+    outflows:
+      mtzFile: file:/in/mr.mtz
+
+- id: RunXtriage
+  type: Step 
+  properties:
+    nestedUriPrefix: /xtriage
+    inflows:
+      mtz: file:/in/mr.mtz
+    actor: !ref xtriage.Workflow
+    outflows:
+      xtriageSum: /xtriage/summary/
+      xtriageTwin: /xtriage/twinned/
+      ztest: file:/plots/ztest.out
+      ltest: file:/plots/ltest.out
+
+
+- id: Outputs
+  type: OutPortal
+  properties: 
+    inflows:
+      xtriageSum: /xtriage/summary/
+      xtriageTwin: /xtriage/twinned/
+      ztest: file:/plots/ztest.out
+      ltest: file:/plots/ltest.out
+
+

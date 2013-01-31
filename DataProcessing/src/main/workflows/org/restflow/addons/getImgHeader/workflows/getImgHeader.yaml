@@ -1,0 +1,143 @@
+namespace:
+
+  module: getImgHeader
+
+imports:
+
+- classpath:org/restflow/addons/getImgHeader/actors/getImgHeader-actors.yaml
+
+components:
+
+- id: Workflow
+  type: Workflow
+  properties: 
+    director: !ref PublishSubscribeDirector
+    inputs:
+      imagePath:
+        description: full path of image file
+    nodes:
+    - !lref Inputs
+    - !lref CheckFileExists
+    - !lref RunGetImgHeader
+    - !lref CheckNoErrors
+    - !lref LoopkupGain
+    - !lref BuildMap
+    - !lref Outputs
+    outputs:
+      headerMap:
+      oscStart:
+      oscRange:
+      size1:
+      size2:
+      beamCenterX:
+      beamCenterY:
+      pixelSize:
+      detector:
+      distance:
+      wavelength:
+      gain:
+
+- id: Inputs
+  type: InPortal
+  properties: 
+    outflows: 
+      imagePath: /in/image/path
+
+
+- id: CheckFileExists
+  type: GroovyActorNode
+  properties:
+    stepsOnce: true
+    inflows:
+      imagePath: /in/image/path
+    actor.step: |
+      def f = new File(imagePath);
+      if ( ! f.exists() ) throw new Exception("file $f.path does not exist.");
+      if ( ! f.isFile() ) throw new Exception("file $f.path is not a file.");
+      imageExists = true;
+    outflows:
+      imageExists: /image-exists/
+
+- id: RunGetImgHeader
+  type: Step 
+  properties:
+    inflows:
+      imageExists: control:/image-exists/
+      imagePath: /in/image/path
+    actor: !ref getImgHeader.Actor.RunGetImgHeader
+    outflows:
+      outtext: file:/outtext
+      errtext: file:/err.txt
+      oscStart: /oscStart
+      oscRange: /oscRange
+      size1: /size1
+      size2:  /size2
+      beamCenterX: /beamCenterX
+      beamCenterY: /beamCenterY
+      pixelSize: /pixelSize
+      detector: /detector
+      distance: /distance
+      wavelength: /wavelength
+
+
+- id: LoopkupGain
+  type: Step 
+  properties:
+    inflows:
+      detector: /detector
+    actor: !ref getImgHeader.Actor.LookupGain
+    outflows:
+      gain: /gain
+
+- id: CheckNoErrors
+  type: Step
+  properties:
+    inflows:
+      errtext: file:/err.txt
+    actor: !ref Crystallography.Actor.AssertInputsEmpty
+    actor.inputs:
+      errtext:
+        nullable: true
+      fatal_warning:
+        nullable: true
+    outflows:
+      ok: /noerrors/
+
+- id: BuildMap
+  type: GroovyActorNode
+  properties:
+    stepsOnce: true 
+    actor: !ref getImgHeader.Actor.BuildHeaderMap
+    inflows:
+      ok: control:/noerrors/
+      oscStart: /oscStart
+      oscRange: /oscRange
+      size1: /size1
+      size2:  /size2
+      beamCenterX: /beamCenterX
+      beamCenterY: /beamCenterY
+      pixelSize: /pixelSize
+      detector: /detector
+      wavelength: /wavelength
+      distance: /distance
+      gain: /gain
+    outflows:
+      headerMap: /header/map
+
+
+- id: Outputs
+  type: OutPortal
+  properties: 
+    inflows:
+      headerMap: /header/map
+      oscStart: /oscStart
+      oscRange: /oscRange
+      size1: /size1
+      size2:  /size2
+      beamCenterX: /beamCenterX
+      beamCenterY: /beamCenterY
+      pixelSize: /pixelSize
+      detector: /detector
+      distance: /distance
+      wavelength: /wavelength
+      gain: /gain

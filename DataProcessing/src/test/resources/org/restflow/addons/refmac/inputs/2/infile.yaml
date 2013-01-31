@@ -1,0 +1,5 @@
+RefmacNumCycles: 10
+RefmacRefiType: REST
+PDBFile: !!java.io.File src/test/resources/org/restflow/addons/Molrep/inputs/1/mr.pdb
+MTZFile: !!java.io.File src/test/resources/org/restflow/addons/Molrep/inputs/1/mr.mtz
+rcutoff: 0.4

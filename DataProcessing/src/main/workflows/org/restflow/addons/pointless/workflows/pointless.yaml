@@ -1,0 +1,103 @@
+
+namespace:
+
+  module: pointless 
+
+imports:
+
+- classpath:org/restflow/addons/pointless/actors/pointless-actors.yaml
+
+components:
+
+- id: Workflow
+  type: Workflow
+  properties: 
+    director: !ref PublishSubscribeDirector
+    inputs:
+      xdsascii:
+    nodes:
+    - !lref Inputs
+    - !lref RunPointless
+    - !lref CheckNoErrors
+    - !lref PrintUnitCell
+    - !lref FindEnantNum
+    - !lref LookupSpaceGroupFromNumber
+    - !lref Outputs
+    outputs:
+      sgnum: 
+      unitcell: 
+      sg:
+      mtzout:
+      enant:
+
+
+- id: Inputs
+  type: InPortal
+  properties: 
+    outflows: 
+      xdsascii: file:/in/xds_ascii.HKL
+
+- id: RunPointless
+  type: Step 
+  properties:
+    inflows:
+      xdsascii: file:/in/xds_ascii.HKL
+    actor: !ref pointless.Actor.RunPointless
+    outflows:
+      outtext: file:/stdout.txt
+      mtzout: file:/out/out.mtz
+      unitcell: /unitcell
+      number: /sgnum
+      errtext: file:/out/err.txt
+
+- id: CheckNoErrors
+  type: Step
+  properties:
+    inflows:
+      errtext: file:/out/err.txt
+    actor: !ref Crystallography.Actor.AssertInputsEmpty
+    actor.inputs:
+      errtext:
+        nullable: true
+    outflows:
+      ok: /noerrors/
+
+
+- id: PrintUnitCell
+  type: Step
+  properties:
+    actor: !ref Crystallography.Actor.PrintUnitCell
+    inflows: 
+      unitcell: /unitcell
+    outflows:
+      view: /unitcell_text
+
+- id: FindEnantNum
+  type: Step
+  properties:
+    inflows:
+      SpaceGroup: /sgnum/
+    actor: !ref Crystallography.EnantNumFinder
+    outflows:
+      enant: /enant/
+
+- id: LookupSpaceGroupFromNumber
+  type: Step
+  properties: 
+    inflows:
+      spaceGroupNum: /sgnum
+    actor: !ref Crystallography.SpaceGroup_NumberToString
+    outflows:
+      spaceGroup: /sg
+
+- id: Outputs
+  type: OutPortal
+  properties: 
+    inflows:
+      sgnum: /sgnum/
+      unitcell: /unitcell/
+      sg: /sg
+      enant: /enant
+      mtzout: file:/out/out.mtz
+      ok: control:/noerrors/
+

@@ -1,0 +1,106 @@
+namespace:
+
+  module: ScoreSample
+  route: A
+
+imports:
+
+- classpath:/org/restflow/addons/ScoreSample/actors/ScoreSample-actors.yaml
+- classpath:/org/restflow/addons/Strategy/workflows/StrategyLookup.yaml
+
+components:
+
+- id: Workflow
+  type: Workflow
+  className: ssrl.workflow.actors.Workflow
+  properties: 
+    director: !ref DataDrivenJobDependencyDirector
+    inputs: 
+      image1: 
+      image2:
+      beamlineValues:
+      criteriaBySpaceGroup:
+      strategyBySpaceGroup:
+      flux:
+    nodes:
+    - !lref Inputs
+    - !lref Outputs
+    - !lref RunStrategy
+    - !lref CompareCriteria
+    - !lref CreateScore
+    outputs:
+      score:
+      spacegroupNum:
+      unitcell:
+      highres:
+      runDefinition:
+
+
+- id: Inputs
+  type: InPortal
+  properties: 
+    outflows: 
+      image1: /path/image1
+      image2: /path/image2
+      # hashmap of spacegroup info from 
+      criteriaBySpaceGroup: /criteriaBySpaceGroup
+      beamlineValues: /beamlineValues
+      flux: /flux
+      strategyBySpaceGroup: /strategyBySpaceGroup
+
+
+- id: RunStrategy
+  type: Step 
+  properties:
+    nestedUriPrefix: /strategy
+    inflows:
+      image1: /path/image1
+      image2: /path/image2
+      beamlineValues: /beamlineValues
+      flux: /flux
+      strategyBySpaceGroup: /strategyBySpaceGroup
+    actor: !ref Strategy.Lookup.Workflow
+    outflows:
+      unitcell: /unitcell
+      mosaicity: /mosaicity
+      matrix: file:/matrix
+      highres: /resolution
+      spacegroup: /spacegroup/name
+      spacegroupNum: /spacegroup/num
+      rms: /rms
+      runDefinition: /run/definition
+
+- id: CompareCriteria
+  type: Step
+  properties:
+    inflows:
+      crit: /criteriaBySpaceGroup
+      unitcell: /unitcell
+      sg: /spacegroup/num
+      highres: /resolution
+      mosaicity: /mosaicity
+    actor: !ref ScoreSample.Actor.CompareCriteria
+    outflows:
+      sgscore: /sgscore
+
+- id: CreateScore
+  type: Step
+  properties:
+    inflows:
+      sgscore: /sgscore
+      rms: /rms
+      resolution: /resolution
+      mosaicity: /mosaicity
+    actor: !ref ScoreSample.Actor.CreateScore
+    outflows:
+      totscore: /score
+
+- id: Outputs
+  type: OutPortal
+  properties: 
+    inflows:
+      score: /score
+      spacegroupNum: /spacegroup/num
+      unitcell: /unitcell
+      highres: /resolution
+      runDefinition: /run/definition

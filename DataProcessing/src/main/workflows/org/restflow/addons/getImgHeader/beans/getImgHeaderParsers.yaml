@@ -1,0 +1,39 @@
+namespace:
+
+  module: getImgHeader
+
+components: 
+
+- id: Parser.ImgHeader
+  className: ssrl.workflow.beans.TextScanner
+  properties: 
+    absorbWhiteSpaceSymbol: "~"
+    template:
+      - OVERLOAD_CUTOFF       {overloadCutoff:INT}
+      - HEADER_BYTES          {headerBytes:INT}
+      - DIM                   {dim:INT}
+      - BYTE_ORDER            {byteOrder:STRING}
+      - TYPE                  {type:STRING}
+      - SIZE1                 {size1:INT}
+      - SIZE2                 {size2:INT}
+      - PIXEL_SIZE            {pixelSize:FLOAT}
+      - BIN                   {binning}
+      - ADC                   {adc}
+      - DETECTOR_SN           {serialNo}
+      - TIME                  {time:FLOAT}
+      - DISTANCE              {distance}
+      - PHI                   {phi:FLOAT}
+      - OSC_START             {oscStart:FLOAT}
+      - OSC_RANGE             {oscRange:FLOAT}
+      - WAVELENGTH            {wavelength:FLOAT}
+      - BEAM_CENTER_X         {beamCenterX:FLOAT}
+      - BEAM_CENTER_Y         {beamCenterY:FLOAT}
+      - ACC_TIME              {accTime:INT}
+      - CREV                  {crev:INT}
+      - BIN_TYPE              {binType}
+      - DETECTOR              {detector}
+      - TWO THETA             {theta:FLOAT}
+#     - PIXEL SIZE           {pixelSize:INT}
+#     - OSCILLATION RANGE    {oscRange:FLOAT}
+#     - EXPOSURE TIME        {exposureTime:FLOAT}
+

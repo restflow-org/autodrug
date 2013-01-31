@@ -1,0 +1,131 @@
+namespace:
+
+  module: refmac 
+
+imports:
+
+- classpath:/common/scriptActors.yaml
+- classpath:/common/groovy/actors.yaml
+- classpath:/common/bash/actors.yaml
+- classpath:/common/perl/perlActor.yaml
+- classpath:/common/perl/actors.yaml
+- classpath:/common/directors.yaml
+- classpath:/common/types.yaml 
+- classpath:/common/support.yaml
+- classpath:org/restflow/addons/Crystallography/actors/Crystallography-actors.yaml
+- classpath:org/restflow/addons/refmac/actors/refmac-actors.yaml
+- classpath:org/restflow/addons/refmac/beans/refmac-beans.yaml
+
+components:
+
+- id: Workflow
+  type: Workflow
+  className: ssrl.workflow.actors.Workflow
+  properties: 
+    director: !ref DataDrivenJobDependencyDirector
+    inputs:
+      pdb:
+        description: file handle for protein homologous to target
+      mtz:
+        description: file handle of mtz file
+      rcutoff: 
+        description: resolution cutoff
+      numCycles:
+        default: 10
+        description: number of cycles for Refmac refinement; default is 5
+      refiType:
+        default: REST
+        description: type of Refmac refinement; REST - restrained refinement; RIGI - rigid body refinement
+      cif:
+        default: ~
+        nullable: true
+    nodes:
+    - !ref refmac.Inputs
+    - !ref refmac.Outputs
+    - !ref refmac.RunRefmac
+    - !ref refmac.ParseRefmacOutputFile
+    - !ref refmac.ParseRefmacRStat
+    - !ref refmac.CheckRStat
+    outputs:
+      mtzfile: 
+      pdbfile: 
+      RfactorOk:
+
+
+- id: Inputs
+  type: InPortal
+  properties: 
+    outflows: 
+      numCycles: /in/cycles/
+      refiType: /in/refitype/
+      pdb: file:/in/mr.pdb
+      mtz: file:/in/mr.mtz
+      cif: file:/in/refmac.cif
+      rcutoff: /in/rcutoff
+
+- id: Outputs
+  type: OutPortal
+  properties: 
+    inflows:
+      mtzfile: file:/out/refmac_1.mtz
+      pdbfile: file:/out/refmac_1.pdb
+      RfactorOk: /run/RfactorOk
+
+- id: RunRefmac
+  type: Step
+  properties:
+    inflows:
+      pdb: file:/in/mr.pdb
+      mtz: file:/in/mr.mtz
+      cif: file:/in/refmac.cif
+      ncycles: /in/cycles/
+      refitype: /in/refitype/
+    actor: !lref RefmacRunner
+    outflows:
+      outtext: file:/run/refmac.out
+      hklout: file:/out/refmac_1.mtz
+      xyzout: file:/out/refmac_1.pdb
+
+# !resource org/restflow/addons/refmac/templates/refmac.txt
+
+- id: ParseRefmacOutputFile
+  type: Step 
+  properties:
+    inflows:
+      refmacOut: file:/run/refmac.out
+    actor: !lref RefmacOutputFileParser
+    outflows: 
+      res: /run/resolution/
+      cell: /run/cell/
+      rsg: /run/sg/
+      refmacSum: /run/summary/
+      x_ref: /run/plot/x/
+      y_ref: /run/plot/y/
+      x_ref_name: /run/plot/x_name/
+      y_ref_name: /run/plot/y_name/
+      ref_plotname: /run/plot/plotname/
+      ref_xaxis: /run/plot/xaxis/
+      ref_yaxis: /run/plot/yaxis/
+
+- id: ParseRefmacRStat
+  type: Step
+  properties:
+    inflows:
+      refmacSum: /run/summary/
+    actor: !lref RefmacRStatParser
+    outflows:
+      rinit: /run/r_initial/
+      rfin: /run/r_final/
+      rfreeinit: /run/rfree_inital/
+      rfreefin: /run/rfree_final/
+
+- id: CheckRStat
+  type: Step
+  properties:
+    inflows:
+      rcutoff: /in/rcutoff
+      rfin: /run/r_final/
+    actor: !lref Actor.CheckRStat
+    outflows:
+      RfactorOk: /run/RfactorOk
+

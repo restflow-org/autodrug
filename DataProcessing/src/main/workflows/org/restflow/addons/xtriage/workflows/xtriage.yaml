@@ -1,0 +1,144 @@
+
+namespace:
+
+  module: xtriage
+
+imports:
+
+- classpath:org/restflow/addons/xtriage/actors/xtriage-actors.yaml
+- classpath:org/restflow/addons/Crystallography/actors/Crystallography-actors.yaml
+
+components:
+
+- id: Workflow
+  type: Workflow
+  properties: 
+    director: !ref PublishSubscribeDirector
+    inputs:
+      mtz:
+        description: full path of mtz file
+    nodes:
+    - !lref Inputs
+    - !lref RunXtriage
+    - !lref ParseXtriageOutputFile 
+    - !lref ParseXtriageLogFile
+    - !lref WriteZTestOutput
+    - !lref WriteLTestOutput
+    - !lref CheckNoErrors
+    - !lref Outputs
+    outputs:
+      ztest:
+      ltest:
+      xtriageSum:
+      xtriageTwin:
+
+- id: Inputs
+  type: InPortal
+  properties: 
+    outflows: 
+      mtz: file:/in/mr.mtz
+
+- id: RunXtriage
+  type: Step
+  properties: 
+    inflows:
+      mtzIn: file:/in/mr.mtz
+    actor: !ref xtriage.Actor.RunXtriage
+    outflows: 
+      errtext: file:/out/err.txt
+      outtext: file:/xtriage.out
+      logfile: file:/xtriage.log
+
+- id: ParseXtriageOutputFile
+  type: Step
+  properties:
+    inflows:
+      outfile: file:/xtriage.out
+    actor: !ref xtriage.Actor.XtriageOutputFileParser
+    outflows: 
+      xtriageSum: /summary/
+      xtriageTwin: /twinned/
+
+- id: ParseXtriageLogFile
+  type: Step
+  properties:
+    inflows:
+      logfile: file:/xtriage.log
+    actor: !ref xtriage.Actor.XtriageLogFileParser
+    outflows:
+      x_nz: /nztest/x/
+      y_nz: /nztest/y/
+      actw_nz: /nztest/tw/
+      acob_nz: /nztest/obs/
+      acob_nz: /nztest/untw/
+      x_nz_name: /nztest/xname/
+      y_nz_name: /nztest/yname/
+      nz_plotname: /nztest/plotname/
+      nz_xaxis: /nztest/xaxis/
+      nz_yaxis: /nztest/yaxis/
+      x_ltest: /ltest/x/
+      y_ltest: /ltest/y/
+      obs_ltest: /ltest/obs/
+      untw_ltest: /ltest/untw/
+      tw_ltest: /ltest/tw/
+      x_ltest_name: /ltest/xname/
+      y_ltest_name: /ltest/yname/
+      ltest_plotname: /ltest/plotname/
+      ltest_xaxis: /ltest/xaxis/
+      ltest_yaxis: /ltest/yaxis/
+
+
+- id: CheckNoErrors
+  type: Step
+  properties:
+    inflows:
+      errtext: file:/out/err.txt
+    actor: !ref Crystallography.Actor.AssertInputsEmpty
+    actor.inputs:
+      errtext:
+        nullable: true
+    outflows:
+      ok: /noerrors/
+
+
+- id: WriteZTestOutput
+  type: Step
+  properties:
+    inflows:
+      x_num: /nztest/x/
+      y_num: /nztest/y/
+      x_name: /nztest/xname/
+      y_name: /nztest/yname/
+      plotname: /nztest/plotname/
+      x_axis: /nztest/xaxis/
+      y_axis: /nztest/yaxis/
+    actor: !ref DataProcessing.plot.Actor.PlotOutputWriter
+    outflows:
+      plotfile: file:/plots/ztest.out
+
+- id: WriteLTestOutput
+  type: Step
+  properties:
+    inflows:
+      x_num: /ltest/x/
+      y_num: /ltest/y/
+      x_name: /ltest/xname/
+      y_name: /ltest/yname/
+      plotname: /ltest/plotname/
+      x_axis: /ltest/xaxis/
+      y_axis: /ltest/yaxis/
+    actor: !ref DataProcessing.plot.Actor.PlotOutputWriter
+    outflows:
+      plotfile: file:/plots/ltest.out
+
+- id: Outputs
+  type: OutPortal
+  properties: 
+    inflows:
+      ztest: file:/plots/ztest.out
+      ltest: file:/plots/ltest.out
+      xtriageSum: /summary/
+      xtriageTwin: /twinned/
+      ok: control:/noerrors/
+
+

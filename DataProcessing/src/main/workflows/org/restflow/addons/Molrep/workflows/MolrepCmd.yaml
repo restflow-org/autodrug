@@ -1,0 +1,66 @@
+namespace:
+
+  module: MolrepCmd
+
+imports:
+
+- classpath:org/restflow/addons/Molrep/workflows/Molrep.yaml
+
+components:
+
+- id: Workflow
+  type: Workflow
+  properties: 
+    director: !ref PublishSubscribeDirector
+    inputs:
+      pdb:
+        description: full path to pdb file for protein homologous to target
+      mtz:
+        description: full path of mtz file
+    nodes:
+    - !ref MolrepCmd.Inputs
+    - !ref MolrepCmd.ConvertFilePathToHandles
+    - !ref MolrepCmd.RunMolrep
+    - !ref MolrepCmd.Outputs
+    outputs:
+      mtzfile: 
+      pdbfile: 
+
+- id: Inputs
+  type: InPortal
+  properties: 
+    outflows: 
+      pdb: /in/pdb/path
+      mtz: /in/mtz/path
+
+- id: ConvertFilePathToHandles
+  type: Step
+  properties:
+    inflows: 
+      pdb: /in/pdb/path
+      mtz: /in/mtz/path
+    actor: !inline
+      className: ssrl.workflow.actors.FilePathToHandleActor
+    outflows:
+      pdbFile: file:/mr.pdb
+      mtzFile: file:/mr.mtz
+
+- id: RunMolrep
+  type: Step 
+  properties:
+    nestedUriPrefix: /molrep/
+    inflows:
+      MTZFile: file:/mr.mtz
+      PDBFile: file:/mr.pdb
+    actor: !ref Molrep.Workflow
+    outflows:
+      mtzfile: file:/out/mr.mtz
+      pdbfile: file:/out/mr.pdb
+
+- id: Outputs
+  type: OutPortal
+  properties: 
+    inflows:
+      mtzfile: file:/out/mr.mtz
+      pdbfile: file:/out/mr.pdb
+

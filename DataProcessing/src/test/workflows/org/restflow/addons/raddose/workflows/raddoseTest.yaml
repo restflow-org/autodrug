@@ -1,0 +1,85 @@
+namespace:
+
+  module: raddose
+  route: Test
+
+imports:
+
+- classpath:/org/restflow/addons/raddose/workflows/raddose.yaml
+
+components:
+
+- id: Workflow
+  type: Workflow
+  className: ssrl.workflow.actors.Workflow
+  properties: 
+    director: !ref PublishSubscribeDirector
+    inputs: 
+      validatePath:
+      unitcell:
+      exposureTime:
+      beamSizeX:
+      beamSizeY:
+      energy:
+      flux:
+      numImages:
+    nodes:
+    - !lref Inputs
+    - !lref RunRaddose
+    - !lref AssertOutput
+
+- id: Inputs
+  type: InPortal
+  properties: 
+    outflows: 
+      validatePath: /validatePath
+      unitcell: /unitcell
+      exposureTime: /exposure
+      beamSizeX: /beam_size/width/mm
+      beamSizeY: /beam_size/height/mm
+      energy: /energy/ev
+      flux: /flux
+      numImages: /num/images
+
+- id: RunRaddose
+  type: Step 
+  properties:
+    nestedUriPrefix: /raddose
+    inflows:
+      unitcell: /unitcell
+      exposureTime: /exposure
+      beamSizeX: /beam_size/width/mm
+      beamSizeY: /beam_size/height/mm
+      energy: /energy/ev
+      flux: /flux
+      numImages: /num/images
+    actor: !ref raddose.A.Workflow
+    outflows:
+      doseTotal: /dose/total/MGy
+      dosePerImage: /dose/image/MGy
+
+- id: AssertOutput
+  type: GroovyActorNode
+  properties:
+    stepsOnce: true 
+    actor.step: |
+      import org.yaml.snakeyaml.*;
+      import static java.lang.Math.*
+      Yaml y = new Yaml();      
+      assertValues = y.load( new File(validatePath).text ); 
+      
+      def errDoseTotal = abs (doseTotal.toFloat() - assertValues.doseTotal)/doseTotal.toFloat() * 100;
+      assert errDoseTotal < 25, "$doseTotal != $assertValues.doseTotal.  $errDoseTotal %";
+      done = true
+    actor.inputs:
+      doseTotal:
+      dosePerImage:
+      validatePath:
+    inflows:
+      doseTotal: /dose/total/MGy
+      dosePerImage: /dose/image/MGy
+      validatePath: /validatePath
+    outflows:
+      done: control:/done
+
+

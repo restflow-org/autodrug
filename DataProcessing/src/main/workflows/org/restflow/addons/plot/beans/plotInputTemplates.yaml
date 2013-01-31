@@ -1,0 +1,42 @@
+namespace:
+
+  module: DataProcessing.plot
+
+components: 
+
+- id: PlotTemplate
+  className: java.lang.String
+  singleton: true
+  constructor:
+  - value: |
+      <% println "plotname: " + "\'" + plotname + "\'" 
+      %><% println "axis_x: " + "\'" + xaxis + "\'"
+      %><% println "axis_y: " + "\'" + yaxis + "\'"
+      %><% for (i=0; i<xtotal; i+=1) {
+        println "name_x" + i + ": " + "\'" + xname[i] + "\'";
+      }
+      %><% for (i=0; i<ytotal; i+=1) {
+        println "name_y" + i + ": " + "\'" + yname[i] + "\'";
+      }
+      %><% for (i=0; i<xtotal; i+=1) {
+        print "x" + i + ": [";
+        for (j=0; j<x[i].size()-1; j+=1) {
+          print x[i][j] + ", ";
+        }
+        for (j=x[i].size()-1; j<x[i].size(); j+=1) {
+          print x[i][j];
+        }
+        print "]\n";
+      }
+      %><% for (i=0; i<ytotal; i+=1) {
+        print "y" + i + ": [";
+          for (j=0; j<y[i].size()-1; j+=1) {
+            print y[i][j] + ", ";
+          }
+          for (j=y[i].size()-1; j<y[i].size(); j+=1) {
+            print y[i][j];
+          }
+        print "]\n";
+      }
+      %>
+  

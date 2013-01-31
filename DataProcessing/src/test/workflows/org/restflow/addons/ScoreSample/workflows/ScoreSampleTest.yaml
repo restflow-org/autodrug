@@ -1,0 +1,85 @@
+namespace:
+
+  module: ScoreSample
+  route: Test
+
+imports:
+
+- classpath:/org/restflow/addons/ScoreSample/workflows/ScoreSample.yaml
+
+components:
+
+- id: Workflow
+  type: Workflow
+  className: ssrl.workflow.actors.Workflow
+  properties: 
+    director: !ref PublishSubscribeDirector
+    inputs: 
+      validatePath:
+      image1:
+      image2:
+      # hashmap of spacegroup info from 
+      criteriaBySpaceGroup:
+      beamlineValues:
+      flux:
+      strategyBySpaceGroup:
+    nodes:
+    - !lref Inputs
+    - !lref ScoreSample
+    - !lref AssertOutput
+
+- id: Inputs
+  type: InPortal
+  properties: 
+    outflows: 
+      validatePath: /validatePath
+      image1: /path/image1
+      image2: /path/image2
+      # hashmap of spacegroup info from 
+      criteriaBySpaceGroup: /criteriaBySpaceGroup
+      beamlineValues: /beamlineValues
+      flux: /flux
+      strategyBySpaceGroup: /strategyBySpaceGroup
+
+
+- id: ScoreSample
+  type: Step 
+  properties:
+    nestedUriPrefix: /ScoreSample
+    inflows:
+      image1: /path/image1
+      image2: /path/image2
+      criteriaBySpaceGroup: /criteriaBySpaceGroup
+      beamlineValues: /beamlineValues
+      flux: /flux
+      strategyBySpaceGroup: /strategyBySpaceGroup
+    actor: !ref ScoreSample.A.Workflow
+    outflows:
+      score: /score
+      spacegroupNum: /spacegroup/num
+      unitcell: /unitcell
+      highres: /res
+
+- id: AssertOutput
+  type: GroovyActorNode
+  properties:
+    stepsOnce: true 
+    actor.step: |
+      import org.yaml.snakeyaml.*;
+      import static java.lang.Math.*
+      Yaml y = new Yaml();      
+      assertValues = y.load( new File(validatePath).text ); 
+      
+      assert abs (score - assertValues.score) < 0.01, "$score != $assertValues.score";
+   
+      done = true
+    actor.inputs:
+      score:
+      validatePath:
+    inflows:
+      validatePath: /validatePath
+      score: /score
+    outflows:
+      done: control:/done
+
+

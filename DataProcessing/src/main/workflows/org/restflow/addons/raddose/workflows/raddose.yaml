@@ -1,0 +1,83 @@
+namespace:
+
+  module: raddose
+  route: A
+
+imports:
+
+- classpath:/org/restflow/addons/raddose/actors/raddose-actors.yaml
+
+components:
+
+- id: Workflow
+  type: Workflow
+  className: ssrl.workflow.actors.Workflow
+  properties: 
+    director: !ref PublishSubscribeDirector
+    inputs: 
+      unitcell:
+      exposureTime:
+      beamSizeX:
+      beamSizeY:
+      energy:
+      flux:
+      numImages:
+    nodes:
+    - !lref Inputs
+    - !lref RunRaddose
+    - !lref CheckNoErrors
+    - !lref Outputs
+    outputs:
+      doseTotal:
+      dosePerImage:
+
+- id: Inputs
+  type: InPortal
+  properties: 
+    outflows: 
+      unitcell: /unitcell
+      exposureTime: /exposure
+      beamSizeX: /beam_size/width/mm
+      beamSizeY: /beam_size/height/mm
+      energy: /energy/ev
+      flux: /flux
+      numImages: /num/images
+
+- id: RunRaddose
+  type: Step 
+  properties:
+    inflows:
+      unitcell: /unitcell
+      exposureTime: /exposure
+      beamSizeX: /beam_size/width/mm
+      beamSizeY: /beam_size/height/mm
+      energy_ev: /energy/ev
+      flux: /flux
+      numImages: /num/images
+    actor: !ref raddose.Actor.RunRaddose
+    outflows:
+      errtext: file:/stderr.txt
+      doseTotal: /dose/total/MGy
+      dosePerImage: /dose/image/MGy
+
+- id: CheckNoErrors
+  type: Step
+  properties:
+    inflows:
+      errtext: file:/stderr.txt
+    actor: !ref Crystallography.Actor.AssertInputsEmpty
+    actor.inputs:
+      errtext:
+        nullable: true
+    outflows:
+      ok: /noerrors/
+
+- id: Outputs
+  type: OutPortal
+  properties:
+    inflows:
+      doseTotal: /dose/total/MGy
+      dosePerImage: /dose/image/MGy
+      ok: /noerrors/
+
+

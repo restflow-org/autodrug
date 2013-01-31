@@ -1,0 +1,122 @@
+namespace:
+
+  module: MolecularReplacement
+
+components: 
+
+- id: PhaserMattInputFileWriter
+  type: GroovyActor
+  properties:
+    inputs:
+      mtz:
+      pdb:
+      molecwt:
+      identity:
+      phaserMattTemplate:
+        default: !lref PhaserMattInputTemplate
+    step: |
+      def model = [mtzfile: mtz.name, pdbfile: pdb.name, mw: molecwt]
+      model.ident = identity
+      import groovy.text.SimpleTemplateEngine
+      def engine = new SimpleTemplateEngine()
+      template1 = engine.createTemplate(phaserMattTemplate).make(model)
+      template = template1.toString()
+    outputs:
+      template: 
+
+- id: PhaserMatthInputFileWriter
+  type: GroovyActor
+  properties:
+    inputs:
+      mtzfile:
+      pdbfile: 
+      identity: 
+      mw: 
+      highres: 
+      phasermatthTemplate: 
+        default: !lref PhaserMatthInputTemplate
+    step: |
+      def model = [mtzfile: mtzfile.name, pdbfile: pdbfile.name]
+      model.ident = identity
+      model.mw = mw
+      model.highres = highres 
+      import groovy.text.SimpleTemplateEngine
+      def engine = new SimpleTemplateEngine()
+      template1 = engine.createTemplate(phasermatthTemplate).make(model)
+      template = template1.toString()
+    outputs: 
+      template: 
+
+- id: PhaserMatthOutputFileParser
+  type: GroovyActor
+  properties:
+    settings:
+      parser: !lref PhaserMatthParserTemplate
+    inputs:
+      phaserOut: 
+    step: |
+      println new Date().format('HH:mm:ss') + "   Parsing Phaser Matthews calculation";
+      // println "finding ncs";
+      parser.compile();
+      parsed = parser.search (phaserOut);
+      // println parsed;
+      ncs = parsed.ncs
+      // output info //
+      println "";
+      println "Number of molecules in the asymmetric unit (Matthews coefficient): " + ncs;
+      println "";
+    outputs:
+      ncs: 
+
+- id: ArpwarpInputFileWriter
+  type: GroovyActor
+  properties:
+    inputs:
+      mtzfile:
+      pdbfile:
+      resinasu:
+      ncs:
+      seq: 
+      arpwarpTemplate: 
+        default: !lref ArpwarpInputTemplate
+    step: |
+      def model = [mtzfile: mtzfile.name, pdbfile: pdbfile.name]
+      model.resinasu = resinasu
+      model.ncscopies = ncs
+      model.sequence = seq.name
+      import groovy.text.SimpleTemplateEngine
+      def engine = new SimpleTemplateEngine()
+      template1 = engine.createTemplate(arpwarpTemplate).make(model)
+      template = template1.toString()
+    outputs:
+      template:
+
+- id: PlotOutputWriter
+  type: GroovyActor
+  properties:
+    settings:
+      template: !lref PlotTemplate
+    inputs:
+      x_num:
+      y_num: 
+      x_name: 
+      y_name:
+      plotname:
+      x_axis:
+      y_axis: 
+    step: |
+      def model = [x: x_num, y: y_num]
+      model.xtotal = x_num.size();
+      model.ytotal = y_num.size();
+      model.xname = x_name;
+      model.yname = y_name;
+      model.plotname = plotname
+      model.xaxis = x_axis;
+      model.yaxis = y_axis;
+      import groovy.text.SimpleTemplateEngine
+      def engine = new SimpleTemplateEngine()
+      tempengine = engine.createTemplate(template).make(model)
+      plotfile = tempengine.toString()
+    outputs:
+      plotfile: 
+      

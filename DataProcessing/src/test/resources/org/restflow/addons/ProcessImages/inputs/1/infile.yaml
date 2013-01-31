@@ -1,0 +1,15 @@
+mr_model: /data/ana/ENERGY_RADDAM-MYO/MODEL/2MBW.pdb
+alt_mr_model: /data/ana/ENERGY_RADDAM-MYO/MODEL/2MBW.pdb
+cif: ~
+rcutoff: '0.4'
+lastImageNum: 20
+unitcellForce:
+  a: 91.1
+  b: 91.1
+  c: 46.2
+  alpha: 90
+  beta: 90
+  gamma: 120
+highres: '2.0'
+spacegroupNumForce: 168
+isigin: '1.0'

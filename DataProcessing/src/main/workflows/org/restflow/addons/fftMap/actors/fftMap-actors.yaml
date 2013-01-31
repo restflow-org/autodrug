@@ -1,0 +1,42 @@
+namespace:
+
+  module: fftMap
+
+imports:
+
+- classpath:/common/scriptActors.yaml
+- classpath:/common/groovy/actors.yaml
+- classpath:/common/bash/actors.yaml
+- classpath:/common/perl/perlActor.yaml
+- classpath:/common/perl/actors.yaml
+- classpath:/common/directors.yaml
+- classpath:/common/types.yaml 
+- classpath:/common/support.yaml
+- classpath:org/restflow/addons/Crystallography/actors/Crystallography-actors.yaml
+
+components:
+
+- id: fftMapRunnerActor
+  className:  org.restflow.addons.shell.GroovyTemplateScriptRunnerActor
+  singleton: false
+  properties:
+    usesStepDirectory: true
+    settings:
+      _envScript: !resource edu/stanford/slac/smb/environment/MolecularReplacement/env.csh
+      _runFileTemplate: |
+        fft HKLIN ${mtz.name} MAPOUT out.map << eof
+        LABIN F1=DELFWT SIG1=SIGFP PHI=PHDELWT
+        SCALE F1 1.0
+        XYZLIM ASU
+        eof
+      _outputFiles:
+        'out.map':
+          output: mapfile
+        'stdout.txt':
+          output: outtext
+    inputs:
+      mtz:
+    outputs:
+      outtext:
+      mapfile:
+

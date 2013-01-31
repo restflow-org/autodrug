@@ -1,0 +1,71 @@
+namespace:
+
+  module: ProcessImages
+  
+imports:
+
+- classpath:/org/restflow/addons/DataProcessing/workflows/DataProcessing-P.yaml
+- classpath:/org/restflow/addons/MolecularReplacement/workflows/MolecularReplacement.yaml
+
+
+components:
+
+   
+- id: Actor.ExtractProcessingParameters
+  type: GroovyActor
+  properties:
+    inputs:
+      sample:
+    step: |
+      sampleName = sample.name
+      processingParams = sample.strategy.molecular_replacement;
+      
+      intensity_cutoff_sigma = processingParams.intensity_cutoff_sigma
+      r_measure_cutoff_percent = processingParams.r_measure_cutoff_percent
+      mr_model = processingParams.mr_model
+      alt_mr_model = processingParams.alt_mr_model
+      molecular_replacement = processingParams;   
+    outputs:
+      mr_model:
+      alt_mr_model:
+        nullable: true
+      molecular_replacement:      
+
+
+- id: Actor.ExtractProcessingParametersCIF
+  type: GroovyActor
+  properties:
+    inputs:
+      sample:
+    step: |
+      sampleName = sample.name
+      processingParams = sample.strategy.molecular_replacement;
+      
+      intensity_cutoff_sigma = processingParams.intensity_cutoff_sigma
+      r_measure_cutoff_percent = processingParams.r_measure_cutoff_percent
+      mr_model = processingParams.mr_model
+      alt_mr_model = processingParams.alt_mr_model
+      molecular_replacement = processingParams;   
+      cif_file = processingParams.cif_file;
+    outputs:
+      mr_model:
+      cif_file:
+      alt_mr_model:
+        nullable: true
+      molecular_replacement:      
+
+
+- id: Actor.CheckForAlternateMrModel
+  type: GroovyActor
+  properties:
+    inputs:
+      alt_mr_model:
+        nullable: true
+    step: |
+      //just pass through the mr_model and let the workflow block it if null
+    outputs:
+      alt_mr_model:
+        nullable: true
+
+
+

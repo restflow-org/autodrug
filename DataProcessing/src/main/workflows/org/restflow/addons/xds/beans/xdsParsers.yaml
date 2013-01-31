@@ -1,0 +1,37 @@
+namespace:
+
+  module: xds
+
+components:
+
+#- id: Parser.XDSError
+#  className: ssrl.workflow.beans.TextScanner
+#  properties:
+#    absorbWhiteSpaceSymbol: "~"
+#    template:
+
+- id: Parser.XDS
+  className: ssrl.workflow.beans.TextScanner
+  properties:
+    absorbWhiteSpaceSymbol: "~"
+    template:
+      - |
+        ~ THE DATA COLLECTION STATISTICS REPORTED BELOW ASSUMES:
+        ~ SPACE_GROUP_NUMBER= ~ {sgnum}
+        ~ UNIT_CELL_CONSTANTS= ~ {unitcell:UNIT_CELL}
+      - |
+        ~!!!~ERROR~!!!~{summary:TEXT_BLOCK}
+      - |
+        ~Sorry,~
+        {sorry:TEXT_BLOCK}
+    tags: 
+      UNIT_CELL: >
+        {a} ~ {b} ~ {c} ~ {alpha} ~ {beta} ~ {gamma}
+
+- id: Parser.XDSCorrectLP
+  className: ssrl.workflow.beans.TextScanner
+  properties:
+    absorbWhiteSpaceSymbol: "~"
+    template:
+      - |
+        ~CRYSTAL MOSAICITY (DEGREES) ~ {mosaic}

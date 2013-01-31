@@ -1,0 +1,147 @@
+
+namespace:
+
+  module: xtriage
+
+
+imports:
+
+- classpath:/common/scriptActors.yaml
+- classpath:/common/groovy/actors.yaml
+- classpath:/common/bash/actors.yaml
+- classpath:/common/perl/perlActor.yaml
+- classpath:/common/perl/actors.yaml
+- classpath:/common/directors.yaml
+- classpath:/common/types.yaml 
+- classpath:/common/support.yaml
+- classpath:org/restflow/addons/Crystallography/actors/Crystallography-actors.yaml
+- classpath:org/restflow/addons/xtriage/beans/xtriageInputTemplates.yaml
+- classpath:org/restflow/addons/xtriage/beans/xtriageParsers.yaml
+- classpath:/org/restflow/addons/plot/actors/plot-actors.yaml
+
+components:
+
+- id: Actor.XtriageOutputFileParser
+  type: GroovyActor
+  properties:
+    settings:
+      parser: !lref Parser.Xtriage
+    inputs:
+      outfile: 
+    step: |
+      println new Date().format('HH:mm:ss') + "   Parsing xtriage output";
+      //println "finding sg";
+      //println xtriageOut.text;
+      parser.compile();
+      parsed = parser.search (outfile.text);
+      //println parsed;
+      xtriageSum = parsed.summary;
+
+      if (xtriageSum.contains("No (pseudo)merohedral twin laws were found.")) {
+        xtriageTwin = 0;
+      }
+      else if (xtriageSum.contains("The results of the L-test indicate that the intensity statistics\nare significantly different than is expected from good to reasonable,\nuntwinned data.")) {
+        xtriageTwin = 1;
+      }
+      else {
+        xtriageTwin = 1;
+      }
+      
+      // output info //
+      println "";
+      println "Twinning and intensity statistics summary (acentric data):"
+      println xtriageSum;
+      println "";
+    outputs:
+      xtriageSum:
+      xtriageTwin: 
+
+- id: Actor.RunXtriage
+  type: Crystallography.GroovyTemplateScriptRunnerActor
+  properties:
+    usesStepDirectory: true
+    settings:
+      _runFileTemplate: |
+        phenix.xtriage $mtzIn.name log=xtriage.log
+      _envScript: !resource edu/stanford/slac/smb/environment/DataProcessing/env.csh
+      _outputFiles:
+        'xtriage.log':
+          output: logfile
+          parser: !lref Parser.XtriageLogFile
+        'stdout.txt':
+          output: outtext
+        'stderr.txt':
+          output: errtext
+    inputs:
+      mtzIn:
+    outputs:
+      logfile:
+      outtext:
+      errtext:
+
+
+- id: Actor.XtriageLogFileParser
+  type: GroovyActor
+  properties:
+    settings:
+      parser: !lref Parser.XtriageLogFile
+    inputs:
+      logfile: 
+    step: |
+      println new Date().format('HH:mm:ss') + "   Parsing xtriage log file";
+      parser.compile();
+      // println logfile.text;
+      parsed = parser.search(logfile.text);
+      
+      // parse nztest output //
+      nztest = parsed.nztest;
+      // println nztest;
+      // size = nztest.size();
+      x_nz = [nztest.z];
+      actw_nz = [0.000000, 0.017523, 0.061552, 0.121901, 0.191208, 0.264241, 0.337372, 0.408167, 0.475069, 0.537163, 0.593994]
+      acob_nz = nztest.acob;
+      acuntw_nz = nztest.acuntw;
+      y_nz = [nztest.acob, nztest.acuntw, actw_nz];
+      x_nz_name = ["Normalized Intensity"];
+      y_nz_name = ["Acentric Observed", "Acentric Untwinned", "Acentric Twinned"];
+      nz_plotname = "Z test"
+      nz_xaxis = "z"
+      nz_yaxis = "N(z)";
+      
+      // parse ltest output //
+      ltest = parsed.ltest;
+      x_ltest = [ltest.l]
+      obs_ltest = ltest.lobs;
+      untw_ltest = ltest.luntw;
+      tw_ltest = ltest.ltw;
+      y_ltest = [ltest.lobs, ltest.luntw, ltest.ltw]
+      x_ltest_name = ["Local Intensity Difference"]
+      y_ltest_name = ["Acentric Observed", "Acentric Untwinned", "Acentric Perfectly Twinned"]
+      ltest_plotname = "L test"
+      ltest_xaxis = "|L|"
+      ltest_yaxis = "N(|L|)"
+      //println parsed.nztest
+      //println ""
+      //println parsed.ltest
+    outputs:
+      x_nz:
+      y_nz:
+      actw_nz: 
+      acob_nz: 
+      acuntw_nz: 
+      x_nz_name: 
+      y_nz_name: 
+      nz_plotname:
+      nz_xaxis:
+      nz_yaxis: 
+      x_ltest:
+      y_ltest:
+      obs_ltest: 
+      untw_ltest: 
+      tw_ltest: 
+      x_ltest_name:
+      y_ltest_name:
+      ltest_plotname:
+      ltest_xaxis:
+      ltest_yaxis:
+

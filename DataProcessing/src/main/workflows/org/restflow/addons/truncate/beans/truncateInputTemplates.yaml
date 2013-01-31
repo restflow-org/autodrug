@@ -1,0 +1,18 @@
+namespace:
+
+  module: truncate
+
+components: 
+
+- id: InputTemplate.Truncate
+  className: java.lang.String
+  singleton: true 
+  constructor: 
+  - value: |
+      truncate HKLIN $mtzin HKLOUT $mtzout << eof
+      truncate yes
+      <% if (res.toFloat() != 0.0) {
+      println "resolution " + String.format('%4.2f', res) + " 40"
+      }
+      %>labout F=FP SIGF=SIGFP
+      eof

@@ -1,0 +1,120 @@
+namespace:
+
+  module: mosflm
+  route: Test
+
+imports:
+
+- classpath:/org/restflow/addons/mosflm/workflows/mosflm.yaml
+
+components:
+
+- id: Workflow
+  type: Workflow
+  className: ssrl.workflow.actors.Workflow
+  properties: 
+    director: !ref PublishSubscribeDirector
+    inputs: 
+      image1: 
+        description: full path of first image file
+      image2:
+        description: full path of second image file
+      validatePath:
+        description: path to file that contains the results in yaml format for comparison.
+      gen:
+      matrix:
+      polarization:
+      divergence1:
+      divergence2:
+      dispersion:
+      mosaicity:
+      resolution:
+      twotheta:
+      symmetry:
+    nodes:
+    - !lref Inputs
+    - !lref ConvertFilePathToHandles
+    - !lref RunMosflm
+    - !lref AssertOutput
+
+
+- id: Inputs
+  type: InPortal
+  properties: 
+    outflows: 
+      validatePath: /validatePath
+      image1: /path/image1
+      image2: /path/image2
+      gen: /path/gen
+      matrix: /path/matrix
+      polarization: /polarization
+      divergence1: /divergence1
+      divergence2: /divergence2
+      dispersion: /dispersion
+      mosaicity: /mosaicity
+      resolution: /resolution
+      twotheta: /twotheta
+      symmetry: /symmetry
+
+
+- id: ConvertFilePathToHandles
+  type: Step
+  properties:
+    inflows: 
+      gen: /path/gen
+      matrix: /path/matrix
+    actor: !inline
+      className: ssrl.workflow.actors.FilePathToHandleActor
+    outflows:
+      genFile: file:/gen
+      matrixFile: file:/matrix
+
+- id: RunMosflm
+  type: Step 
+  properties:
+    nestedUriPrefix: /mosflm
+    constants:
+      twotheta: '0.0'
+      polarization: '0.90'
+      divergence1: '0.10'
+      divergence2: '0.02'
+      dispersion: '0.0001'
+    inflows:
+      image1: /path/image1
+      image2: /path/image2
+      matrix: file:/matrix
+      mosaicity: /mosaicity
+      resolution: /resolution
+      symmetry: /symmetry
+    actor: !ref mosflm.A.Workflow
+    outflows:
+      phi1: /phi1
+      phi2: /phi2
+
+- id: AssertOutput
+  type: GroovyActorNode
+  properties:
+    stepsOnce: true 
+    actor.step: |
+      import org.yaml.snakeyaml.*;
+      import static java.lang.Math.*
+      Yaml y = new Yaml();      
+      assertValues = y.load( new File(validatePath).text ); 
+      
+      assert abs (phi1.toFloat() - assertValues.phi1) < 0.01, "$phi1 != $assertValues.phi1";
+      assert abs (phi2.toFloat() - assertValues.phi2) < 0.01, "$phi2 != $assertValues.phi2";
+
+      done = true
+    actor.inputs:
+      phi1:
+      phi2:
+      validatePath:
+    inflows:
+      phi1: /phi1
+      phi2: /phi2
+      validatePath: /validatePath
+    outflows:
+      done: control:/done
+
+
+

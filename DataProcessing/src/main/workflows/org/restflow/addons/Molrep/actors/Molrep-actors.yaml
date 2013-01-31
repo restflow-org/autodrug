@@ -1,0 +1,73 @@
+namespace:
+
+  module: Molrep
+
+imports:
+
+- classpath:/common/scriptActors.yaml
+- classpath:/common/groovy/actors.yaml
+- classpath:/common/bash/actors.yaml
+- classpath:/common/perl/perlActor.yaml
+- classpath:/common/perl/actors.yaml
+- classpath:/common/directors.yaml
+- classpath:/common/types.yaml 
+- classpath:/common/support.yaml
+- classpath:org/restflow/addons/Crystallography/actors/Crystallography-actors.yaml
+
+
+components: 
+
+
+- id: MolrepParserTemplate
+  className: ssrl.workflow.beans.TextScanner
+  properties:
+    absorbWhiteSpaceSymbol: "~"
+    template:
+      - |
+        Sol_ WARNING: {warning:TEXT_BLOCK}
+
+- id: Actor.RunMolrep
+  type: Crystallography.GroovyTemplateScriptRunnerActor
+  properties:
+    usesStepDirectory: true
+    settings:
+      _runFileTemplate: |
+        molrep -f mr.mtz -m mr.pdb << eof
+        DYAD=M
+        SURF=O
+        eof
+      _envScript: !resource edu/stanford/slac/smb/environment/Molrep/env.csh
+      _outputFiles:
+        '/mr.mtz':
+          output: mrmtz
+        '/molrep.crd': 
+          output: crd
+        '/molrep.pdb':
+          output: molpdb1
+        '/molrep.pdb':
+          output: molpdb2
+        '/molrep.doc':
+          output: doc
+        '/molrep.btc':
+          output: btc
+        '/molrep_rf.tab':
+          output: rf
+        '/molrep.xml':
+          output: xml
+        '/mr.crd':
+          output: mrcrd
+    inputs:
+      mtzIn:
+      pdbIn:
+    outputs:
+      outtext:
+      mrmtz:
+      crd:
+      molpdb1:
+      molpdb2:
+      doc:
+      btc:
+      rf:
+      xml:
+      mrcrd:
+

@@ -1,0 +1,109 @@
+namespace:
+
+  module: xds
+  route: Test 
+
+imports:
+
+- classpath:org/restflow/addons/xds/workflows/xds.yaml
+
+components:
+
+- id: Workflow
+  type: Workflow
+  properties: 
+    director: !ref PublishSubscribeDirector
+    inputs:
+      firstImagePath:
+      lastImageNum:
+      isigin:
+      unitcellForce:
+      highres:
+      spacegroupNum:
+      validatePath:
+    nodes:
+    - !lref Inputs
+    - !lref RunXds
+#    - !lref AssertOutput
+    - !lref Outputs
+    outputs:
+      xdsascii:
+
+- id: Inputs
+  type: InPortal
+  properties: 
+    outflows: 
+      firstImagePath: /firstImageInDataset
+      lastImageNum: /lastImageNum
+      isigin: /input/isigma
+      unitcellForce: /unitcellForce
+      highres: /highres
+      spacegroupNum: /spacegroup/num
+      validatePath: /validatePath
+
+- id: RunXds
+  type: Step
+  properties:
+    nestedUriPrefix: /xds 
+    inflows:
+      firstImagePath: /firstImageInDataset
+      lastImageNum: /lastImageNum
+      isigin: /input/isigma
+      unitcellForce: /unitcellForce
+      highres: /highres
+      spacegroupNumForce: /spacegroup/num
+    actor: !ref xds.Workflow
+    outflows:
+      xdsascii: file:/xdsout/XDS_ASCII.HKL
+      mosaicity: /mosaicity/
+      unitcell: /unitcell
+      sgnum: /spacegroup/num
+
+
+- id: AssertOutput
+  type: GroovyActorNode
+  properties:
+    stepsOnce: true 
+    actor.step: |
+      import org.yaml.snakeyaml.*;
+      import static java.lang.Math.*
+      Yaml y = new Yaml();      
+      assertValues = y.load( new File(validatePath).text ); 
+      
+      assert spacegroup == assertValues.spacegroup, "$spacegroup != $assertValues.spacegroup";
+      def startAngle=runDefinition.startAngle;
+      def endAngle=runDefinition.endAngle;
+      assert abs ( startAngle - assertValues.startAngle) / startAngle * 100 < 5, "$startAngle != $assertValues.startAngle";
+      assert abs ( endAngle - assertValues.endAngle) / endAngle * 100 < 5, "$endAngle != $assertValues.endAngle";
+ 
+      done = true
+    actor.inputs:
+      validatePath:
+      mosaicity:
+      unitcell:
+      spacegroupNum:
+      mosaicity:
+    inflows:
+      validatePath: /validatePath
+      mosaicity: /mosaicity/
+      a: /a
+      b: /b
+      c: /c
+      alpha: /alpha
+      beta: /beta
+      unitcell: /unitcell
+      spacegroupNum: /spacegroup/num
+      mosaicity: /mosaicity
+    outflows:
+      done: control:/done
+
+
+
+
+- id: Outputs
+  type: OutPortal
+  properties: 
+    inflows:
+      xdsascii: file:/xdsout/XDS_ASCII.HKL
+
+
