@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
+    <info
+        organisation="org.restflow" 
+        module="restflow-crystallography"
+        revision="0.3"             
+        status="integration"> 
+	</info>        
+	        
+   <configurations>
+		<conf name="runtime"  description="Enhances RestFlow with crystallography specific classes and resources."/>
+      	<conf name="test" extends="runtime" visibility="private" description="for testing"/>      	
+    </configurations>
+	
+    <publications>
+      <artifact name="restflow-crystallography" type="jar" ext="jar" />
+     </publications>
+
+	<dependencies>
+
+		<dependency org="org.codehaus.groovy" name="groovy-all" rev="1.7.5"  >
+			<exclude org="org.apache.ant" module="ant" name="*" type="*" ext="*" conf="" matcher="exact"/>
+			<exclude org="jline" module="jline" name="*" type="*" ext="*" conf="" matcher="exact"/>
+			<exclude org="org.fusesource.jansi" module="jansi" name="*" type="*" ext="*" conf="" matcher="exact"/>
+		</dependency>
+
+        <dependency org="junit" name="junit" rev="3.8.1" conf="test->default" />
+        
+        <dependency org="ssrl" name="RestFlow" conf="runtime" rev="0.4+"/> 
+
+        <dependency org="ssrl" name="WebiceLib" rev="1.2" conf="runtime">
+			<exclude org="org.springframework" module="*" name="*" type="*" ext="*" conf="" matcher="exact"/>
+		</dependency>
+
+        <dependency org="org.springframework" name="spring-web" rev="3.1.2.RELEASE"/>
+
+
+        <dependency org="org.apache.httpcomponents" name="httpclient" rev="4.2.1" force="true"/>
+        <dependency org="org.apache.httpcomponents" name="httpcore" rev="4.2.1" force="true"/>
+        <dependency org="org.codehaus.groovy.modules.http-builder" name="http-builder" rev="0.5.2" >
+            <exclude module="groovy" />
+            <exclude module="junit" />
+            <exclude module="xercesImpl" />
+        </dependency>
+
+	</dependencies>
+</ivy-module>
+  
