@@ -8,10 +8,40 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.restflow</groupId>
   <artifactId>restflow-crystallography</artifactId>
   <packaging>jar</packaging>
-  <version>0.3</version>
+  <version>0.3-SNAPSHOT</version>
+
+  <parent>
+  	<groupId>org.restflow</groupId>
+  	<artifactId>AutoDrug</artifactId>
+  	<version>0.4-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+
+<build>
+<plugins>
+  <plugin>
+    <artifactId>maven-compiler-plugin</artifactId>
+    <version>2.3.2</version>
+    <configuration>
+      <compilerId>groovy-eclipse-compiler</compilerId>
+      <!-- set verbose to be true if you want lots of uninteresting messages -->
+      <!-- <verbose>true</verbose> -->
+    </configuration>
+    <dependencies>
+      <dependency>
+        <groupId>org.codehaus.groovy</groupId>
+        <artifactId>groovy-eclipse-compiler</artifactId>
+        <version>2.7.0-01</version>
+      </dependency>
+    </dependencies>
+  </plugin>
+</plugins>
+</build>
+
+
   <dependencies>
     <dependency>
       <groupId>org.codehaus.groovy</groupId>
@@ -40,28 +70,11 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>ssrl</groupId>
+      <groupId>org.restflow</groupId>
       <artifactId>RestFlow</artifactId>
-      <version>0.4+</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>ssrl</groupId>
-      <artifactId>WebiceLib</artifactId>
-      <version>1.2</version>
-      <scope>runtime</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>org.springframework</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-web</artifactId>
-      <version>3.1.2.RELEASE</version>
-      <optional>true</optional>
+      <version>1.0</version>
+      <scope>compile</scope>
+      <optional>false</optional>
     </dependency>
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
@@ -75,6 +88,31 @@
       <version>4.2.1</version>
       <optional>true</optional>
     </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-web</artifactId>
+      <version>3.1.2.RELEASE</version>
+      <scope>compile</scope>
+    </dependency>
+
+
+    <!--
+
+    <dependency>
+      <groupId>ssrl</groupId>
+      <artifactId>WebiceLib</artifactId>
+      <version>1.2</version>
+      <scope>runtime</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+
     <dependency>
       <groupId>org.codehaus.groovy.modules.http-builder</groupId>
       <artifactId>http-builder</artifactId>
@@ -82,18 +120,19 @@
       <optional>true</optional>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
+          <groupId>x</groupId>
           <artifactId>groovy</artifactId>
         </exclusion>
         <exclusion>
-          <groupId>*</groupId>
+          <groupId>x</groupId>
           <artifactId>junit</artifactId>
         </exclusion>
         <exclusion>
-          <groupId>*</groupId>
+          <groupId>x</groupId>
           <artifactId>xercesImpl</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
+    -->
   </dependencies>
 </project>

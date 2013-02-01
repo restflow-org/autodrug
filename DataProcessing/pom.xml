@@ -11,12 +11,20 @@
   <groupId>org.restflow</groupId>
   <artifactId>restflow-dataprocessing</artifactId>
   <packaging>jar</packaging>
-  <version>0.3</version>
+  <version>0.3-SNAPSHOT</version>
+
+  <parent>
+  	<groupId>org.restflow</groupId>
+  	<artifactId>AutoDrug</artifactId>
+  	<version>0.4-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
   <dependencies>
     <dependency>
       <groupId>org.restflow</groupId>
       <artifactId>restflow-crystallography</artifactId>
-      <version>latest.integration</version>
+      <version>0.3-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
   </dependencies>
