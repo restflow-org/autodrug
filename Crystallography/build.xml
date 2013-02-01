@@ -85,6 +85,9 @@
 		<ivy:publish resolver="workspace" pubrevision="${ivy.new.revision}" status="integration" update="true" overwrite="true" conf="runtime,compile">
 			<artifacts pattern="target/[artifact]-[revision].[ext]" />
 		</ivy:publish>
+
+      <ivy:makepom ivyfile="ivy.xml" pomfile="ivy.pom"/>
+
 	</target>	
 	
 	<target name="clean">

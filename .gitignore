@@ -1,0 +1,13 @@
+.svn
+*.class
+*.jar
+*.war
+*.ear
+bin/
+lib/
+target/
+classes/
+.settings/
+autodrug/IvyCache
+autodrug/IvyConfig
+!src/test/exclude/TestUtil.class
