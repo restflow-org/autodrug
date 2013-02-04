@@ -1,6 +1,5 @@
 package org.restflow.addons.samples.project;
 
-import org.restflow.addons.samples.project.*;
 import org.restflow.addons.samples.collect.*;
 import org.restflow.addons.samples.screen.*;
 import org.restflow.addons.samples.process.*;
