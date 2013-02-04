@@ -38,6 +38,23 @@
       </dependency>
     </dependencies>
   </plugin>
+
+    <!-- Copy the dependency jars into the target/dependency directory -->
+     <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+
 </plugins>
 
       <resources>
@@ -139,4 +156,5 @@
     </dependency>
     -->
   </dependencies>
+  <groupId>org.restflow.addons</groupId>
 </project>
