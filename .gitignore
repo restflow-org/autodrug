@@ -8,6 +8,6 @@ lib/
 target/
 classes/
 .settings/
-autodrug/IvyCache
-autodrug/IvyConfig
-!src/test/exclude/TestUtil.class
+IvyCache/
+IvyConfig/
+*.swp
