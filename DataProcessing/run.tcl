@@ -10,7 +10,7 @@ set project DataProcessing
 set projectDir $env(WORKSPACE)/$project
 set base /data/$env(USER)/$project
 set lib $projectDir/lib
-set classes $projectDir/classes
+set classes $projectDir/target/classes
 set classpath $lib/*:$classes
 set src_base $env(WORKSPACE)/$project/
 set runs_dir $base/test
