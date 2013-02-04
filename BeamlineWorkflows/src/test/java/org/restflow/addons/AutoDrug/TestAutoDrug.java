@@ -14,7 +14,7 @@ public class TestAutoDrug extends TestCase {
         String strategy = PROJECT + "src/test/resources/org/restflow/addons/AutoDrug/inputs/1/proteins.yaml";
         String testDataMap = PROJECT + "/src/test/resources/org/restflow/addons/AutoDrug/inputs/1/testDataMap.yaml";        
 
-        ssrl.workflow.RestFlow.main(new String[]{"-base",base,"-f", workflowFile,
+        org.restflow.RestFlow.main(new String[]{"-base",base,"-f", workflowFile,
         		"-w","AutoDrug.Test.Workflow",
         		"-i","strategy-file="+ strategy,
         		"-i","testDataDir="+ TEST_DIR,
