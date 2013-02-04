@@ -13,8 +13,8 @@ import org.yaml.snakeyaml.Yaml;
 import sil.beans.Crystal;
 import sil.beans.Sil;
 import ssrl.beans.AppSession;
-import ssrl.modelgrep.ModelGrep;
-import ssrl.modelgrep.RegularExpressionWithModel;
+import org.restflow.modelgrep.ModelGrep;
+import org.restflow.modelgrep.RegularExpressionWithModel;
 
 import static groovyx.net.http.Method.*
 import groovyx.net.http.*
