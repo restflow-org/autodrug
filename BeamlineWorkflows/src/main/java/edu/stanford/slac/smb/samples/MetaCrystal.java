@@ -13,7 +13,7 @@ import sil.beans.CrystalResult;
 import sil.beans.Image;
 import sil.beans.Sil;
 //import ssrl.autodrug.parameters.BeamlineDependentValues;
-import org.restflow.addons.samples.project.*;
+import org.restflow.addons.samples.project.ProteinSpecification;
 
 public class MetaCrystal {
 
