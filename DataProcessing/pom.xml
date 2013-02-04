@@ -8,7 +8,6 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.restflow</groupId>
   <artifactId>restflow-dataprocessing</artifactId>
   <packaging>jar</packaging>
   <version>0.3-SNAPSHOT</version>
@@ -20,12 +19,44 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
+<build>
+<plugins>
+  <plugin>
+    <artifactId>maven-compiler-plugin</artifactId>
+    <version>2.3.2</version>
+    <configuration>
+      <compilerId>groovy-eclipse-compiler</compilerId>
+      <!-- set verbose to be true if you want lots of uninteresting messages -->
+      <verbose>true</verbose> 
+    </configuration>
+    <dependencies>
+      <dependency>
+        <groupId>org.codehaus.groovy</groupId>
+        <artifactId>groovy-eclipse-compiler</artifactId>
+        <version>2.7.0-01</version>
+      </dependency>
+    </dependencies>
+  </plugin>
+</plugins>
+
+      <resources>
+        <resource>
+          <directory>src/main/workflows</directory>
+        </resource>
+        <resource>
+          <directory>src/main/resources</directory>
+        </resource>
+      </resources>
+
+</build>
+
+
   <dependencies>
     <dependency>
       <groupId>org.restflow</groupId>
       <artifactId>restflow-crystallography</artifactId>
       <version>0.3-SNAPSHOT</version>
-      <scope>runtime</scope>
+      <scope>compile</scope>
     </dependency>
   </dependencies>
 </project>
