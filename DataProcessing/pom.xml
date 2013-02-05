@@ -66,6 +66,9 @@
         <resource>
           <directory>src/main/resources</directory>
         </resource>
+        <resource>
+          <directory>src/test/workflows</directory>
+        </resource>
       </resources>
 
 </build>
