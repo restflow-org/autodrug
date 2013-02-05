@@ -9,7 +9,7 @@ set command [lindex $argv 0]
 set project DataProcessing
 set projectDir $env(WORKSPACE)/$project
 set base /data/$env(USER)/$project
-set lib $projectDir/lib
+set lib $projectDir/target/dependency
 set classes $projectDir/target/classes
 set classpath $lib/*:$classes
 set src_base $env(WORKSPACE)/$project/
