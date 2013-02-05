@@ -5,7 +5,7 @@ namespace:
 components: 
 
 - id: Parser.Scala
-  className: ssrl.workflow.beans.TextScanner
+  className: org.restflow.beans.TextScanner
   properties:
     absorbWhiteSpaceSymbol: "~"
     tags:
@@ -55,7 +55,7 @@ components:
         ~Initial{stuff:TEXT_BLOCK}
 
 - id: Parser.ScalaSummary
-  className: ssrl.workflow.beans.TextScanner
+  className: org.restflow.beans.TextScanner
   properties:
     absorbWhiteSpaceSymbol: "~"
     template: 

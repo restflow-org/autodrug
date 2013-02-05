@@ -5,13 +5,13 @@ namespace:
 components:
 
 #- id: Parser.XDSError
-#  className: ssrl.workflow.beans.TextScanner
+#  className: org.restflow.beans.TextScanner
 #  properties:
 #    absorbWhiteSpaceSymbol: "~"
 #    template:
 
 - id: Parser.XDS
-  className: ssrl.workflow.beans.TextScanner
+  className: org.restflow.beans.TextScanner
   properties:
     absorbWhiteSpaceSymbol: "~"
     template:
@@ -29,7 +29,7 @@ components:
         {a} ~ {b} ~ {c} ~ {alpha} ~ {beta} ~ {gamma}
 
 - id: Parser.XDSCorrectLP
-  className: ssrl.workflow.beans.TextScanner
+  className: org.restflow.beans.TextScanner
   properties:
     absorbWhiteSpaceSymbol: "~"
     template:

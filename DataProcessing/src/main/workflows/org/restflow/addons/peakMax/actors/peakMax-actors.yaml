@@ -36,7 +36,7 @@ components:
       stdout:
 
 - id: PeakmaxParserTemplate
-  className: ssrl.workflow.beans.TextScanner
+  className: org.restflow.beans.TextScanner
   singleton: false
   properties:
     absorbWhiteSpaceSymbol: "~"

@@ -5,7 +5,7 @@ namespace:
 components: 
 
 - id: RefmacParserTemplate
-  className: ssrl.workflow.beans.TextScanner
+  className: org.restflow.beans.TextScanner
   properties:
     absorbWhiteSpaceSymbol: "~"
     template: 
@@ -24,7 +24,7 @@ components:
       ANALYSIS: "~ {ncyc:INT} ~ {rfact:FLOAT} ~ {rfree:FLOAT} ~ {fom:FLOAT} ~ {LL} ~ {LLfree:FLOAT} ~ {rmsBond:FLOAT} ~ {zBond:FLOAT} ~ {rmsAngl:FLOAT} ~ {zAngl:FLOAT} ~ {rmsChiral:FLOAT}"
 
 - id: RefmacErrorParserTemplate
-  className: ssrl.workflow.beans.TextScanner
+  className: org.restflow.beans.TextScanner
   properties:
     absorbWhiteSpaceSymbol: "~"
     template: 
@@ -32,7 +32,7 @@ components:
       ===>~Error:~{error:TEXT_BLOCK}
 
 - id: MolrepParserTemplate
-  className: ssrl.workflow.beans.TextScanner
+  className: org.restflow.beans.TextScanner
   properties:
     absorbWhiteSpaceSymbol: "~"
     template:
@@ -40,7 +40,7 @@ components:
         Sol_ WARNING: {warning:TEXT_BLOCK}
 
 - id: RStatParserTemplate
-  className: ssrl.workflow.beans.TextScanner
+  className: org.restflow.beans.TextScanner
   properties:
     absorbWhiteSpaceSymbol: "~"
     template:
@@ -49,14 +49,14 @@ components:
         ~ R~free ~ {rfreeinit} ~ {rfreefin}
 
 - id: PhaserMatthParserTemplate
-  className: ssrl.workflow.beans.TextScanner
+  className: org.restflow.beans.TextScanner
   properties: 
     absorbWhiteSpaceSymbol: .
     template: 
       - . {ncs} . {num} . {molecwt} . {vm} . {solvent} . <== most probable
 
 - id: XDSErrorParserTemplate
-  className: ssrl.workflow.beans.TextScanner
+  className: org.restflow.beans.TextScanner
   properties:
     absorbWhiteSpaceSymbol: "~"
     template:
@@ -68,7 +68,7 @@ components:
 
 
 - id: XtriageLogFileParserTemplate
-  className: ssrl.workflow.beans.TextScanner
+  className: org.restflow.beans.TextScanner
   properties:
     absorbWhiteSpaceSymbol: "~"
     template:

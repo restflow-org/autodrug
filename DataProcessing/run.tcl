@@ -34,7 +34,7 @@ proc testWorkflow {name} {
         ProcessImages {
             cd $projectDir
             set infile $src_base/src/test/resources/org/restflow/addons/ProcessImages/inputs/1/infile.yaml
-            catch {exec java -classpath $classpath ssrl.workflow.RestFlow -base $base/test -f classpath:org/restflow/addons/ProcessImages/workflows/TestProcessImages-A.yaml -w ProcessImages.Test.Workflow -infile $infile -i firstImagePath=$env(WORKSPACE)/TestDataProcessing/1/B1_1_00001.cbf -i mr_model=src/test/resources/org/restflow/addons/ProcessImages/inputs/1/2MBW.pdb  }  err
+            catch {exec java -classpath $classpath org.restflow.RestFlow -base $base/test -f classpath:org/restflow/addons/ProcessImages/workflows/TestProcessImages-A.yaml -w ProcessImages.Test.Workflow -infile $infile -i firstImagePath=$env(WORKSPACE)/TestDataProcessing/1/B1_1_00001.cbf -i mr_model=src/test/resources/org/restflow/addons/ProcessImages/inputs/1/2MBW.pdb  }  err
             puts $err
             set rundir [getLatestFile $runs_dir/* ProcessImages*]
             puts $rundir
@@ -45,7 +45,7 @@ proc testWorkflow {name} {
         ProcessImages2 {
             cd $projectDir
             set infile $src_base/src/test/resources/org/restflow/addons/ProcessImages/inputs/2/infile.yaml
-            catch {exec java -classpath $classpath ssrl.workflow.RestFlow -base $base/test -f classpath:org/restflow/addons/ProcessImages/workflows/ProcessImagesTest-R.yaml -w ProcessImages.Test.Workflow -infile $infile -i firstImagePath=$env(WORKSPACE)/TestDataProcessing/1/B1_1_00001.cbf -i mr_model=src/test/resources/org/restflow/addons/ProcessImages/inputs/2/2MBW.pdb  }  err
+            catch {exec java -classpath $classpath org.restflow.RestFlow -base $base/test -f classpath:org/restflow/addons/ProcessImages/workflows/ProcessImagesTest-R.yaml -w ProcessImages.Test.Workflow -infile $infile -i firstImagePath=$env(WORKSPACE)/TestDataProcessing/1/B1_1_00001.cbf -i mr_model=src/test/resources/org/restflow/addons/ProcessImages/inputs/2/2MBW.pdb  }  err
             puts $err
             set rundir [getLatestFile $runs_dir/* ProcessImages*]
             puts $rundir
@@ -55,7 +55,7 @@ proc testWorkflow {name} {
         DataProcessing {
             cd $projectDir
             set infile $src_base/src/test/resources/org/restflow/addons/DataProcessing/inputs/1/infile.yaml
-            catch {exec java -classpath $classpath ssrl.workflow.RestFlow -base $base/test -f classpath:org/restflow/addons/DataProcessing/workflows/DataProcessingTest-P.yaml -w DataProcessing.Test.Workflow -infile src/test/resources/org/restflow/addons/DataProcessing/inputs/1/DataProcessing.in -i firstImagePath=$env(WORKSPACE)/TestDataProcessing/1/B1_1_00001.cbf  }  err
+            catch {exec java -classpath $classpath org.restflow.RestFlow -base $base/test -f classpath:org/restflow/addons/DataProcessing/workflows/DataProcessingTest-P.yaml -w DataProcessing.Test.Workflow -infile src/test/resources/org/restflow/addons/DataProcessing/inputs/1/DataProcessing.in -i firstImagePath=$env(WORKSPACE)/TestDataProcessing/1/B1_1_00001.cbf  }  err
             puts $err
             set rundir [getLatestFile $runs_dir/* DataProcessing*]
             puts $rundir
@@ -64,7 +64,7 @@ proc testWorkflow {name} {
 
         freeR {
             cd $projectDir
-            catch {exec java -classpath $classpath ssrl.workflow.RestFlow -base $base/test -f classpath:org/restflow/addons/freeR/workflows/freeRCmd.yaml -w freeRCmd.Workflow -i mtz=src/test/resources/org/restflow/addons/freeR/inputs/1/trunc1.mtz }  err
+            catch {exec java -classpath $classpath org.restflow.RestFlow -base $base/test -f classpath:org/restflow/addons/freeR/workflows/freeRCmd.yaml -w freeRCmd.Workflow -i mtz=src/test/resources/org/restflow/addons/freeR/inputs/1/trunc1.mtz }  err
             puts $err
             set rundir [getLatestFile $runs_dir/* freeR*]
             puts $rundir
@@ -72,7 +72,7 @@ proc testWorkflow {name} {
         }
         truncate {
             cd $projectDir
-            catch {exec java -classpath $classpath ssrl.workflow.RestFlow -base $base/test -f classpath:org/restflow/addons/truncate/workflows/truncateCmd.yaml -w truncateCmd.Workflow -i resolution=0.0 -i mtz=src/test/resources/org/restflow/addons/truncate/inputs/1/scala1.mtz }  err
+            catch {exec java -classpath $classpath org.restflow.RestFlow -base $base/test -f classpath:org/restflow/addons/truncate/workflows/truncateCmd.yaml -w truncateCmd.Workflow -i resolution=0.0 -i mtz=src/test/resources/org/restflow/addons/truncate/inputs/1/scala1.mtz }  err
             puts $err
             set rundir [getLatestFile $runs_dir/* truncate*]
             puts $rundir
@@ -80,7 +80,7 @@ proc testWorkflow {name} {
         }
         truncate2 {
             cd $projectDir
-            catch {exec java -classpath $classpath ssrl.workflow.RestFlow -base $base/test -f classpath:org/restflow/addons/truncate/workflows/truncateCmd.yaml -w truncateCmd.Workflow -i resolution=1.0 -i mtz=src/test/resources/org/restflow/addons/truncate/inputs/1/scala1.mtz }  err
+            catch {exec java -classpath $classpath org.restflow.RestFlow -base $base/test -f classpath:org/restflow/addons/truncate/workflows/truncateCmd.yaml -w truncateCmd.Workflow -i resolution=1.0 -i mtz=src/test/resources/org/restflow/addons/truncate/inputs/1/scala1.mtz }  err
             puts $err
             set rundir [getLatestFile $runs_dir/* truncate*]
             puts $rundir
@@ -88,7 +88,7 @@ proc testWorkflow {name} {
         }
         scala {
             cd $projectDir
-            catch {exec java -classpath $classpath ssrl.workflow.RestFlow -base $base/test -f classpath:org/restflow/addons/scala/workflows/scalaCmd.yaml -w scalaCmd.Workflow -i isigmaCutoff=1.0 -i mtz=src/test/resources/org/restflow/addons/scala/inputs/1/point1.mtz }  err
+            catch {exec java -classpath $classpath org.restflow.RestFlow -base $base/test -f classpath:org/restflow/addons/scala/workflows/scalaCmd.yaml -w scalaCmd.Workflow -i isigmaCutoff=1.0 -i mtz=src/test/resources/org/restflow/addons/scala/inputs/1/point1.mtz }  err
             puts $err
             set rundir [getLatestFile $runs_dir/* scalaCmd*]
             puts $rundir
@@ -96,7 +96,7 @@ proc testWorkflow {name} {
         }
         xtriage {
             cd $projectDir
-            catch {exec java -classpath $classpath ssrl.workflow.RestFlow -base $base/test -f classpath:org/restflow/addons/xtriage/workflows/xtriageCmd.yaml -w xtriage.Test.Workflow -i mtz=src/test/resources/org/restflow/addons/xtriage/inputs/1/point1.mtz }  err
+            catch {exec java -classpath $classpath org.restflow.RestFlow -base $base/test -f classpath:org/restflow/addons/xtriage/workflows/xtriageCmd.yaml -w xtriage.Test.Workflow -i mtz=src/test/resources/org/restflow/addons/xtriage/inputs/1/point1.mtz }  err
             puts $err
             set rundir [getLatestFile $runs_dir/* xtriageCmd*]
             puts $rundir
@@ -104,20 +104,20 @@ proc testWorkflow {name} {
         }
         pointless {
             cd $projectDir
-            catch {exec java -classpath $classpath ssrl.workflow.RestFlow -base $base/test -f classpath:org/restflow/addons/pointless/workflows/testPointless.yaml -w pointless.Test.Workflow -i xdsascii=src/test/resources/org/restflow/addons/pointless/inputs/1/XDS_ASCII.HKL  -i validatePath=${projectDir}/src/test/resources/org/restflow/addons/pointless/outputs/1/out.yaml  }  err
+            catch {exec java -classpath $classpath org.restflow.RestFlow -base $base/test -f classpath:org/restflow/addons/pointless/workflows/testPointless.yaml -w pointless.Test.Workflow -i xdsascii=src/test/resources/org/restflow/addons/pointless/inputs/1/XDS_ASCII.HKL  -i validatePath=${projectDir}/src/test/resources/org/restflow/addons/pointless/outputs/1/out.yaml  }  err
             puts $err
             set rundir [getLatestFile $runs_dir/* pointlessCmd*]
             puts $rundir
             puts [exec cat $rundir/_metadata/products.yaml]
 
-            catch {exec java -classpath $classpath ssrl.workflow.RestFlow -base $base/test -f classpath:org/restflow/addons/pointless/workflows/testPointless.yaml -w pointless.Test.Workflow -i xdsascii=src/test/resources/org/restflow/addons/pointless/inputs/2/XDS_ASCII.HKL  -i validatePath=${projectDir}/src/test/resources/org/restflow/addons/pointless/outputs/2/out.yaml  }  err
+            catch {exec java -classpath $classpath org.restflow.RestFlow -base $base/test -f classpath:org/restflow/addons/pointless/workflows/testPointless.yaml -w pointless.Test.Workflow -i xdsascii=src/test/resources/org/restflow/addons/pointless/inputs/2/XDS_ASCII.HKL  -i validatePath=${projectDir}/src/test/resources/org/restflow/addons/pointless/outputs/2/out.yaml  }  err
             puts $err
             set rundir [getLatestFile $runs_dir/* pointlessCmd*]
             puts $rundir
         }
         xds {
             cd $projectDir
-            catch {exec java -classpath $classpath ssrl.workflow.RestFlow -base $base/test -f classpath:org/restflow/addons/xds/workflows/testXds.yaml -w xds.Test.Workflow -infile src/test/resources/org/restflow/addons/xds/inputs/1/in.yaml -i firstImagePath=$env(WORKSPACE)/TestDataProcessing/1/B1_1_00001.cbf }  err
+            catch {exec java -classpath $classpath org.restflow.RestFlow -base $base/test -f classpath:org/restflow/addons/xds/workflows/testXds.yaml -w xds.Test.Workflow -infile src/test/resources/org/restflow/addons/xds/inputs/1/in.yaml -i firstImagePath=$env(WORKSPACE)/TestDataProcessing/1/B1_1_00001.cbf }  err
             puts $err
             set rundir [getLatestFile $runs_dir/* xdsCmd*]
             puts $rundir
@@ -126,7 +126,7 @@ proc testWorkflow {name} {
 
         xds-parser {
             cd $projectDir
-            catch {exec java -classpath $classpath ssrl.workflow.RestFlow -base $base/test -f classpath:org/restflow/addons/xds/workflows/testXdsParser.yaml -w xds.TestParser.Workflow -i xdsStdoutPath=src/test/resources/org/restflow/addons/xds/parser/1/stdout.txt -i validatePath=${projectDir}/src/test/resources/org/restflow/addons/xds/parser/1/parser-out.yaml }   err
+            catch {exec java -classpath $classpath org.restflow.RestFlow -base $base/test -f classpath:org/restflow/addons/xds/workflows/testXdsParser.yaml -w xds.TestParser.Workflow -i xdsStdoutPath=src/test/resources/org/restflow/addons/xds/parser/1/stdout.txt -i validatePath=${projectDir}/src/test/resources/org/restflow/addons/xds/parser/1/parser-out.yaml }   err
             puts $err
             set rundir [getLatestFile $runs_dir/* xds*]
             puts $rundir
@@ -136,7 +136,7 @@ proc testWorkflow {name} {
 
         getImgHeader {
             cd $projectDir
-            catch {exec java -classpath $classpath ssrl.workflow.RestFlow -base $base/test -f classpath:org/restflow/addons/getImgHeader/workflows/getImgHeaderCmd.yaml -w getImgHeader.Test.Workflow -i imagePath=${projectDir}/src/test/resources/org/restflow/addons/getImgHeader/inputs/1/B1_1_00001.cbf  -i validatePath=${projectDir}/src/test/resources/org/restflow/addons/getImgHeader/inputs/1/header.yaml }  err
+            catch {exec java -classpath $classpath org.restflow.RestFlow -base $base/test -f classpath:org/restflow/addons/getImgHeader/workflows/getImgHeaderCmd.yaml -w getImgHeader.Test.Workflow -i imagePath=${projectDir}/src/test/resources/org/restflow/addons/getImgHeader/inputs/1/B1_1_00001.cbf  -i validatePath=${projectDir}/src/test/resources/org/restflow/addons/getImgHeader/inputs/1/header.yaml }  err
             puts $err
             set rundir [getLatestFile $runs_dir/* getImgHeaderCmd*]
             puts $rundir
@@ -144,7 +144,7 @@ proc testWorkflow {name} {
         }
         labelit {
             cd $projectDir
-            catch {exec java -classpath $classpath ssrl.workflow.RestFlow -base $base/test -f classpath:org/restflow/addons/labelit/workflows/labelitTest.yaml -w labelit.Test.Workflow -i image1=${projectDir}/src/test/resources/org/restflow/addons/labelit/inputs/1/B2_0001.cbf -i image2=${projectDir}/src/test/resources/org/restflow/addons/labelit/inputs/1/B2_0002.cbf -i validatePath=${projectDir}/src/test/resources/org/restflow/addons/labelit/inputs/1/output.yaml   }  err
+            catch {exec java -classpath $classpath org.restflow.RestFlow -base $base/test -f classpath:org/restflow/addons/labelit/workflows/labelitTest.yaml -w labelit.Test.Workflow -i image1=${projectDir}/src/test/resources/org/restflow/addons/labelit/inputs/1/B2_0001.cbf -i image2=${projectDir}/src/test/resources/org/restflow/addons/labelit/inputs/1/B2_0002.cbf -i validatePath=${projectDir}/src/test/resources/org/restflow/addons/labelit/inputs/1/output.yaml   }  err
             puts $err
             set rundir [getLatestFile $runs_dir/* labelit*]
             puts $rundir
@@ -153,7 +153,7 @@ proc testWorkflow {name} {
 
         ScoreSample {
             cd $projectDir
-            catch {exec java -classpath $classpath ssrl.workflow.RestFlow -base $base/test -f classpath:org/restflow/addons/ScoreSample/workflows/ScoreSampleTest.yaml -w ScoreSample.Test.Workflow -i image1=${projectDir}/src/test/resources/org/restflow/addons/ScoreSample/inputs/1/B2_0001.cbf -i image2=${projectDir}/src/test/resources/org/restflow/addons/ScoreSample/inputs/1/B2_0002.cbf -i validatePath=${projectDir}/src/test/resources/org/restflow/addons/ScoreSample/inputs/1/output.yaml -infile ${projectDir}/src/test/resources/org/restflow/addons/ScoreSample/inputs/1/infile.yaml }  err
+            catch {exec java -classpath $classpath org.restflow.RestFlow -base $base/test -f classpath:org/restflow/addons/ScoreSample/workflows/ScoreSampleTest.yaml -w ScoreSample.Test.Workflow -i image1=${projectDir}/src/test/resources/org/restflow/addons/ScoreSample/inputs/1/B2_0001.cbf -i image2=${projectDir}/src/test/resources/org/restflow/addons/ScoreSample/inputs/1/B2_0002.cbf -i validatePath=${projectDir}/src/test/resources/org/restflow/addons/ScoreSample/inputs/1/output.yaml -infile ${projectDir}/src/test/resources/org/restflow/addons/ScoreSample/inputs/1/infile.yaml }  err
             puts $err
             set rundir [getLatestFile $runs_dir/* ScoreSample*]
             puts $rundir
@@ -162,7 +162,7 @@ proc testWorkflow {name} {
 
         mosflm {
             cd $projectDir
-            catch {exec java -classpath $classpath ssrl.workflow.RestFlow -base $base/test -f classpath:org/restflow/addons/mosflm/workflows/mosflmTest.yaml -w mosflm.Test.Workflow -i image1=${projectDir}/src/test/resources/org/restflow/addons/mosflm/inputs/1/B2_0001.cbf -i image2=${projectDir}/src/test/resources/org/restflow/addons/mosflm/inputs/1/B2_0002.cbf -i validatePath=${projectDir}/src/test/resources/org/restflow/addons/mosflm/inputs/1/output.yaml -infile ${projectDir}/src/test/resources/org/restflow/addons/mosflm/inputs/1/infile.yaml -i gen=${projectDir}/src/test/resources/org/restflow/addons/mosflm/inputs/1/index.gen -i matrix=${projectDir}/src/test/resources/org/restflow/addons/mosflm/inputs/1/index.mat  }  err
+            catch {exec java -classpath $classpath org.restflow.RestFlow -base $base/test -f classpath:org/restflow/addons/mosflm/workflows/mosflmTest.yaml -w mosflm.Test.Workflow -i image1=${projectDir}/src/test/resources/org/restflow/addons/mosflm/inputs/1/B2_0001.cbf -i image2=${projectDir}/src/test/resources/org/restflow/addons/mosflm/inputs/1/B2_0002.cbf -i validatePath=${projectDir}/src/test/resources/org/restflow/addons/mosflm/inputs/1/output.yaml -infile ${projectDir}/src/test/resources/org/restflow/addons/mosflm/inputs/1/infile.yaml -i gen=${projectDir}/src/test/resources/org/restflow/addons/mosflm/inputs/1/index.gen -i matrix=${projectDir}/src/test/resources/org/restflow/addons/mosflm/inputs/1/index.mat  }  err
             puts $err
             set rundir [getLatestFile $runs_dir/* mosflm*]
             puts $rundir
@@ -170,7 +170,7 @@ proc testWorkflow {name} {
         }
         raddose {
             cd $projectDir
-            catch {exec java -classpath $classpath ssrl.workflow.RestFlow -base $base/test -f classpath:org/restflow/addons/raddose/workflows/raddoseTest.yaml -w raddose.Test.Workflow -i validatePath=${projectDir}/src/test/resources/org/restflow/addons/raddose/inputs/1/output.yaml  -infile ${projectDir}/src/test/resources/org/restflow/addons/raddose/inputs/1/infile.yaml   }  err
+            catch {exec java -classpath $classpath org.restflow.RestFlow -base $base/test -f classpath:org/restflow/addons/raddose/workflows/raddoseTest.yaml -w raddose.Test.Workflow -i validatePath=${projectDir}/src/test/resources/org/restflow/addons/raddose/inputs/1/output.yaml  -infile ${projectDir}/src/test/resources/org/restflow/addons/raddose/inputs/1/infile.yaml   }  err
             puts $err
             set rundir [getLatestFile $runs_dir/* raddose*]
             puts $rundir
@@ -179,7 +179,7 @@ proc testWorkflow {name} {
 
         Strategy {
             cd $projectDir
-            catch {exec java -classpath $classpath ssrl.workflow.RestFlow -base $base/test -f classpath:org/restflow/addons/Strategy/workflows/StrategyTest.yaml -w Strategy.Test.Workflow -i validatePath=${projectDir}/src/test/resources/org/restflow/addons/Strategy/inputs/1/output.yaml  -infile ${projectDir}/src/test/resources/org/restflow/addons/Strategy/inputs/1/infile.yaml -i image1=${projectDir}/src/test/resources/org/restflow/addons/Strategy/inputs/1/B2_0001.cbf -i image2=${projectDir}/src/test/resources/org/restflow/addons/Strategy/inputs/1/B2_0002.cbf  }  err
+            catch {exec java -classpath $classpath org.restflow.RestFlow -base $base/test -f classpath:org/restflow/addons/Strategy/workflows/StrategyTest.yaml -w Strategy.Test.Workflow -i validatePath=${projectDir}/src/test/resources/org/restflow/addons/Strategy/inputs/1/output.yaml  -infile ${projectDir}/src/test/resources/org/restflow/addons/Strategy/inputs/1/infile.yaml -i image1=${projectDir}/src/test/resources/org/restflow/addons/Strategy/inputs/1/B2_0001.cbf -i image2=${projectDir}/src/test/resources/org/restflow/addons/Strategy/inputs/1/B2_0002.cbf  }  err
             puts $err
             set rundir [getLatestFile $runs_dir/* Strategy*]
             puts $rundir
@@ -189,7 +189,7 @@ proc testWorkflow {name} {
         Molrep {
             cd $projectDir
             set infile $src_base/src/test/resources/org/restflow/addons/Molrep/inputs/1/infile.yaml
-            exec java -classpath $classpath ssrl.workflow.RestFlow -base $runs_dir -f classpath:org/restflow/addons/Molrep/workflows/Molrep.yaml -w Molrep.Workflow -infile $infile
+            exec java -classpath $classpath org.restflow.RestFlow -base $runs_dir -f classpath:org/restflow/addons/Molrep/workflows/Molrep.yaml -w Molrep.Workflow -infile $infile
             set rundir [getLatestFile $runs_dir/* Molrep*]
             puts $rundir
             puts [exec cat $rundir/_metadata/products.yaml]
@@ -197,7 +197,7 @@ proc testWorkflow {name} {
         MolecularReplacement {
             cd $projectDir
             set infile $src_base/src/test/resources/org/restflow/addons/MolecularReplacement/inputs/1/infile.yaml
-            catch {exec java -classpath $classpath ssrl.workflow.RestFlow -base $base/test -f classpath:org/restflow/addons/MolecularReplacement/workflows/MolecularReplacementCmd.yaml -w MolecularReplacementCmd.Workflow -i mtz=src/test/resources/org/restflow/addons/MolecularReplacement/inputs/1/mr.mtz -i pdb=src/test/resources/org/restflow/addons/MolecularReplacement/inputs/1/mr.pdb -i refiType=REST -i numCycles=10 -i rcutoff=0.4} err
+            catch {exec java -classpath $classpath org.restflow.RestFlow -base $base/test -f classpath:org/restflow/addons/MolecularReplacement/workflows/MolecularReplacementCmd.yaml -w MolecularReplacementCmd.Workflow -i mtz=src/test/resources/org/restflow/addons/MolecularReplacement/inputs/1/mr.mtz -i pdb=src/test/resources/org/restflow/addons/MolecularReplacement/inputs/1/mr.pdb -i refiType=REST -i numCycles=10 -i rcutoff=0.4} err
             puts $err
             set rundir [getLatestFile $runs_dir/* MolecularReplacement*]
             puts $rundir
@@ -205,7 +205,7 @@ proc testWorkflow {name} {
         }
         refmac-nocif {
             cd $projectDir
-            exec java -classpath $classpath ssrl.workflow.RestFlow -base $runs_dir -f classpath:org/restflow/addons/refmac/workflows/refmacCmd.yaml -w refmacCmd.Workflow -i mtz=src/test/resources/org/restflow/addons/refmac/inputs/1/mr.mtz -i pdb=src/test/resources/org/restflow/addons/refmac/inputs/1/mr.pdb -i refiType=REST -i numCycles=10 -i rcutoff=0.4
+            exec java -classpath $classpath org.restflow.RestFlow -base $runs_dir -f classpath:org/restflow/addons/refmac/workflows/refmacCmd.yaml -w refmacCmd.Workflow -i mtz=src/test/resources/org/restflow/addons/refmac/inputs/1/mr.mtz -i pdb=src/test/resources/org/restflow/addons/refmac/inputs/1/mr.pdb -i refiType=REST -i numCycles=10 -i rcutoff=0.4
             set rundir [getLatestFile $runs_dir/* refmac*]
             puts $rundir
             puts [exec cat $rundir/_metadata/products.yaml]
@@ -213,7 +213,7 @@ proc testWorkflow {name} {
         }
         refmac-cif {
             cd $projectDir
-            exec java -classpath $classpath ssrl.workflow.RestFlow -base $runs_dir -f classpath:org/restflow/addons/refmac/workflows/refmacCmd.yaml -w refmacCmd.Workflow -i mtz=src/test/resources/org/restflow/addons/refmac/inputs/2/mr.mtz -i pdb=src/test/resources/org/restflow/addons/refmac/inputs/2/mr.pdb -i refiType=REST -i numCycles=10 -i rcutoff=0.4 -i cif=src/test/resources/org/restflow/addons/refmac/inputs/2/TLK.cif
+            exec java -classpath $classpath org.restflow.RestFlow -base $runs_dir -f classpath:org/restflow/addons/refmac/workflows/refmacCmd.yaml -w refmacCmd.Workflow -i mtz=src/test/resources/org/restflow/addons/refmac/inputs/2/mr.mtz -i pdb=src/test/resources/org/restflow/addons/refmac/inputs/2/mr.pdb -i refiType=REST -i numCycles=10 -i rcutoff=0.4 -i cif=src/test/resources/org/restflow/addons/refmac/inputs/2/TLK.cif
             set rundir [getLatestFile $runs_dir/* refmac*]
             puts $rundir
             puts [exec cat $rundir/_metadata/products.yaml]
@@ -221,7 +221,7 @@ proc testWorkflow {name} {
         }
         fftMap {
             cd $projectDir
-            catch {exec java -classpath $classpath ssrl.workflow.RestFlow -base $base/test -f classpath:org/restflow/addons/fftMap/workflows/fftMapCmd.yaml -w fftMapCmd.Workflow -i mtz=src/test/resources/org/restflow/addons/fftMap/inputs/1/in.mtz} err
+            catch {exec java -classpath $classpath org.restflow.RestFlow -base $base/test -f classpath:org/restflow/addons/fftMap/workflows/fftMapCmd.yaml -w fftMapCmd.Workflow -i mtz=src/test/resources/org/restflow/addons/fftMap/inputs/1/in.mtz} err
             puts $err
             set rundir [getLatestFile $runs_dir/* fftMap*]
             puts $rundir
@@ -229,7 +229,7 @@ proc testWorkflow {name} {
         }
         peakMax {
             cd $projectDir
-            catch {exec java -classpath $classpath ssrl.workflow.RestFlow -base $base/test -f classpath:org/restflow/addons/peakMax/workflows/peakMaxCmd.yaml -w peakMaxCmd.Workflow -i sigma=3.0 -i map=src/test/resources/org/restflow/addons/peakMax/inputs/1/in.map} err
+            catch {exec java -classpath $classpath org.restflow.RestFlow -base $base/test -f classpath:org/restflow/addons/peakMax/workflows/peakMaxCmd.yaml -w peakMaxCmd.Workflow -i sigma=3.0 -i map=src/test/resources/org/restflow/addons/peakMax/inputs/1/in.map} err
             puts $err
             set rundir [getLatestFile $runs_dir/* peakMax*]
             puts $rundir
@@ -239,7 +239,7 @@ proc testWorkflow {name} {
 
         VisualizeWorkflows {
             cd $projectDir
-            catch {exec java -classpath $classpath ssrl.workflow.RestFlow -base $base/test -f classpath:org/restflow/addons/util/workflows/visualizeRoute.yaml -w DataProcessingUtils.Workflow }  err
+            catch {exec java -classpath $classpath org.restflow.RestFlow -base $base/test -f classpath:org/restflow/addons/util/workflows/visualizeRoute.yaml -w DataProcessingUtils.Workflow }  err
             puts $err
             set rundir [getLatestFile $runs_dir/* Visualize*]
             puts $rundir
@@ -259,106 +259,106 @@ proc visualizeWorkflow { name} {
     global runs_dir
     switch $name {
         DataProcessing {
-             catch {exec java -classpath $classpath ssrl.workflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/DataProcessing/workflows/DataProcessing-P.yaml -i workflowName=DataProcessing.Workflow} err
+             catch {exec java -classpath $classpath org.restflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/DataProcessing/workflows/DataProcessing-P.yaml -i workflowName=DataProcessing.Workflow} err
             puts $err
-            catch {exec java -classpath $classpath ssrl.workflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/DataProcessing/workflows/DataProcessingCmd.yaml -i workflowName=DataProcessingCmd.Workflow}
+            catch {exec java -classpath $classpath org.restflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/DataProcessing/workflows/DataProcessingCmd.yaml -i workflowName=DataProcessingCmd.Workflow}
         }
         freeR {
-            catch {exec java -classpath $classpath ssrl.workflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/freeR/workflows/freeRCmd.yaml -i workflowName=freeRCmd.Workflow} err
+            catch {exec java -classpath $classpath org.restflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/freeR/workflows/freeRCmd.yaml -i workflowName=freeRCmd.Workflow} err
             puts $err
         }
         truncate {
-            catch {exec java -classpath $classpath ssrl.workflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/truncate/workflows/truncateCmd.yaml -i workflowName=truncateCmd.Workflow} err
+            catch {exec java -classpath $classpath org.restflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/truncate/workflows/truncateCmd.yaml -i workflowName=truncateCmd.Workflow} err
             puts $err
         }
         scalaCmd {
-            catch {exec java -classpath $classpath ssrl.workflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/scala/workflows/scalaCmd.yaml -i workflowName=scalaCmd.Workflow} err
+            catch {exec java -classpath $classpath org.restflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/scala/workflows/scalaCmd.yaml -i workflowName=scalaCmd.Workflow} err
             puts $err
         }
         scala {
-            catch {exec java -classpath $classpath ssrl.workflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/scala/workflows/scala.yaml -i workflowName=scala.Workflow} err
+            catch {exec java -classpath $classpath org.restflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/scala/workflows/scala.yaml -i workflowName=scala.Workflow} err
             puts $err
         }
         xtriage {
-            catch {exec java -classpath $classpath ssrl.workflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/xtriage/workflows/xtriage.yaml -i workflowName=xtriage.Workflow} err
+            catch {exec java -classpath $classpath org.restflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/xtriage/workflows/xtriage.yaml -i workflowName=xtriage.Workflow} err
             puts $err
         }
         pointless {
-            catch {exec java -classpath $classpath ssrl.workflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/pointless/workflows/pointless.yaml -i workflowName=pointless.Workflow} err
+            catch {exec java -classpath $classpath org.restflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/pointless/workflows/pointless.yaml -i workflowName=pointless.Workflow} err
             puts $err
         }
         xds {
-            catch {exec java -classpath $classpath ssrl.workflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/xds/workflows/xds.yaml -i workflowName=xds.Workflow} err
+            catch {exec java -classpath $classpath org.restflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/xds/workflows/xds.yaml -i workflowName=xds.Workflow} err
             puts $err
         }
         xdsParams {
-            catch {exec java -classpath $classpath ssrl.workflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/xds/workflows/xdsParams.yaml -i workflowName=xdsParams.Workflow} err
+            catch {exec java -classpath $classpath org.restflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/xds/workflows/xdsParams.yaml -i workflowName=xdsParams.Workflow} err
             puts $err
         }
         getImgHeader {
-            catch {exec java -classpath $classpath ssrl.workflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/getImgHeader/workflows/getImgHeaderCmd.yaml -i workflowName=getImgHeader.Test.Workflow} err
+            catch {exec java -classpath $classpath org.restflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/getImgHeader/workflows/getImgHeaderCmd.yaml -i workflowName=getImgHeader.Test.Workflow} err
             puts $err
-            catch {exec java -classpath $classpath ssrl.workflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/getImgHeader/workflows/getImgHeader.yaml -i workflowName=getImgHeader.Workflow} err
+            catch {exec java -classpath $classpath org.restflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/getImgHeader/workflows/getImgHeader.yaml -i workflowName=getImgHeader.Workflow} err
             puts $err
         }
         ProcessImages {
-            catch {exec java -classpath $classpath ssrl.workflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/ProcessImages/workflows/ProcessImages-A.yaml -i workflowName=ProcessImages.A.Workflow} err
+            catch {exec java -classpath $classpath org.restflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/ProcessImages/workflows/ProcessImages-A.yaml -i workflowName=ProcessImages.A.Workflow} err
             puts $err
         }
         Strategy {
-            catch {exec java -classpath $classpath ssrl.workflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/Strategy/workflows/StrategyLookup.yaml -i workflowName=Strategy.Lookup.Workflow} err
+            catch {exec java -classpath $classpath org.restflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/Strategy/workflows/StrategyLookup.yaml -i workflowName=Strategy.Lookup.Workflow} err
             puts $err
-            catch {exec java -classpath $classpath ssrl.workflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/Strategy/workflows/StrategyTest.yaml -i workflowName=Strategy.Test.Workflow} err
+            catch {exec java -classpath $classpath org.restflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/Strategy/workflows/StrategyTest.yaml -i workflowName=Strategy.Test.Workflow} err
             puts $err
         }
         ScoreSample {
-            catch {exec java -classpath $classpath ssrl.workflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/ScoreSample/workflows/ScoreSample.yaml -i workflowName=ScoreSample.A.Workflow} err
+            catch {exec java -classpath $classpath org.restflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/ScoreSample/workflows/ScoreSample.yaml -i workflowName=ScoreSample.A.Workflow} err
             puts $err
         }
         labelit {
-            catch {exec java -classpath $classpath ssrl.workflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/labelit/workflows/labelit.yaml -i workflowName=labelit.A.Workflow} err
+            catch {exec java -classpath $classpath org.restflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/labelit/workflows/labelit.yaml -i workflowName=labelit.A.Workflow} err
             puts $err
-            catch {exec java -classpath $classpath ssrl.workflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/labelit/workflows/labelitMosflm.yaml -i workflowName=labelit.B.Workflow} err
+            catch {exec java -classpath $classpath org.restflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/labelit/workflows/labelitMosflm.yaml -i workflowName=labelit.B.Workflow} err
             puts $err
         }
         labelitTest {
-            catch {exec java -classpath $classpath ssrl.workflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/labelit/workflows/labelitTest.yaml -i workflowName=labelit.Test.Workflow} err
+            catch {exec java -classpath $classpath org.restflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/labelit/workflows/labelitTest.yaml -i workflowName=labelit.Test.Workflow} err
             puts $err
         }
         mosflm {
-            catch {exec java -classpath $classpath ssrl.workflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/mosflm/workflows/mosflm.yaml -i workflowName=mosflm.A.Workflow} err
+            catch {exec java -classpath $classpath org.restflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/mosflm/workflows/mosflm.yaml -i workflowName=mosflm.A.Workflow} err
             puts $err
-            catch {exec java -classpath $classpath ssrl.workflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/mosflm/workflows/mosflmTest.yaml -i workflowName=mosflm.Test.Workflow} err
+            catch {exec java -classpath $classpath org.restflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/mosflm/workflows/mosflmTest.yaml -i workflowName=mosflm.Test.Workflow} err
             puts $err
         }
         raddose {
-            catch {exec java -classpath $classpath ssrl.workflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/raddose/workflows/raddoseTest.yaml -i workflowName=raddose.Test.Workflow} err
+            catch {exec java -classpath $classpath org.restflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/raddose/workflows/raddoseTest.yaml -i workflowName=raddose.Test.Workflow} err
             puts $err
 
-            catch {exec java -classpath $classpath ssrl.workflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/raddose/workflows/raddose.yaml -i workflowName=raddose.A.Workflow   } err
+            catch {exec java -classpath $classpath org.restflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/raddose/workflows/raddose.yaml -i workflowName=raddose.A.Workflow   } err
             puts $err
         }
 
         Molrep {
-            exec java -classpath $classpath ssrl.workflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/Molrep/workflows/Molrep.yaml -i workflowName=Molrep.Workflow
+            exec java -classpath $classpath org.restflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/Molrep/workflows/Molrep.yaml -i workflowName=Molrep.Workflow
         }
         refmac {
-            exec java -classpath $classpath ssrl.workflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/refmac/workflows/refmac.yaml -i workflowName=refmac.Workflow
-            exec java -classpath $classpath ssrl.workflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/refmac/workflows/refmacCmd.yaml -i workflowName=refmacCmd.Workflow
+            exec java -classpath $classpath org.restflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/refmac/workflows/refmac.yaml -i workflowName=refmac.Workflow
+            exec java -classpath $classpath org.restflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/refmac/workflows/refmacCmd.yaml -i workflowName=refmacCmd.Workflow
         }
         MolecularReplacement {
-             catch {exec java -classpath $classpath ssrl.workflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/MolecularReplacement/workflows/MolecularReplacement.yaml -i workflowName=MolecularReplacement.Workflow} err
+             catch {exec java -classpath $classpath org.restflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/MolecularReplacement/workflows/MolecularReplacement.yaml -i workflowName=MolecularReplacement.Workflow} err
             puts $err
-            catch {exec java -classpath $classpath ssrl.workflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/MolecularReplacement/workflows/MolecularReplacementCmd.yaml -i workflowName=MolecularReplacementCmd.Workflow}
+            catch {exec java -classpath $classpath org.restflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/MolecularReplacement/workflows/MolecularReplacementCmd.yaml -i workflowName=MolecularReplacementCmd.Workflow}
         }
         fftMap {
-            exec java -classpath $classpath ssrl.workflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/fftMap/workflows/fftMapCmd.yaml -i workflowName=fftMapCmd.Workflow
+            exec java -classpath $classpath org.restflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/fftMap/workflows/fftMapCmd.yaml -i workflowName=fftMapCmd.Workflow
         }
         peakMax {
-            exec java -classpath $classpath ssrl.workflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/peakMax/workflows/peakMaxCmd.yaml -i workflowName=peakMaxCmd.Workflow
+            exec java -classpath $classpath org.restflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/peakMax/workflows/peakMaxCmd.yaml -i workflowName=peakMaxCmd.Workflow
         }
         VisualizeWorkflows {
-            catch {exec java -classpath $classpath ssrl.workflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/util/workflows/visualizeRoute.yaml -i workflowName=DataProcessingUtils.Workflow } err
+            catch {exec java -classpath $classpath org.restflow.RestFlow -f classpath:tools/visualize.yaml -base $base/visualize -i restflowFile=classpath:org/restflow/addons/util/workflows/visualizeRoute.yaml -i workflowName=DataProcessingUtils.Workflow } err
             puts $err
         }
         default {

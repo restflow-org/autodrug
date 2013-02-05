@@ -6,7 +6,7 @@ namespace:
 components:
 
 - id: Parser.XtriageLogFile
-  className: ssrl.workflow.beans.TextScanner
+  className: org.restflow.beans.TextScanner
   properties:
     absorbWhiteSpaceSymbol: "~"
     template:
@@ -20,7 +20,7 @@ components:
 
 
 - id: Parser.Xtriage
-  className: ssrl.workflow.beans.TextScanner
+  className: org.restflow.beans.TextScanner
   properties: 
     absorbWhiteSpaceSymbol: "~"
     template: 

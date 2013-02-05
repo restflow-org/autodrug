@@ -58,7 +58,7 @@ components:
       mtz: /in/mtz/path
       cif: /in/cif/path
     actor: !inline
-      className: ssrl.workflow.actors.FilePathToHandleActor
+      className: org.restflow.actors.FilePathToHandleActor
       properties:
         inputs:
           _template:

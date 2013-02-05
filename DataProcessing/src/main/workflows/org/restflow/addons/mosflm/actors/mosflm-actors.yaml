@@ -22,7 +22,7 @@ components:
     inputs:
       firstImagePath:
     step: |
-      import ssrl.workflow.beans.TextScanner;
+      import org.restflow.beans.TextScanner;
 
       first = new File(firstImagePath);
       dir = first.parent;
@@ -45,7 +45,7 @@ components:
 
 
 - id: MosflmStrategyParserTemplate
-  className: ssrl.workflow.beans.TextScanner
+  className: org.restflow.beans.TextScanner
   properties:
     absorbWhiteSpaceSymbol: "~"
     template: 

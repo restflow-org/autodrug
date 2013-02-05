@@ -96,7 +96,7 @@ components:
 
 #take a hashmap with unit cell keywords and print it in order.  Makes reporting easier.
 - id: Actor.PrintUnitCell
-  className: ssrl.workflow.actors.GroovyTemplateActor
+  className: org.restflow.actors.GroovyTemplateActor
   properties:
     settings:
       _template: "$unitcell.a $unitcell.b $unitcell.c $unitcell.alpha $unitcell.beta $unitcell.gamma"

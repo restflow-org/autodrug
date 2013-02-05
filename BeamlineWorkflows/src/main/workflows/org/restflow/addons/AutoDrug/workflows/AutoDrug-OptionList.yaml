@@ -13,7 +13,7 @@ imports:
 components:
 
 - id: BluIceActor
-  className: ssrl.workflow.actors.BluIceActor
+  className: org.restflow.actors.BluIceActor
   singleton: false
 
 - id: ReadBeamlineValues.__ReadBeamlineValues

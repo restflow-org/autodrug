@@ -6,7 +6,7 @@ components:
 
 # Solution . SpaceGroup . Beam x . y . distance . Resolution . Mosaicity . RMS
 - id: LabelitParser
-  className: ssrl.workflow.beans.TextScanner
+  className: org.restflow.beans.TextScanner
   properties: 
     absorbWhiteSpaceSymbol: .
     template: 
@@ -31,7 +31,7 @@ components:
         {/\S+\s+\S+/}
 
 - id: ImgHeaderTemplate
-  className: ssrl.workflow.beans.TextScanner
+  className: org.restflow.beans.TextScanner
   properties: 
     absorbWhiteSpaceSymbol: "~"
     template:
@@ -65,7 +65,7 @@ components:
 
 # * Space group = 'P 21 21 21' (number     $number)
 - id: PointlessParserTemplate
-  className: ssrl.workflow.beans.TextScanner
+  className: org.restflow.beans.TextScanner
   properties: 
     absorbWhiteSpaceSymbol: "~"
     template:  
@@ -81,7 +81,7 @@ components:
         {a} ~ {b} ~ {c} ~ {alpha} ~ {beta} ~ {gamma}
 
 - id: XtriageParserTemplate
-  className: ssrl.workflow.beans.TextScanner
+  className: org.restflow.beans.TextScanner
   properties: 
     absorbWhiteSpaceSymbol: "~"
     template: 
@@ -94,7 +94,7 @@ components:
         -------------------------------------------------------------------------------
 
 - id: ScalaParserTemplate
-  className: ssrl.workflow.beans.TextScanner
+  className: org.restflow.beans.TextScanner
   properties:
     absorbWhiteSpaceSymbol: "~"
     template:
@@ -156,7 +156,7 @@ components:
         ~Initial{stuff:TEXT_BLOCK}
 
 - id: ScalaSummaryParserTemplate
-  className: ssrl.workflow.beans.TextScanner
+  className: org.restflow.beans.TextScanner
   properties:
     absorbWhiteSpaceSymbol: "~"
     template: 
@@ -172,7 +172,7 @@ components:
         ~ Maximum resolution:  ~ {resolution}A
         
 - id: XDSErrorParserTemplate
-  className: ssrl.workflow.beans.TextScanner
+  className: org.restflow.beans.TextScanner
   properties:
     absorbWhiteSpaceSymbol: "~"
     template:
@@ -182,7 +182,7 @@ components:
         ~Sorry,~{sorry:TEXT_BLOCK}
 
 - id: XtriageLogFileParserTemplate
-  className: ssrl.workflow.beans.TextScanner
+  className: org.restflow.beans.TextScanner
   properties:
     absorbWhiteSpaceSymbol: "~"
     template:
@@ -195,7 +195,7 @@ components:
       L_TEST: '{l:FLOAT} ~ {lobs:FLOAT} ~ {luntw:FLOAT} ~ {ltw:FLOAT} ~'
 
 - id: XDSParserTemplate
-  className: ssrl.workflow.beans.TextScanner
+  className: org.restflow.beans.TextScanner
   properties:
     absorbWhiteSpaceSymbol: "~"
     template:
@@ -205,7 +205,7 @@ components:
         ~UNIT_CELL_CONSTANTS= ~ {a} ~ {b} ~ {c} ~ {alpha} ~ {beta} ~ {gamma}
 
 - id: XDSCorrectLPParserTemplate
-  className: ssrl.workflow.beans.TextScanner
+  className: org.restflow.beans.TextScanner
   properties:
     absorbWhiteSpaceSymbol: "~"
     template:

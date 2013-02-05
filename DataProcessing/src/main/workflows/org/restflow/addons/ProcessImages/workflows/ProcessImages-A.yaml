@@ -56,7 +56,7 @@ components:
       altMrModel: /alt_mr_model/path
       cif: /cif/path
     actor: !inline
-      className: ssrl.workflow.actors.FilePathToHandleActor
+      className: org.restflow.actors.FilePathToHandleActor
       properties:
         inputs:
           mrModel:

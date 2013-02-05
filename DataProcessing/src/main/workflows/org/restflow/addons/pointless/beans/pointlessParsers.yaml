@@ -6,7 +6,7 @@ components:
 
 # * Space group = 'P 21 21 21' (number     $number)
 - id: Parser.Pointless
-  className: ssrl.workflow.beans.TextScanner
+  className: org.restflow.beans.TextScanner
   properties: 
     absorbWhiteSpaceSymbol: "~"
     template:  

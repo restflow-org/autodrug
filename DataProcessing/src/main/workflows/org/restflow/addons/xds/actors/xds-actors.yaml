@@ -25,7 +25,7 @@ components:
       firstImagePath:
       lastImageNum:
     step: |
-      import ssrl.workflow.beans.TextScanner;
+      import org.restflow.beans.TextScanner;
 
       first = new File(firstImagePath);
       dir = first.parent;

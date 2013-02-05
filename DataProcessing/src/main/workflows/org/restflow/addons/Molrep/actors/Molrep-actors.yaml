@@ -19,7 +19,7 @@ components:
 
 
 - id: MolrepParserTemplate
-  className: ssrl.workflow.beans.TextScanner
+  className: org.restflow.beans.TextScanner
   properties:
     absorbWhiteSpaceSymbol: "~"
     template:

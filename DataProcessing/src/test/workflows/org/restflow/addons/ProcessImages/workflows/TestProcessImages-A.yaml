@@ -11,7 +11,7 @@ components:
 
 - id: Workflow
   type: Workflow
-  className: ssrl.workflow.actors.Workflow
+  className: org.restflow.actors.Workflow
   properties: 
     director: !ref PublishSubscribeDirector
     inputs:

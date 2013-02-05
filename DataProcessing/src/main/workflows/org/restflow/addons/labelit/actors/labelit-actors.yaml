@@ -20,7 +20,7 @@ components:
 # Beam center x ~ {beamXc}mm, y ~ {beamYc}mm, distance ~ {distc}mm ; 80% mosaicity={mosaicc} deg.
 # Solution ~ SpaceGroup ~ Beam x ~ y ~ distance ~ Resolution ~ Mosaicity ~ RMS
 - id: LabelitParser
-  className: ssrl.workflow.beans.TextScanner
+  className: org.restflow.beans.TextScanner
   properties: 
     absorbWhiteSpaceSymbol: "~"
     template: 
@@ -131,7 +131,7 @@ components:
       matrix:
 
 - id: MosflmInputFileParserTemplate
-  className: ssrl.workflow.beans.TextScanner
+  className: org.restflow.beans.TextScanner
   properties:
     absorbWhiteSpaceSymbol: "~"
     template: 

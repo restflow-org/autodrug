@@ -42,7 +42,7 @@ components:
     inflows: 
       xdsascii: /in/xdsascii/path
     actor: !inline
-      className: ssrl.workflow.actors.FilePathToHandleActor
+      className: org.restflow.actors.FilePathToHandleActor
     outflows:
       xdsasciiFile: file:/in/xds_ascii.HKL
 

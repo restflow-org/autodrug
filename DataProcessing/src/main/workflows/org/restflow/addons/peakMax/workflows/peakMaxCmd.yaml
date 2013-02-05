@@ -44,7 +44,7 @@ components:
     inflows: 
       map: /in/map/path
     actor: !inline
-      className: ssrl.workflow.actors.FilePathToHandleActor
+      className: org.restflow.actors.FilePathToHandleActor
     outflows:
       mapFile: file:/in.map
 

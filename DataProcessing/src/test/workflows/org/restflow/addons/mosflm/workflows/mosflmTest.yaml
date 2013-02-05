@@ -11,7 +11,7 @@ components:
 
 - id: Workflow
   type: Workflow
-  className: ssrl.workflow.actors.Workflow
+  className: org.restflow.actors.Workflow
   properties: 
     director: !ref PublishSubscribeDirector
     inputs: 
@@ -64,7 +64,7 @@ components:
       gen: /path/gen
       matrix: /path/matrix
     actor: !inline
-      className: ssrl.workflow.actors.FilePathToHandleActor
+      className: org.restflow.actors.FilePathToHandleActor
     outflows:
       genFile: file:/gen
       matrixFile: file:/matrix

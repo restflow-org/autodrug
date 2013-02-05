@@ -35,7 +35,7 @@ components:
     inflows: 
       mtz: /in/mtz/path
     actor: !inline
-      className: ssrl.workflow.actors.FilePathToHandleActor
+      className: org.restflow.actors.FilePathToHandleActor
     outflows:
       mtzFile: file:/in.mtz
 

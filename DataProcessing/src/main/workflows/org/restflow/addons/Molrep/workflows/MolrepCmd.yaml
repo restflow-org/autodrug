@@ -40,7 +40,7 @@ components:
       pdb: /in/pdb/path
       mtz: /in/mtz/path
     actor: !inline
-      className: ssrl.workflow.actors.FilePathToHandleActor
+      className: org.restflow.actors.FilePathToHandleActor
     outflows:
       pdbFile: file:/mr.pdb
       mtzFile: file:/mr.mtz
