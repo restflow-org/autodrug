@@ -7,12 +7,13 @@ global argv
 set command [lindex $argv 0]
 
 set project DataProcessing
-set projectDir $env(WORKSPACE)/$project
+set projectDir $env(WORKSPACE)/autodrug/$project
 set base /data/$env(USER)/$project
 set lib $projectDir/target/dependency
 set classes $projectDir/target/classes
-set classpath $lib/*:$classes
-set src_base $env(WORKSPACE)/$project/
+set test_classes $projectDir/target/test-classes
+set classpath $lib/*:$classes:$test_classes
+set src_base $env(WORKSPACE)/autodrug/$project/
 set runs_dir $base/test
 
 puts $classpath

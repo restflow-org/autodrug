@@ -7,12 +7,13 @@ global argv
 set command [lindex $argv 0]
 
 set project BeamlineWorkflows
-set projectDir $env(WORKSPACE)/$project
+set projectDir $env(WORKSPACE)/autodrug/$project
 set base /data/$env(USER)/$project
-set lib $projectDir/lib
-set classes $projectDir/classes
-set classpath $lib/*:$classes
-set src_base $env(WORKSPACE)/$project/
+set lib $projectDir/target/dependency
+set classes $projectDir/target/classes
+set test_classes $projectDir/target/test-classes
+set classpath $lib/*:$classes:$test_classes
+set src_base $env(WORKSPACE)/autodrug/$project/
 set runs_dir $base/test
 #To get test data
 #cd /data/username
@@ -22,7 +23,7 @@ set testData_dir /data/$env(USER)/TestRestFlow/
 set testNames { PROJECT }
 set workflowNames { PROJECT }
 
-source $env(WORKSPACE)/BeamlineWorkflows/getLatestFile.tcl
+source $env(WORKSPACE)/autodrug/BeamlineWorkflows/getLatestFile.tcl
 
 proc testWorkflow {name} {
     global projectDir

@@ -54,11 +54,28 @@
       </plugin>
 
 
-
-
-
 </plugins>
+		<resources>
+			<resource>
+				<directory>src/main/workflows</directory>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+		</resources>
 
+		<testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+			</testResource>
+			<testResource>
+				<directory>src/test/workflows</directory>
+			</testResource>
+		</testResources>
+
+
+
+<!--
       <resources>
         <resource>
           <directory>src/main/workflows</directory>
@@ -70,6 +87,7 @@
           <directory>src/test/workflows</directory>
         </resource>
       </resources>
+-->
 
 </build>
 
