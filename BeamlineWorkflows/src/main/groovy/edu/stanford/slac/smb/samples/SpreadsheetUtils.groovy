@@ -8,7 +8,6 @@ import java.util.TreeMap;
 import sil.beans.Crystal;
 import sil.beans.Sil;
 
-import edu.stanford.slac.smb.samples.*;
 
 class SpreadsheetUtils {
 
