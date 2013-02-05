@@ -63,7 +63,7 @@ components:
     settings:
       _runFileTemplate: |
         phenix.xtriage $mtzIn.name log=xtriage.log
-      _envScript: !resource edu/stanford/slac/smb/environment/DataProcessing/env.csh
+      _envScript: !resource edu/stanford/slac/smb/environment/DataProcessing/xtriage_env.csh
       _outputFiles:
         'xtriage.log':
           output: logfile
