@@ -88,6 +88,9 @@
 			<testResource>
 				<directory>src/test/workflows</directory>
 			</testResource>
+			<testResource>
+				<directory>src/test/resources</directory>
+			</testResource>
 		</testResources>
 
 	</build>
@@ -110,6 +113,13 @@
 			<groupId>org.codehaus.groovy</groupId>
 			<artifactId>http-builder</artifactId>
 			<version>0.4.0</version>
+        <exclusions>
+            <exclusion>
+                <groupId>org.codehaus.groovy</groupId>
+                <artifactId>groovy</artifactId>
+            </exclusion>
+        </exclusions>
+
 		</dependency>
 
 		<dependency>
@@ -137,6 +147,27 @@
 			<version>0.3-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
+
+    <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy-all</artifactId>
+      <version>1.7.5</version>
+      <optional>true</optional>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.ant</groupId>
+          <artifactId>ant</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>jline</groupId>
+          <artifactId>jline</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.fusesource.jansi</groupId>
+          <artifactId>jansi</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
 
 	</dependencies>
 </project>
