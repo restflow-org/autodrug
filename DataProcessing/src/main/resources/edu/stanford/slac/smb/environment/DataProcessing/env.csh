@@ -27,7 +27,7 @@ module load elves
 # module load sharp 
 # module load shelx/20060317
 module load ipmosflm/7.0.7
-module load phenix/1.7.2-869
+module load phenix
 module load raddose/20080103
 module load best/3.1
 
