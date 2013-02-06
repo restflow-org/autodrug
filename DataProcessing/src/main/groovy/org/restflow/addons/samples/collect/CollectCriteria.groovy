@@ -1,6 +1,6 @@
 package org.restflow.addons.samples.collect;
 
-class CollectCriteria {
+class CollectCriteria implements Serializable {
 	Float priority;
 	String unit_cell_angstroms_degrees;
 	Float unit_cell_length_tolerance_percent;

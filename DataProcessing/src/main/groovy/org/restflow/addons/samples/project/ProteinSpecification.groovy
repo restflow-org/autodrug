@@ -5,7 +5,7 @@ import org.restflow.addons.samples.screen.*;
 import org.restflow.addons.samples.process.*;
 import java.util.Map;
 
-class ProteinSpecification {
+class ProteinSpecification implements Serializable {
 	ScreenParameters screening_parameters;
 	Map<String,SpaceGroupDependent> spacegroups;
     ProcessParameters processing_parameters;

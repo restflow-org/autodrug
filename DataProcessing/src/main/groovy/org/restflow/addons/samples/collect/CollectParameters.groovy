@@ -1,6 +1,6 @@
 package org.restflow.addons.samples.collect;
 
-class CollectParameters {
+class CollectParameters implements Serializable {
 	Float energy_ev;
 	Float detector_resolution_angstroms;
 	Float[] beam_size_width_height_microns;

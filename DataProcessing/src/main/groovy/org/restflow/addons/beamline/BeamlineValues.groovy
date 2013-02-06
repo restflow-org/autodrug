@@ -1,6 +1,6 @@
 package org.restflow.addons.beamline;
 
-class BeamlineValues {
+class BeamlineValues implements Serializable {
 	String beamline;
 	def detectorRingSize;
 	def phiSpeedDegPerSec;

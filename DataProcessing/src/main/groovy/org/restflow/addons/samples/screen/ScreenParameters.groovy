@@ -2,7 +2,7 @@ package org.restflow.addons.samples.screen;
 
 import org.restflow.addons.samples.raster.*;
 
-class ScreenParameters {
+class ScreenParameters implements Serializable {
 	Float detector_resolution_angstroms;
 	Float energy_ev
 	

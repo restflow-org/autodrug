@@ -3,7 +3,7 @@ package org.restflow.addons.samples.collect;
 import org.yaml.snakeyaml.*;
 
 //class that closely matches the data needed by the Blu-Ice CollectRun operation.
-class CollectRunDefinition {
+class CollectRunDefinition implements Serializable {
 	Float energy_ev;
 	Float beamstop_position_mm;
 	Float phi_delta_degrees;

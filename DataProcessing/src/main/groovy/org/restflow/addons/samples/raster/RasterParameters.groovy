@@ -1,7 +1,7 @@
 package org.restflow.addons.samples.raster;
 import org.restflow.addons.samples.screen.*;
 
-class RasterParameters {
+class RasterParameters implements Serializable {
 	boolean active = true;
 	
 	Float peak_cutoff_percent;

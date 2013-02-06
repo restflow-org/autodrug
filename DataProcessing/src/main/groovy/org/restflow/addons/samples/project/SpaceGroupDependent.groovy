@@ -2,7 +2,7 @@ package org.restflow.addons.samples.project;
 
 import org.restflow.addons.samples.collect.*;
 
-class SpaceGroupDependent {
+class SpaceGroupDependent implements Serializable {
 	CollectCriteria collection_criteria;
 	CollectParameters collection_parameters;
 	

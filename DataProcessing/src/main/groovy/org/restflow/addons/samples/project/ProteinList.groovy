@@ -2,7 +2,7 @@ package org.restflow.addons.samples.project;
 
 import java.util.Map;
 
-class ProteinList {
+class ProteinList implements Serializable{
 	Map<String,ProteinSpecification> groups;
 	
 	public void validate () {

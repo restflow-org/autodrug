@@ -1,6 +1,6 @@
 package org.restflow.addons.beamline;
 
-class Motor {
+class Motor implements Serializable {
 	def name;
 	def upperLimit
 	def lowerLimit
