@@ -1,0 +1,57 @@
+namespace:
+
+  module: fftMap
+  route: Test
+
+imports:
+
+- classpath:org/restflow/addons/fftMap/actors/fftMap-actors.yaml
+
+components:
+
+- id: Workflow
+  type: Workflow
+  properties: 
+    director: !ref PublishSubscribeDirector
+    inputs:
+      mtz:
+        description: full path of mtz file
+    nodes:
+    - !lref Inputs
+    - !lref ConvertFilePathToHandles
+    - !lref RunFftMap
+    - !lref Outputs
+    outputs:
+      map: 
+
+- id: Inputs
+  type: InPortal
+  properties: 
+    outflows: 
+      mtz: /in/mtz/path
+
+- id: ConvertFilePathToHandles
+  type: Step
+  properties:
+    inflows: 
+      mtz: /in/mtz/path
+    actor: !inline
+      className: org.restflow.actors.FilePathToHandleActor
+    outflows:
+      mtzFile: file:/in.mtz
+
+- id: RunFftMap
+  type: Step 
+  properties:
+    inflows:
+      mtz: file:/in.mtz
+    actor: !ref fftMap.fftMapRunnerActor 
+    outflows:
+      mapfile: file:/out/out.map
+
+- id: Outputs
+  type: OutPortal
+  properties: 
+    inflows:
+      map: file:/out/out.map
+

@@ -1,0 +1,100 @@
+namespace:
+
+  module: refmac
+  route: Test
+
+imports:
+
+- classpath:org/restflow/addons/refmac/workflows/refmac.yaml
+- classpath:/common/types.yaml
+
+components:
+
+- id: Workflow
+  type: Workflow
+  properties: 
+    director: !ref PublishSubscribeDirector
+    inputs:
+      pdb:
+        description: full path to pdb file for protein homologous to target
+      mtz:
+        description: full path of mtz file
+      rcutoff: 
+        description: resolution cutoff
+      numCycles:
+        default: 10
+        description: number of cycles for Refmac refinement; default is 5
+      refiType:
+        default: REST
+        description: type of Refmac refinement; REST - restrained refinement; RIGI - rigid body refinement
+      cif:
+        default: ~
+        nullable: true
+    nodes:
+    - !lref Inputs
+    - !lref ConvertFilePathToHandles
+    - !lref RunRefmac
+    - !lref Outputs
+    outputs:
+      mtzfile: 
+      pdbfile: 
+      RfactorOk:
+
+- id: Inputs
+  type: InPortal
+  properties: 
+    outflows: 
+      pdb: /in/pdb/path
+      mtz: /in/mtz/path
+      cif: /in/cif/path
+      numCycles: /in/cycles/
+      rcutoff: /in/rcutoff
+      refiType: /in/refitype/
+
+- id: ConvertFilePathToHandles
+  type: Step
+  properties:
+    inflows: 
+      pdb: /in/pdb/path
+      mtz: /in/mtz/path
+      cif: /in/cif/path
+    actor: !inline
+      className: org.restflow.actors.FilePathToHandleActor
+      properties:
+        inputs:
+          _template:
+          mtz:
+          pdb:
+          cif:
+            nullable: true
+    outflows:
+      pdbFile: file:/mr.pdb
+      mtzFile: file:/mr.mtz
+      cifFile: file:/protein.cif
+
+- id: RunRefmac
+  type: Step 
+  properties:
+    nestedUriPrefix: /refmac/
+    inflows:
+      mtz: file:/mr.mtz
+      pdb: file:/mr.pdb
+      numCycles: /in/cycles/
+      rcutoff: /in/rcutoff
+      refiType: /in/refitype/
+      cif: file:/protein.cif
+    actor: !ref refmac.Workflow
+    outflows:
+      mtzfile: file:/out/mr.mtz
+      pdbfile: file:/out/mr.pdb
+      RfactorOk: /out/RfactorOk
+
+- id: Outputs
+  type: OutPortal
+  properties: 
+    inflows:
+      mtzfile: file:/out/mr.mtz
+      pdbfile: file:/out/mr.pdb
+      RfactorOk: /out/RfactorOk
+
+

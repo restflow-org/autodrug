@@ -1,0 +1,67 @@
+namespace:
+
+  module: peakMax
+  route: Test
+
+imports:
+- classpath:/common/scriptActors.yaml
+- classpath:/common/groovy/actors.yaml
+- classpath:/common/bash/actors.yaml
+- classpath:/common/perl/perlActor.yaml
+- classpath:/common/perl/actors.yaml
+- classpath:/common/directors.yaml
+- classpath:/common/types.yaml 
+- classpath:/common/support.yaml
+- classpath:org/restflow/addons/peakMax/actors/peakMax-actors.yaml
+
+components:
+
+- id: Workflow
+  type: Workflow
+  properties: 
+    director: !ref PublishSubscribeDirector
+    inputs:
+      map:
+        description: full path of map file
+      sigma:
+    nodes:
+    - !lref Inputs
+    - !lref ConvertFilePathToHandles
+    - !lref RunPeakMax
+    - !lref Outputs
+    outputs:
+      peaks:
+
+- id: Inputs
+  type: InPortal
+  properties: 
+    outflows: 
+      map: /in/map/path
+      sigma: /in/sigma
+
+- id: ConvertFilePathToHandles
+  type: Step
+  properties:
+    inflows: 
+      map: /in/map/path
+    actor: !inline
+      className: org.restflow.actors.FilePathToHandleActor
+    outflows:
+      mapFile: file:/in.map
+
+- id: RunPeakMax
+  type: Step 
+  properties:
+    inflows:
+      mapfile: file:/in.map
+      sigma: /in/sigma
+    actor: !ref peakMax.peakMaxRunnerActor 
+    outflows:
+      peaks: /out/peaks
+
+- id: Outputs
+  type: OutPortal
+  properties: 
+    inflows:
+      peaks: /out/peaks
+
