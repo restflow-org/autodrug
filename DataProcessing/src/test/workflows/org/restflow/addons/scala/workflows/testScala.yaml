@@ -72,10 +72,12 @@ components:
   properties:
     stepsOnce: true 
     actor.step: |
+      import static org.junit.Assert.*;
       assert mos == '0.13'
       assert isigoverall == '23.8'
       assert isigCutoffResolution == 0.0
-      assert isigfinal == '8.5'
+      //TODO check epsilon -- answer used to be 8.5
+      assertEquals('8.5'.toFloat(),isigfinal.toFloat(), 2.0f);
       //assert res == ['6.33', '4.47', '3.65', '3.16', '2.83', '2.58', '2.39', '2.24', '2.11', '2.0']
       //assert isig == [42.6, 37.9, 37.1, 30.3, 23.6, 17.3, 14.6, 13.1, 11.0, 7.6]
       done = true

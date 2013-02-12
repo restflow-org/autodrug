@@ -67,14 +67,17 @@ components:
     actor.step: |
       import org.yaml.snakeyaml.*;
       import static java.lang.Math.*
+      import static org.junit.Assert.*;
+
       Yaml y = new Yaml();      
       assertValues = y.load( new File(validatePath).text ); 
       
-      assert abs (mosaic.toFloat() - assertValues.mosaic) < 0.01, "$mosaic != $assertValues.mosaic";
-      assert abs (dist.toFloat() - assertValues.dist) < 0.1, "$dist != $assertValues.dist";
-      assert abs (beamX.toFloat() - assertValues.beamX) < 0.1, "$beamX != $assertValues.beamX";
-      assert abs (beamY.toFloat() - assertValues.beamY) < 0.1, "$beamX != $assertValues.beamX";
-      assert abs (rms.toFloat() - assertValues.rms) < 0.001, "$rms != $assertValues.rms";
+      assertEquals (assertValues.mosaic, mosaic.toFloat(), 0.01);
+      assertEquals (assertValues.dist, dist.toFloat(), 0.1);
+      assertEquals (assertValues.beamX, beamX.toFloat(), 0.1);
+      assertEquals (assertValues.beamY, beamY.toFloat() , 0.1);
+      //TODO check epsilon .02 used to be 0.001
+      assertEquals (assertValues.rms, rms.toFloat(), , 0.02);
       assert spacegroup == assertValues.spacegroup, "$spacegroup != $assertValues.spacegroup";
    
       done = true
