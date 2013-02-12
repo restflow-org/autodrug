@@ -179,7 +179,7 @@ components:
     settings:
       _runDir: xdsdir
       _runFileTemplate: xds_par 
-      _envScript: !resource edu/stanford/slac/smb/environment/DataProcessing/env.csh
+      _envScript: !resource edu/stanford/slac/smb/environment/xds-env.csh
       _fileBuilders:
         'XDS.INP': 
           template: !resource org/restflow/addons/xds/templates/xds.txt
