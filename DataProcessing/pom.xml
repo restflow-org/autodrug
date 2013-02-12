@@ -19,91 +19,18 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-<build>
-<plugins>
-  <plugin>
-    <artifactId>maven-compiler-plugin</artifactId>
-    <version>2.3.2</version>
-    <configuration>
-      <compilerId>groovy-eclipse-compiler</compilerId>
-      <!-- set verbose to be true if you want lots of uninteresting messages -->
-      <verbose>true</verbose> 
-    </configuration>
-    <dependencies>
-      <dependency>
-        <groupId>org.codehaus.groovy</groupId>
-        <artifactId>groovy-eclipse-compiler</artifactId>
-        <version>2.7.0-01</version>
-      </dependency>
-    </dependencies>
-  </plugin>
-
-    <!-- Copy the dependency jars into the target/dependency directory -->
-     <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>copy</id>
-            <phase>package</phase>
-            <goals>
-              <goal>copy-dependencies</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
-
-</plugins>
-		<resources>
-			<resource>
-				<directory>src/main/workflows</directory>
-			</resource>
-			<resource>
-				<directory>src/main/resources</directory>
-			</resource>
-		</resources>
-
-		<testResources>
-			<testResource>
-				<directory>src/test/resources</directory>
-			</testResource>
-			<testResource>
-				<directory>src/test/workflows</directory>
-			</testResource>
-		</testResources>
-
-
-
-<!--
-      <resources>
-        <resource>
-          <directory>src/main/workflows</directory>
-        </resource>
-        <resource>
-          <directory>src/main/resources</directory>
-        </resource>
-        <resource>
-          <directory>src/test/workflows</directory>
-        </resource>
-      </resources>
--->
-
-</build>
-
 
   <dependencies>
     <dependency>
       <groupId>org.restflow</groupId>
       <artifactId>restflow-crystallography</artifactId>
       <version>0.3-SNAPSHOT</version>
-      <scope>compile</scope>
     </dependency>
 
     <dependency>
       <groupId>org.codehaus.groovy</groupId>
       <artifactId>groovy-all</artifactId>
-      <version>1.7.5</version>
+      <version>1.8.6</version>
       <optional>true</optional>
       <exclusions>
         <exclusion>
