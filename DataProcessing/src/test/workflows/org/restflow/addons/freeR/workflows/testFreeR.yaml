@@ -1,0 +1,62 @@
+namespace:
+
+  module: freeR
+  route: Test
+
+imports:
+
+- classpath:org/restflow/addons/freeR/actors/freeR-actors.yaml
+
+components:
+
+- id: Workflow
+  type: Workflow
+  properties: 
+    director: !ref PublishSubscribeDirector
+    inputs:
+      mtz:
+        description: full path of mtz file
+    nodes:
+    - !lref Inputs
+    - !lref ConvertFilePathToHandles
+    - !lref RunFreeR
+    - !lref Outputs
+    outputs:
+      mtzfile: 
+      outtext: 
+
+- id: Inputs
+  type: InPortal
+  properties: 
+    outflows: 
+      mtz: /in/mtz/path
+
+- id: ConvertFilePathToHandles
+  type: Step
+  properties:
+    inflows: 
+      mtz: /in/mtz/path
+    actor: !inline
+      className: org.restflow.actors.FilePathToHandleActor
+    outflows:
+      mtzFile: file:/in/mr.mtz
+
+- id: RunFreeR
+  type: Step 
+  properties:
+    inflows:
+      mtzIn: file:/in/mr.mtz
+    actor: !ref freeR.Actor.RunFreeR
+    outflows:
+      mtzout1: file:/out/out.mtz
+      outtext: file:/out/out.txt
+
+- id: Outputs
+  type: OutPortal
+  properties: 
+    inflows:
+      mtzfile: file:/out/out.mtz
+      outtext: file:/out/out.txt
+
+
+
