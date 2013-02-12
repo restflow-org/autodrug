@@ -22,7 +22,7 @@ public class TestScala extends TestCase {
 		
 		if (workspace == null) throw new Exception("must set TEST_DATA environment variable");
 
-		String file =  "classpath:org/restflow/addons/scala/workflows/testScala.yaml";		
+		String file =  "classpath:org/restflow/addons/scala/workflows/TestScala.yaml";		
         String workflow = "scala.Test.Workflow";
 
         String mtz = "target/test-classes/org/restflow/addons/scala/inputs/1/point1.mtz";

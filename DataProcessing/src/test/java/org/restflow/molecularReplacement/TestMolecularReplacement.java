@@ -22,8 +22,8 @@ public class TestMolecularReplacement extends TestCase {
 		
 		if (workspace == null) throw new Exception("must set TEST_DATA environment variable");
 
-		String file =  "classpath:org/restflow/addons/MolecularReplacement/workflows/MolecularReplacementCmd.yaml";		
-        String workflow = "MolecularReplacementCmd.Workflow";
+		String file =  "classpath:org/restflow/addons/MolecularReplacement/workflows/TestMolecularReplacement.yaml";		
+        String workflow = "MolecularReplacement.Test.Workflow";
 
 		String mtz = new File("target/test-classes/org/restflow/addons/MolecularReplacement/inputs/1/mr.mtz").getAbsolutePath();
 		String pdb = new File("target/test-classes/org/restflow/addons/MolecularReplacement/inputs/1/mr.pdb").getAbsolutePath();

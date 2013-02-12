@@ -22,7 +22,7 @@ public class TestFreeR extends TestCase {
 		
 		if (workspace == null) throw new Exception("must set TEST_DATA environment variable");
 
-		String file =  "classpath:org/restflow/addons/freeR/workflows/testFreeR.yaml";		
+		String file =  "classpath:org/restflow/addons/freeR/workflows/TestFreeR.yaml";		
         String workflow = "freeR.Test.Workflow";
 
         String mtz = "target/test-classes/org/restflow/addons/freeR/inputs/1/trunc1.mtz";

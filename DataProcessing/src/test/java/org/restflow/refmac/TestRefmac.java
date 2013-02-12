@@ -22,8 +22,8 @@ public class TestRefmac extends TestCase {
 		
 		if (workspace == null) throw new Exception("must set TEST_DATA environment variable");
 
-		String file =  "classpath:org/restflow/addons/refmac/workflows/refmacCmd.yaml";		
-        String workflow = "refmacCmd.Workflow";
+		String file =  "classpath:org/restflow/addons/refmac/workflows/TestRefmac.yaml";		
+        String workflow = "refmac.Test.Workflow";
 
 		String mtz = new File("target/test-classes/org/restflow/addons/refmac/inputs/1/mr.mtz").getAbsolutePath();
 		String pdb = new File("target/test-classes/org/restflow/addons/refmac/inputs/1/mr.pdb").getAbsolutePath();
@@ -43,8 +43,8 @@ public class TestRefmac extends TestCase {
 		
 		if (workspace == null) throw new Exception("must set TEST_DATA environment variable");
 
-		String file =  "classpath:org/restflow/addons/refmac/workflows/refmacCmd.yaml";		
-        String workflow = "refmacCmd.Workflow";
+		String file =  "classpath:org/restflow/addons/refmac/workflows/TestRefmac.yaml";		
+        String workflow = "refmac.Test.Workflow";
 
 		String mtz = new File("target/test-classes/org/restflow/addons/refmac/inputs/2/mr.mtz").getAbsolutePath();
 		String pdb = new File("target/test-classes/org/restflow/addons/refmac/inputs/2/mr.pdb").getAbsolutePath();

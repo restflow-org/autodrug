@@ -22,8 +22,8 @@ public class TestPeakMax extends TestCase {
 		
 		if (workspace == null) throw new Exception("must set TEST_DATA environment variable");
 
-		String file =  "classpath:org/restflow/addons/peakMax/workflows/peakMaxCmd.yaml";		
-        String workflow = "peakMaxCmd.Workflow";
+		String file =  "classpath:org/restflow/addons/peakMax/workflows/TestPeakMax.yaml";		
+        String workflow = "peakMax.Test.Workflow";
 
 		String map = new File("target/test-classes/org/restflow/addons/peakMax/inputs/1/in.map").getAbsolutePath();
 

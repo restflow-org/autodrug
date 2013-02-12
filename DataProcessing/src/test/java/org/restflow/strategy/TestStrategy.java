@@ -22,7 +22,7 @@ public class TestStrategy extends TestCase {
 		
 		if (workspace == null) throw new Exception("must set TEST_DATA environment variable");
 
-		String file =  "classpath:org/restflow/addons/Strategy/workflows/StrategyTest.yaml";		
+		String file =  "classpath:org/restflow/addons/Strategy/workflows/TestStrategy.yaml";		
         String workflow = "Strategy.Test.Workflow";
 
 		String image1 = new File("target/test-classes/org/restflow/addons/Strategy/inputs/1/B2_0001.cbf").getAbsolutePath();

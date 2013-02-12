@@ -22,7 +22,7 @@ public class TestScoreSample extends TestCase {
 		
 		if (workspace == null) throw new Exception("must set TEST_DATA environment variable");
 
-		String file =  "classpath:org/restflow/addons/ScoreSample/workflows/ScoreSampleTest.yaml";		
+		String file =  "classpath:org/restflow/addons/ScoreSample/workflows/TestScoreSample.yaml";		
         String workflow = "ScoreSample.Test.Workflow";
 
 		String image1 = new File("target/test-classes/org/restflow/addons/ScoreSample/inputs/1/B2_0001.cbf").getAbsolutePath();

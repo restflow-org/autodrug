@@ -22,8 +22,8 @@ public class TestFftMap extends TestCase {
 		
 		if (workspace == null) throw new Exception("must set TEST_DATA environment variable");
 
-		String file =  "classpath:org/restflow/addons/fftMap/workflows/fftMapCmd.yaml";		
-        String workflow = "fftMapCmd.Workflow";
+		String file =  "classpath:org/restflow/addons/fftMap/workflows/TestFftMap.yaml";		
+        String workflow = "fftMap.Test.Workflow";
 
 		String mtz = new File("target/test-classes/org/restflow/addons/fftMap/inputs/1/in.mtz").getAbsolutePath();
 

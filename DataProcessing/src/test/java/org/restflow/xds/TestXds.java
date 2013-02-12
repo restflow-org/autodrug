@@ -23,7 +23,7 @@ public class TestXds extends TestCase {
 		
 		if (workspace == null) throw new Exception("must set TEST_DATA environment variable");
 
-		String file =  "classpath:org/restflow/addons/xds/workflows/testXds.yaml";		
+		String file =  "classpath:org/restflow/addons/xds/workflows/TestXds.yaml";		
         String workflow = "xds.Test.Workflow";
 
 		String infile = "target/test-classes/org/restflow/addons/xds/inputs/1/in.yaml";

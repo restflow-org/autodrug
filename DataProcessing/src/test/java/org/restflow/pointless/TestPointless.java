@@ -22,10 +22,8 @@ public class TestPointless extends TestCase {
 		
 		if (workspace == null) throw new Exception("must set TEST_DATA environment variable");
 
-		String file =  "classpath:org/restflow/addons/pointless/workflows/testPointless.yaml";		
+		String file =  "classpath:org/restflow/addons/pointless/workflows/TestPointless.yaml";		
         String workflow = "pointless.Test.Workflow";
-
-		String infile = "target/test-classes/org/restflow/addons/xds/inputs/1/in.yaml";
 
 		String xdsascii = "target/test-classes/org/restflow/addons/pointless/inputs/1/XDS_ASCII.HKL";
         String validatePath = "target/test-classes/org/restflow/addons/pointless/outputs/1/out.yaml";  
@@ -34,7 +32,7 @@ public class TestPointless extends TestCase {
 		String runDir = "Pointless1" + PortableIO.createTimeStampString();
 
 		System.out.println(runDir);
-		RestFlow.main( new String[] {"-base",runsDir, "-run" ,runDir,"-f",file,"-w", workflow, "-infile", infile, "-i", "xdsascii="+ xdsascii, "-i", "validatePath=" + validatePath });
+		RestFlow.main( new String[] {"-base",runsDir, "-run" ,runDir,"-f",file,"-w", workflow, "-i", "xdsascii="+ xdsascii, "-i", "validatePath=" + validatePath });
 		
 		if ( new File(runsDir+runDir+"/_metadata/stderr.out").length() > 0) {
 			throw new Exception("stderr is not empty");
@@ -45,10 +43,8 @@ public class TestPointless extends TestCase {
 		
 		if (workspace == null) throw new Exception("must set TEST_DATA environment variable");
 
-		String file =  "classpath:org/restflow/addons/pointless/workflows/testPointless.yaml";		
+		String file =  "classpath:org/restflow/addons/pointless/workflows/TestPointless.yaml";		
         String workflow = "pointless.Test.Workflow";
-
-		String infile = "target/test-classes/org/restflow/addons/xds/inputs/1/in.yaml";
 
 		String xdsascii = "target/test-classes/org/restflow/addons/pointless/inputs/2/XDS_ASCII.HKL";
         String validatePath = "target/test-classes/org/restflow/addons/pointless/outputs/2/out.yaml";  
@@ -57,7 +53,7 @@ public class TestPointless extends TestCase {
 		String runDir = "Pointless2" + PortableIO.createTimeStampString();
 
 		System.out.println(runDir);
-		RestFlow.main( new String[] {"-base",runsDir, "-run" ,runDir,"-f",file,"-w", workflow, "-infile", infile, "-i", "xdsascii="+ xdsascii, "-i", "validatePath=" + validatePath });
+		RestFlow.main( new String[] {"-base",runsDir, "-run" ,runDir,"-f",file,"-w", workflow, "-i", "xdsascii="+ xdsascii, "-i", "validatePath=" + validatePath });
 		
 		if ( new File(runsDir+runDir+"/_metadata/stderr.out").length() > 0) {
 			throw new Exception("stderr is not empty");

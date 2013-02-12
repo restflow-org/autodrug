@@ -22,7 +22,7 @@ public class TestRaddose extends TestCase {
 		
 		if (workspace == null) throw new Exception("must set TEST_DATA environment variable");
 
-		String file =  "classpath:org/restflow/addons/raddose/workflows/raddoseTest.yaml";		
+		String file =  "classpath:org/restflow/addons/raddose/workflows/TestRaddose.yaml";		
         String workflow = "raddose.Test.Workflow";
 
 		String infile = "target/test-classes/org/restflow/addons/raddose/inputs/1/infile.yaml";

@@ -23,7 +23,7 @@ public class TestMosflm extends TestCase {
 		
 		if (workspace == null) throw new Exception("must set TEST_DATA environment variable");
 
-		String file =  "classpath:org/restflow/addons/mosflm/workflows/mosflmTest.yaml";		
+		String file =  "classpath:org/restflow/addons/mosflm/workflows/TestMosflm.yaml";		
         String workflow = "mosflm.Test.Workflow";
 
 		String image1 = new File( "target/test-classes/org/restflow/addons/mosflm/inputs/1/B2_0001.cbf").getAbsolutePath();

@@ -22,7 +22,7 @@ public class TestTruncate extends TestCase {
 		
 		if (workspace == null) throw new Exception("must set TEST_DATA environment variable");
 
-		String file =  "classpath:org/restflow/addons/truncate/workflows/testTruncate.yaml";		
+		String file =  "classpath:org/restflow/addons/truncate/workflows/TestTruncate.yaml";		
         String workflow = "truncate.Test.Workflow";
 
         String mtz = "target/test-classes/org/restflow/addons/truncate/inputs/1/scala1.mtz";
@@ -45,7 +45,7 @@ public class TestTruncate extends TestCase {
 		
 		if (workspace == null) throw new Exception("must set TEST_DATA environment variable");
 
-		String file =  "classpath:org/restflow/addons/truncate/workflows/testTruncate.yaml";		
+		String file =  "classpath:org/restflow/addons/truncate/workflows/TestTruncate.yaml";		
         String workflow = "truncate.Test.Workflow";
 
         String mtz = "target/test-classes/org/restflow/addons/truncate/inputs/1/scala1.mtz";

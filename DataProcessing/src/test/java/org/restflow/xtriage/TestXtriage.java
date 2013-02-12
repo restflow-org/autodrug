@@ -24,7 +24,7 @@ public class TestXtriage extends TestCase {
 		
 		if (workspace == null) throw new Exception("must set TEST_DATA environment variable");
 
-		String file =  "classpath:org/restflow/addons/xtriage/workflows/xtriageCmd.yaml";		
+		String file =  "classpath:org/restflow/addons/xtriage/workflows/TestXtriage.yaml";		
         String workflow = "xtriage.Test.Workflow";
 
         String mtz = "target/test-classes/org/restflow/addons/xtriage/inputs/1/point1.mtz";

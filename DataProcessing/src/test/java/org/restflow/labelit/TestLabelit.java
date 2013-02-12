@@ -23,7 +23,7 @@ public class TestLabelit extends TestCase {
 		
 		if (workspace == null) throw new Exception("must set TEST_DATA environment variable");
 
-		String file =  "classpath:org/restflow/addons/labelit/workflows/labelitTest.yaml";		
+		String file =  "classpath:org/restflow/addons/labelit/workflows/TestLabelit.yaml";		
         String workflow = "labelit.Test.Workflow";
 
 		String image1 = new File("target/test-classes/org/restflow/addons/labelit/inputs/1/B2_0001.cbf").getAbsolutePath();;
