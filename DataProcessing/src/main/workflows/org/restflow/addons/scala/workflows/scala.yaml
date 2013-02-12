@@ -35,6 +35,7 @@ components:
       fCompl:
       oMult:
       mos:
+      isig:
       isigfinal:
       isigoverall:
       res:
@@ -137,6 +138,7 @@ components:
       oMult: /mult_overall/
       mos: /mosaicity/
       res: /resolution/
+      isig: /isig
       isigfinal: /isig_finalshell/
       isigoverall: /isig_overall/
       isigCutoffResolution: /isigcutoff/resolution
