@@ -18,9 +18,6 @@ import org.restflow.util.TestUtilities;
 public class TestMolecularReplacement extends TestCase {
 	
 	public void testMolecularReplacement() throws Exception {
-		String workspace = System.getenv("TEST_DATA");
-		
-		if (workspace == null) throw new Exception("must set TEST_DATA environment variable");
 
 		String file =  "classpath:org/restflow/addons/MolecularReplacement/workflows/TestMolecularReplacement.yaml";		
         String workflow = "MolecularReplacement.Test.Workflow";
