@@ -1,6 +1,6 @@
 package org.restflow.addons.samples.process;
 
-class ProcessParameters {
+class ProcessParameters implements Serializable {
 	Float intensity_cutoff_sigma;
 	String space_group_number;
 	String unit_cell_angstroms_degrees;

@@ -1,6 +1,6 @@
 package org.restflow.addons.samples.process;
 
-class MolecularReplacementParameters {
+class MolecularReplacementParameters implements Serializable {
 	Float r_measure_cutoff_percent;
 	String mr_model;
 	String alt_mr_model;
