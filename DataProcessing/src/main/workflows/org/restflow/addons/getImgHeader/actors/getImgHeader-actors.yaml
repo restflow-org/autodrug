@@ -24,7 +24,7 @@ components:
     settings:
       _runFileTemplate: |
         getImgHeader $imagePath
-      _envScript: !resource edu/stanford/slac/smb/environment/DataProcessing/env.csh
+      _envScript: !resource "#{systemEnvironment['HOST_ENV']+'/environment/getImgHeader.csh'}"
       _outputFiles:
         'stdout.txt':
           output: outtext

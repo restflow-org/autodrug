@@ -27,7 +27,7 @@ components:
         scala HKLIN $mtzIn.name HKLOUT out.mtz << eof
         INSCALE OFF
         eof
-      _envScript: !resource edu/stanford/slac/smb/environment/DataProcessing/env.csh
+      _envScript: !resource "#{systemEnvironment['HOST_ENV']+'/environment/scala.csh'}"
       _outputFiles:
         'out.mtz':
           output: mtzout

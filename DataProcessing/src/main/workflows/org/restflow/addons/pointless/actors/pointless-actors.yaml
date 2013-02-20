@@ -28,7 +28,7 @@ components:
         XDSIN $xdsascii.name
         HKLOUT out.mtz
         eof
-      _envScript: !resource edu/stanford/slac/smb/environment/pointless-env.csh
+      _envScript: !resource "#{systemEnvironment['HOST_ENV']+'/environment/pointless.csh'}"
       _outputFiles:
         'out.mtz':
           output: mtzout

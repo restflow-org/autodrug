@@ -36,7 +36,7 @@ components:
         DYAD=M
         SURF=O
         eof
-      _envScript: !resource edu/stanford/slac/smb/environment/Molrep/env.csh
+      _envScript: !resource "#{systemEnvironment['HOST_ENV']+'/environment/molrep.csh'}"
       _outputFiles:
         '/mr.mtz':
           output: mrmtz

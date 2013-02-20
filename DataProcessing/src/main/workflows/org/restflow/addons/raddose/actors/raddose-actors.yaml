@@ -51,7 +51,7 @@ components:
         EXPOSURE $exposureTime
         END
         eof
-      _envScript: !resource edu/stanford/slac/smb/environment/DataProcessing/env.csh
+      _envScript: !resource "#{systemEnvironment['HOST_ENV']+'/environment/raddose.csh'}"
       _outputFiles:
         'stdout.txt':
           output: outtext

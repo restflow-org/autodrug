@@ -32,7 +32,7 @@ components:
           println "resolution " + String.format('%4.2f', resolution) + " 40"
         }%>labout F=FP SIGF=SIGFP
         eof
-      _envScript: !resource edu/stanford/slac/smb/environment/freeR/env.csh
+      _envScript: !resource "#{systemEnvironment['HOST_ENV']+'/environment/truncate.csh'}"
       _outputFiles:
         'out.mtz':
           output: mtzout1

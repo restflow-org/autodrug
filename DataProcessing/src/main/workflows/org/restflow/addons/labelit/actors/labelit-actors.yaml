@@ -62,7 +62,7 @@ components:
     settings:
       _runDir: labelit
       _runFileTemplate: labelit.index distl_permit_binning=True $image1 $image2
-      _envScript: !resource edu/stanford/slac/smb/environment/DataProcessing/env.csh
+      _envScript: !resource "#{systemEnvironment['HOST_ENV']+'/environment/labelit.csh'}"
       _fileBuilders:
         'labelit/dataset_preferences.py': 
           template:

@@ -23,7 +23,7 @@ components:
         WEIGHT AUTO
         END
         eof
-      _envScript: !resource edu/stanford/slac/smb/environment/refmac/env.csh
+      _envScript: !resource "#{systemEnvironment['HOST_ENV']+'/environment/refmac.csh'}"
       _outputFiles:
         'hklout.mtz':
           output: hklout

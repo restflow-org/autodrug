@@ -18,7 +18,6 @@ components:
   properties:
     usesStepDirectory: true
     settings:
-      #_envScript: !resource edu/stanford/slac/smb/environment/MolecularReplacement/env.csh
       _envScript: !resource "#{systemEnvironment['HOST_ENV']+'/environment/fftMap.csh'}"
       _runFileTemplate: |
         fft HKLIN ${mtz.name} MAPOUT out.map << eof

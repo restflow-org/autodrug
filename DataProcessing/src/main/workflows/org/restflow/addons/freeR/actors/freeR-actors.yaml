@@ -24,7 +24,7 @@ components:
       _runFileTemplate: |
         freerflag HKLIN $mtzIn.name HKLOUT out.mtz << eof
         eof
-      _envScript: !resource edu/stanford/slac/smb/environment/freeR/env.csh
+      _envScript: !resource "#{systemEnvironment['HOST_ENV']+'/environment/freeR.csh'}"
       _outputFiles:
         'out.mtz':
           output: mtzout1

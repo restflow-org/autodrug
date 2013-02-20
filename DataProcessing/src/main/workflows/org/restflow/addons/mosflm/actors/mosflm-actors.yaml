@@ -106,7 +106,7 @@ components:
         stats
         exit
         eof
-      _envScript: !resource edu/stanford/slac/smb/environment/DataProcessing/env.csh
+      _envScript: !resource "#{systemEnvironment['HOST_ENV']+'/environment/mosflm.csh'}"
       _outputFiles:
         'stdout.txt':
           output: outtext

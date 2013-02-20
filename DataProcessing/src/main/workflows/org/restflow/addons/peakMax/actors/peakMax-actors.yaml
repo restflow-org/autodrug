@@ -17,7 +17,7 @@ components:
       mapfile:
       sigma:
     settings:
-      _envScript: !resource edu/stanford/slac/smb/environment/MolecularReplacement/env.csh
+      _envScript: !resource "#{systemEnvironment['HOST_ENV']+'/environment/peakMax.csh'}"
       _runFileTemplate: |
         peakmax MAPIN $mapfile.name << eof
         THRESHOLD RMS $sigma
