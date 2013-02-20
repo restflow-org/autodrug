@@ -18,9 +18,6 @@ import org.restflow.util.TestUtilities;
 public class TestMolrep extends TestCase {
 	
 	public void testMolrep() throws Exception {
-		String workspace = System.getenv("TEST_DATA");
-		
-		if (workspace == null) throw new Exception("must set TEST_DATA environment variable");
 
 		String file =  "classpath:org/restflow/addons/Molrep/workflows/Molrep.yaml";		
         String workflow = "Molrep.Workflow";

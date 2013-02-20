@@ -18,9 +18,6 @@ import org.restflow.util.TestUtilities;
 public class TestScoreSample extends TestCase {
 	
 	public void testScoreSample() throws Exception {
-		String workspace = System.getenv("TEST_DATA");
-		
-		if (workspace == null) throw new Exception("must set TEST_DATA environment variable");
 
 		String file =  "classpath:org/restflow/addons/ScoreSample/workflows/TestScoreSample.yaml";		
         String workflow = "ScoreSample.Test.Workflow";

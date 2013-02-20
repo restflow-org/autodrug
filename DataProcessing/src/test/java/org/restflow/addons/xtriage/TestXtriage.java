@@ -20,9 +20,6 @@ public class TestXtriage extends TestCase {
 	
 
 	public void testXtriage() throws Exception {
-		String workspace = System.getenv("TEST_DATA");
-		
-		if (workspace == null) throw new Exception("must set TEST_DATA environment variable");
 
 		String file =  "classpath:org/restflow/addons/xtriage/workflows/TestXtriage.yaml";		
         String workflow = "xtriage.Test.Workflow";

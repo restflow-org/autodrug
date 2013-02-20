@@ -28,7 +28,7 @@ public class TestXds extends TestCase {
 
 		String infile = "target/test-classes/org/restflow/addons/xds/inputs/1/in.yaml";
 
-		String firstImagePath = workspace + "/1/B1_1_00001.cbf";
+		String firstImagePath = workspace + "/TestAddons/TestDataProcessing/1/B1_1_00001.cbf";
         String mrModel = "target/test-classes/org/restflow/addons/ProcessImages/inputs/2/2MBW.pdb";
         
         //String runsDir = RestFlow.buildRunDirectoryContainer(new OptionSet());

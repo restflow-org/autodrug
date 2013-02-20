@@ -18,9 +18,6 @@ import org.restflow.util.TestUtilities;
 public class TestScala extends TestCase {
 	
 	public void testScala() throws Exception {
-		String workspace = System.getenv("TEST_DATA");
-		
-		if (workspace == null) throw new Exception("must set TEST_DATA environment variable");
 
 		String file =  "classpath:org/restflow/addons/scala/workflows/TestScala.yaml";		
         String workflow = "scala.Test.Workflow";

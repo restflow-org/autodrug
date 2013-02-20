@@ -18,13 +18,13 @@ import org.restflow.util.TestUtilities;
 public class TestProcessImages extends TestCase {
 	
 	public void testProcessImages() throws Exception {
-		String workspace = System.getenv("TEST_DATA");
+		String testData = System.getenv("TEST_DATA");
 		
-		if (workspace == null) throw new Exception("must set TEST_DATA environment variable");
+		if (testData == null) throw new Exception("must set TEST_DATA environment variable");
 		
 		String infile = "target/test-classes/org/restflow/addons/ProcessImages/inputs/1/infile.yaml";
         String file =  "classpath:org/restflow/addons/ProcessImages/workflows/TestProcessImages-A.yaml";
-        String firstImagePath = new File(workspace + "/1/B1_1_00001.cbf").getAbsolutePath();
+        String firstImagePath = new File(testData + "/TestAddons/TestDataProcessing/1/B1_1_00001.cbf").getAbsolutePath();
         String mrModel = "target/test-classes/org/restflow/addons/ProcessImages/inputs/1/2MBW.pdb";
         
         

@@ -18,9 +18,6 @@ import org.restflow.util.TestUtilities;
 public class TestPeakMax extends TestCase {
 	
 	public void testPeakMax() throws Exception {
-		String workspace = System.getenv("TEST_DATA");
-		
-		if (workspace == null) throw new Exception("must set TEST_DATA environment variable");
 
 		String file =  "classpath:org/restflow/addons/peakMax/workflows/TestPeakMax.yaml";		
         String workflow = "peakMax.Test.Workflow";

@@ -18,9 +18,6 @@ import org.restflow.util.TestUtilities;
 public class TestTruncate extends TestCase {
 	
 	public void testTruncate() throws Exception {
-		String workspace = System.getenv("TEST_DATA");
-		
-		if (workspace == null) throw new Exception("must set TEST_DATA environment variable");
 
 		String file =  "classpath:org/restflow/addons/truncate/workflows/TestTruncate.yaml";		
         String workflow = "truncate.Test.Workflow";
@@ -41,9 +38,6 @@ public class TestTruncate extends TestCase {
 	}
 
 	public void testTruncate2() throws Exception {
-		String workspace = System.getenv("TEST_DATA");
-		
-		if (workspace == null) throw new Exception("must set TEST_DATA environment variable");
 
 		String file =  "classpath:org/restflow/addons/truncate/workflows/TestTruncate.yaml";		
         String workflow = "truncate.Test.Workflow";

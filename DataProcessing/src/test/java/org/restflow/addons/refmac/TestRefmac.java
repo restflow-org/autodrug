@@ -18,9 +18,6 @@ import org.restflow.util.TestUtilities;
 public class TestRefmac extends TestCase {
 	
 	public void testRefmacNoCif() throws Exception {
-		String workspace = System.getenv("TEST_DATA");
-		
-		if (workspace == null) throw new Exception("must set TEST_DATA environment variable");
 
 		String file =  "classpath:org/restflow/addons/refmac/workflows/TestRefmac.yaml";		
         String workflow = "refmac.Test.Workflow";
@@ -39,9 +36,6 @@ public class TestRefmac extends TestCase {
 		}
 	}
 	public void testRefmacWithCif() throws Exception {
-		String workspace = System.getenv("TEST_DATA");
-		
-		if (workspace == null) throw new Exception("must set TEST_DATA environment variable");
 
 		String file =  "classpath:org/restflow/addons/refmac/workflows/TestRefmac.yaml";		
         String workflow = "refmac.Test.Workflow";

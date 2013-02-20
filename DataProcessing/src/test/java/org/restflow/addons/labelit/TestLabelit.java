@@ -19,9 +19,6 @@ public class TestLabelit extends TestCase {
 	
 	
 	public void testLabelit() throws Exception {
-		String workspace = System.getenv("TEST_DATA");
-		
-		if (workspace == null) throw new Exception("must set TEST_DATA environment variable");
 
 		String file =  "classpath:org/restflow/addons/labelit/workflows/TestLabelit.yaml";		
         String workflow = "labelit.Test.Workflow";

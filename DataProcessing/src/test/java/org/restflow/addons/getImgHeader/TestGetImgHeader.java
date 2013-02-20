@@ -20,9 +20,6 @@ public class TestGetImgHeader extends TestCase {
 	
 
 	public void testGetImageHeader() throws Exception {
-		String workspace = System.getenv("TEST_DATA");
-		
-		if (workspace == null) throw new Exception("must set TEST_DATA environment variable");
 
 		String file =  "classpath:org/restflow/addons/getImgHeader/workflows/TestGetImgHeader.yaml";		
         String workflow = "getImgHeader.Test.Workflow";

@@ -18,9 +18,6 @@ import org.restflow.util.TestUtilities;
 public class TestFreeR extends TestCase {
 	
 	public void testFreer() throws Exception {
-		String workspace = System.getenv("TEST_DATA");
-		
-		if (workspace == null) throw new Exception("must set TEST_DATA environment variable");
 
 		String file =  "classpath:org/restflow/addons/freeR/workflows/TestFreeR.yaml";		
         String workflow = "freeR.Test.Workflow";

@@ -18,9 +18,6 @@ import org.restflow.util.TestUtilities;
 public class TestPointless extends TestCase {
 	
 	public void testPointless1() throws Exception {
-		String workspace = System.getenv("TEST_DATA");
-		
-		if (workspace == null) throw new Exception("must set TEST_DATA environment variable");
 
 		String file =  "classpath:org/restflow/addons/pointless/workflows/TestPointless.yaml";		
         String workflow = "pointless.Test.Workflow";
@@ -39,9 +36,6 @@ public class TestPointless extends TestCase {
 		}
 	}
 	public void testPointless2() throws Exception {
-		String workspace = System.getenv("TEST_DATA");
-		
-		if (workspace == null) throw new Exception("must set TEST_DATA environment variable");
 
 		String file =  "classpath:org/restflow/addons/pointless/workflows/TestPointless.yaml";		
         String workflow = "pointless.Test.Workflow";
