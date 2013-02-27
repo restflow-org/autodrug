@@ -6,14 +6,13 @@ global argv
 
 set command [lindex $argv 0]
 
-set dpProject autodrug/DataProcessing
-set dpProjectDir $env(WORKSPACE)/$dpProject
+set dpProjectDir DataProcessing
 set base /data/$env(USER)/autodrug
 set dpLib $dpProjectDir/target/dependency
 set dpClasses $dpProjectDir/target/classes
 set test_classes $dpProjectDir/target/test-classes
 set dpClassPath $dpLib/*:$dpClasses:$test_classes
-set dpSrcBase $env(WORKSPACE)/$dpProject/
+set dpSrcBase $dpProjectDir/
 set runs_dir $base/test
 
 puts $dpClassPath
@@ -139,7 +138,7 @@ switch $command {
             error "search text"
         }
         set text [lindex $argv 1]
-        searchDir $dpSrcBase $text
+        searchDir . $text
     }
 }
     
