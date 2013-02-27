@@ -1,4 +1,5 @@
 package org.restflow.addons.shell;
+ 
 
 import groovy.lang.Writable;
 import groovy.text.SimpleTemplateEngine;
@@ -17,9 +18,9 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
 
-import ssrl.workflow.actors.Actor.ActorFSM;
-import ssrl.workflow.beans.TextScanner;
-import ssrl.workflow.actors.AbstractActor;
+import org.restflow.actors.Actor.ActorFSM;
+import org.restflow.beans.TextScanner;
+import org.restflow.actors.AbstractActor;
 
 /**
  * This class is thread safe.  Its superclass is thread safe, and all the mutable fields 
@@ -108,8 +109,8 @@ public class GroovyTemplateScriptRunnerActor extends AbstractActor implements Be
             stepDir = _actorStatus.getStepDirectory().getPath() + "/" + runDir;
         }
 
-        System.out.println(runDir);
-        System.out.println(stepDir);
+        //System.out.println(runDir);
+        //System.out.println(stepDir);
 
 
         if ( fileBuilderMap != null ) { 
@@ -243,7 +244,7 @@ public class GroovyTemplateScriptRunnerActor extends AbstractActor implements Be
 		binding.put("_states", _stateVariables);
 		binding.put("_outputs", _outputSignature.keySet());
 		binding.put("_status" , _actorStatus);
-		binding.put("_type", _signatureElementTypes);	
+		//binding.put("_type", _signatureElementTypes);	
 		binding.put("_this" , this);
 		binding.put("STEP", _actorStatus.getStepCount());
 	}
