@@ -4,10 +4,7 @@ namespace:
 
 imports:
 
-- classpath:/common/scriptActors.yaml
 - classpath:/common/groovy/actors.yaml
-- classpath:/common/bash/actors.yaml
-- classpath:/common/perl/perlActor.yaml
 - classpath:/common/directors.yaml
 - classpath:/common/types.yaml 
 - classpath:/common/support.yaml
@@ -19,23 +16,6 @@ imports:
 
 components: 
 
-- id: Actor.SetEnvironment
-  type: GroovyActor
-  properties:
-    inputs: 
-      env_script:
-    step: |
-      println new Date().format('HH:mm:ss') + "   Setting up environment for DataProcessing";
-      cmd1 = "chmod +x $env_script";
-      cmd1.execute().text;
-      
-      setenvCmd = ['tcsh', '-c', env_script];
-      ProcessBuilder pb = new ProcessBuilder(setenvCmd).redirectErrorStream(true);
-      env = pb.start().text.split('\n');
-    outputs:
-      env:
-
-      
 - id: Actor.Calc90DegImgNum
   type: GroovyActor
   properties:

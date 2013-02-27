@@ -5,10 +5,6 @@ namespace:
 imports:
 
 - classpath:/common/scriptActors.yaml
-- classpath:/common/groovy/actors.yaml
-- classpath:/common/bash/actors.yaml
-- classpath:/common/perl/perlActor.yaml
-- classpath:/common/perl/actors.yaml
 - classpath:/common/directors.yaml
 - classpath:/common/types.yaml 
 - classpath:/common/support.yaml
