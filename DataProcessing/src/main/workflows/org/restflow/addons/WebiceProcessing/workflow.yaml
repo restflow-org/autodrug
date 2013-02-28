@@ -18,6 +18,7 @@ imports:
 - classpath:org/restflow/addons/Crystallography/map/spacegroup.yaml
 - classpath:org/restflow/addons/Crystallography/map/enant.yaml
 - classpath:org/restflow/addons/WebiceProcessing/reports.yaml
+- classpath:org/restflow/addons/WebiceProcessing/scala.yaml
 
 components:
 
@@ -259,12 +260,12 @@ components:
       mtzfile: file:/refmac_1.mtz
       pdbfile: file:/refmac_1.pdb
       refout: /outtext
-      
+     
 - id: Scala1
   type: Node
   properties:
     stepsOnce: true
-    actor: !lref ScalaWorkflow1
+    actor: !ref scala.WebiceProcessing.ScalaWorkflow1
     nestedUriPrefix: /scala1/
     inflows:
       res: /scala/input/highres/
@@ -278,76 +279,13 @@ components:
   type: Node
   properties:
     stepsOnce: true
-    actor: !lref ScalaWorkflow2
+    actor: !ref scala.WebiceProcessing.ScalaWorkflow2
     nestedUriPrefix: /scala2/
     inflows:
       res: /trunc/res
       mtzIn: file:/pointless/point1.mtz
     outflows:
       mtzout1: file:/truncate/scala1.mtz
-      
-- id: ScalaWorkflow2
-  type: Workflow
-  properties:
-    director: !lref DataDrivenJobDependencyDirector
-    inputs: 
-      res:
-      mtzIn: 
-    nodes:
-    - !lref SetEnvironment
-    - !lref Scala2Inputs
-    - !lref Scala2Outputs
-    - !lref WriteScalaInputFile
-    - !lref RunScala
-    - !lref ParseScalaOutputFile
-    - !lref ParseScalaSummary
-    outputs:
-      mtzout1: 
 
-- id: Scala2Inputs
-  type: InPortal
-  properties:
-    outflows:
-      res: /inres/
-      mtzIn: file:/point1.mtz
-      
-- id: Scala2Outputs
-  type: OutPortal
-  properties:
-    inflows:
-      mtzout1: file:/scala1.mtz
-      
-- id: ScalaWorkflow1
-  type: Workflow
-  properties:
-    director: !lref DataDrivenJobDependencyDirector
-    inputs: 
-      res:
-      mtzIn: 
-    nodes:
-    - !lref SetEnvironment
-    - !lref Scala1Inputs
-    - !lref Scala1Outputs
-    - !lref WriteScalaInputFile
-    - !lref RunScala
-    - !lref ParseScalaOutputFile
-    - !lref ParseScalaSummary
-    outputs:
-      mtzout1: 
-      isig:
-      res:
 
-- id: Scala1Inputs
-  type: InPortal
-  properties:
-    outflows:
-      res: /inres/
-      mtzIn: file:/point1.mtz
-      
-- id: Scala1Outputs
-  type: OutPortal
-  properties:
-    inflows:
-      mtzout1: file:/scala1.mtz
-      isig: /isig
-      res: /res
+

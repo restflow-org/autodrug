@@ -1,0 +1,458 @@
+namespace:
+
+  module: scala
+  route: WebiceProcessing
+
+imports:
+- classpath:org/restflow/addons/Crystallography/actors/Crystallography-actors.yaml
+
+components:
+
+
+      
+- id: ScalaWorkflow2
+  type: Workflow
+  properties:
+    director: !ref PublishSubscribeDirector
+    inputs: 
+      res:
+      mtzIn: 
+    nodes:
+    - !ref WebiceProcessing.SetEnvironment
+    - !lref Scala2Inputs
+    - !lref Scala2Outputs
+    - !lref WriteScalaInputFile
+    - !lref RunScala
+    - !lref ParseScalaOutputFile
+    - !lref ParseScalaSummary
+    outputs:
+      mtzout1: 
+
+- id: Scala2Inputs
+  type: InPortal
+  properties:
+    outflows:
+      res: /inres/
+      mtzIn: file:/point1.mtz
+      
+- id: Scala2Outputs
+  type: OutPortal
+  properties:
+    inflows:
+      mtzout1: file:/scala1.mtz
+      
+- id: ScalaWorkflow1
+  type: Workflow
+  properties:
+    director: !ref PublishSubscribeDirector
+    inputs: 
+      res:
+      mtzIn: 
+    nodes:
+    - !ref WebiceProcessing.SetEnvironment
+    - !lref Scala1Inputs
+    - !lref Scala1Outputs
+    - !lref WriteScalaInputFile
+    - !lref RunScala
+    - !lref ParseScalaOutputFile
+    - !lref ParseScalaSummary
+    outputs:
+      mtzout1: 
+      isig:
+      res:
+
+- id: Scala1Inputs
+  type: InPortal
+  properties:
+    outflows:
+      res: /inres/
+      mtzIn: file:/point1.mtz
+      
+- id: Scala1Outputs
+  type: OutPortal
+  properties:
+    inflows:
+      mtzout1: file:/scala1.mtz
+      isig: /isig
+      res: /res
+
+- id: WriteScalaInputFile
+  type: Step
+  properties:
+    inflows: 
+      highres: /inres/
+    actor: !lref ScalaInputFileWriter
+    outflows:
+      template: file:/scala.run
+
+# other files output by scala: ANOMPLOT, CORRELPLOT, NORMPLOT, ROGUEPLOT, ROGUES, SCALES
+- id: RunScala
+  type: Step
+  properties: 
+    inflows:
+      mtzIn: file:/point1.mtz
+      runfile: file:/scala.run
+      env: /env/set/
+    actor: !lref ScalaRunner
+    outflows: 
+      mtzout1: file:/scala1.mtz
+      outtext: file:/scala.out
+
+- id: ParseScalaOutputFile
+  type: Step
+  properties:
+    inflows:
+      scalaout: file:/scala.out
+    actor: !lref ScalaOutputFileParser
+    outflows:
+      scalaresult: /summary/
+      isigfinal: /isig_finalshell/
+      isigoverall: /isig_overall/
+      isig: /isig
+      res: /res
+      block1: /isigblock/
+      block2: /isigovblock/
+      block3: /isigheader/
+      block4: /isigovheader/
+
+- id: ParseScalaSummary
+  type: Step
+  properties: 
+    inflows:
+      scalasum: /summary/
+    actor: !lref ScalaSummaryParser
+    outflows: 
+      oRmeas: /Rmeas_overall/
+      fRmeas: /Rmeas_finalshell/
+      oCompl: /complet_overall/
+      fCompl: /complet_finalshell/
+      oMult: /mult_overall/
+      mos: /mosaicity/
+      res: /resolution/
+
+- id: WriteScalaInputFileRes
+  type: Step
+  properties:
+    inflows:
+      highres: /trunc/res
+    actor: !lref ScalaInputFileWriter
+    outflows:
+      template: file:/scala/final/scala.run
+
+- id: RunScalaRes
+  type: Step
+  properties:
+    inflows:
+      mtzIn: file:/scala/final/point1.mtz
+      runfile: file:/scala/final/scala.run
+      env: /env/set/
+    actor: !lref ScalaRunner
+    outflows: 
+      #mtzout1: file:/scala/final/scala1.mtz
+      mtzout1: file:/truncate/scala1.mtz
+      outtext: file:/scala/final/scala.out
+
+- id: ParseScalaOutputFileRes
+  type: Step
+  properties:
+    inflows:
+      scalaout: file:/scala/final/scala.out
+    actor: !lref ScalaOutputFileParser
+    outflows:
+      scalaresult: /scala/final/summary/
+      isigfinal: /scala/final/isig_finalshell/
+      isigoverall: /scala/final/isig_overall/
+      isig: /scala/final/isig
+      res: /scala/final/res
+      block1: /scala/final/isigblock/
+      block2: /scala/final/isigovblock/
+      block3: /scala/final/isigheader/
+      block4: /scala/final/isigovheader/
+
+- id: ParseScalaSummaryRes
+  type: Step
+  properties: 
+    inflows:
+      scalasum: /scala/final/summary/
+    actor: !lref ScalaSummaryParser
+    outflows: 
+      oRmeas: /scala/final/Rmeas_overall/
+      fRmeas: /scala/final/Rmeas_finalshell/
+      oCompl: /scala/final/complet_overall/
+      fCompl: /scala/final/complet_finalshell/
+      oMult: /scala/final/mult_overall/
+      mos: /scala/final/mosaicity/
+      res: /scala/final/resolution/
+
+
+
+- id: ScalaInputFileWriter
+  type: GroovyActor
+  properties:
+    inputs:
+      highres: 
+    settings: 
+      scalaTemplate: !lref ScalaInputTemplate
+    step: |
+      def model = [mtzin: "point1.mtz", mtzout: "scala1.mtz"];
+      model.res = highres
+      import groovy.text.SimpleTemplateEngine;
+      def engine = new SimpleTemplateEngine();
+      template1 = engine.createTemplate(scalaTemplate).make(model);
+      template = template1.toString();
+    outputs:
+      template:
+
+- id: ScalaRunner
+  type: GroovyActor
+  properties: 
+    settings: 
+      scalaparser: !lref ScalaParserTemplate
+    inputs:
+      mtzIn: 
+      runfile: 
+      env: 
+    step: |
+      println new Date().format('HH:mm:ss') + "   Run scala";
+      cmd1 = "chmod +x ${runfile.name}";
+      cmd1.execute(null, new File(mtzIn.parent)).text;
+      cmd2 = "sh -c ${runfile.name}";
+      outtext = cmd2.execute(env, new File(mtzIn.parent)).text;
+      scalaparser.compile();
+      parsed = scalaparser.search(outtext);
+      warning = parsed.fatal_warning;
+      if ( !warning.equals(null) ) {
+        println new Date().format('HH:mm:ss') + "   Warning from scala: " + warning;
+      }
+      
+      // files //
+      mtzout1 = new File(mtzIn.parent + "/scala1.mtz");
+    outputs: 
+      mtzout1: 
+      outtext: 
+
+- id: ScalaOutputFileParser
+  type: GroovyActor
+  properties:
+    settings:
+      scalaparser: !lref ScalaParserTemplate
+    inputs:
+      scalaout: 
+    step: |
+      println new Date().format('HH:mm:ss') + "   Parsing scala output";
+      scalaparser.compile();
+      parsed = scalaparser.search(scalaout.text);
+      scalaerror = parsed.warning;
+      if ( !scalaerror.equals(null) ) {
+        // ouput info //
+        println new Date().format('HH:mm:ss') + "   Scala warning" 
+        println "";
+        println scalaerror;
+        println "";
+      }
+      
+      scalaresult = parsed.result;
+      block3 = parsed.isigheader
+      block1 = parsed.isigblock
+      block2 = parsed.isigoverallblock
+      block4 = parsed.isigoverallheader
+      
+      // output info //
+      println new Date().format('HH:mm:ss') + "   Scala result";
+      println "";
+      println scalaresult;
+      println "";
+
+      //println "   " + block3
+      //println block1
+      //println " " + block2
+      //println block4
+      //println ""
+
+      isig = new float[10]
+      // isig = [;]
+      isig[0] = parsed.mn1.toFloat()
+      isig[1] = parsed.mn2.toFloat()
+      isig[2] = parsed.mn3.toFloat()
+      isig[3] = parsed.mn4.toFloat()
+      isig[4] = parsed.mn5.toFloat()
+      isig[5] = parsed.mn6.toFloat()
+      isig[6] = parsed.mn7.toFloat()
+      isig[7] = parsed.mn8.toFloat()
+      isig[8] = parsed.mn9.toFloat()
+      isig[9] = parsed.mn10.toFloat()
+      
+      //println isig
+      
+      res = new float[10]
+      res[0] = parsed.dmin1.toFloat()
+      res[1] = parsed.dmin2.toFloat()
+      res[2] = parsed.dmin3.toFloat()
+      res[3] = parsed.dmin4.toFloat()
+      res[4] = parsed.dmin5.toFloat()
+      res[5] = parsed.dmin6.toFloat()
+      res[6] = parsed.dmin7.toFloat()
+      res[7] = parsed.dmin8.toFloat()
+      res[8] = parsed.dmin9.toFloat()
+      res[9] = parsed.dmin10.toFloat()
+      
+      //println res
+
+      isigfinal = parsed.isig10;
+      isigoverall = parsed.isigmaov;
+      
+      // output info //
+      println new Date().format('HH:mm:ss') + "   Parsing I/sigma statistics";
+      println "";
+      println "I/sigma final shell: " + isigfinal;
+      println "I/sigma overall: " + isigoverall;
+      println "";
+    outputs:
+      scalaresult: 
+      isigfinal:
+      isigoverall:
+      isig:
+      res:
+      block1:
+      block2:
+      block3:
+      block4: 
+
+- id: ScalaSummaryParser
+  type: GroovyActor
+  properties:
+    settings: 
+      scalaparser: !lref ScalaSummaryParserTemplate
+    inputs:
+      scalasum: 
+    step: |
+      println new Date().format('HH:mm:ss') + "   Parsing scala summary";
+      scalaparser.compile();
+      parsed = scalaparser.search(scalasum);
+      oRmeas = parsed.Rmeas_overall;
+      fRmeas = parsed.Rmeas_outer;
+      oCompl = parsed.compl_overall
+      fCompl = parsed.compl_outer
+      oMult = parsed.mult_overall
+      mos = parsed.mosaicity
+      res = parsed.resolution
+      // output info //
+      println "";
+      println "Rmeas overall " + oRmeas + "   Rmeas final shell " + fRmeas;
+      println "Compl overall " + oCompl + "   Compl final shell " + fCompl;
+      println "Multiplicity overall " + oMult 
+      // + "   Mosaicity " + mos;
+      println "Resolution " + res
+      println "";
+    outputs:
+      oRmeas: 
+      fRmeas: 
+      oCompl:
+      fCompl:
+      oMult:
+      mos: 
+      res: 
+
+
+
+
+
+- id: ScalaParserTemplate
+  className: org.restflow.beans.TextScanner
+  properties:
+    absorbWhiteSpaceSymbol: "~"
+    template:
+      - |
+        ~N 1/resol^2 Dmin(A) Rmrg  Rfull   Rcum  Ranom  Nanom    Av_I  SIGMA I/sigma   sd Mn(I/sd)  Nmeas  Nref  Ncent FRCBIAS  Nbias $$
+        ~
+        ~
+        {isigheader:TEXT_BLOCK}
+        ~$$
+        {isigblock:TEXT_BLOCK}
+        ~$$
+        "><b>For inline graphs use a Java browser</b></applet>
+        ~
+        {isigoverallblock:TEXT_BLOCK}
+        {isigoverallheader:TEXT_BLOCK}
+        ~
+        ~
+        <a name="intensityagreementScala"><h3>Agreement by intensity</h3></a>
+      - |
+        ~ N~1/d^2~Dmin(A)~Rmrg ~ Rfull ~ Rcum ~ Ranom ~ Nanom ~ Av_I ~ SIGMA~I/sigma ~ sd~Mn(I/sd) ~ Nmeas ~ Nref ~ Ncent~FRCBIAS ~ Nbias
+        ~$$
+        ~ 1~{d1} ~ {dmin1} ~ {rmrg1} ~ {rfull1} ~ {rcum1} ~ {ranom1} ~ {nanom1} ~ {avi1} ~ {sigma1} ~ {isig1} ~ {sd1} ~ {mn1} ~ {nmeas1} ~ {nref1} ~ {ncent1} ~ {fr1} ~ {nbias1}
+        ~ 2~{d2} ~ {dmin2} ~ {rmrg2} ~ {rfull2} ~ {rcum2} ~ {ranom2} ~ {nanom2} ~ {avi2} ~ {sigma2} ~ {isig2} ~ {sd2} ~ {mn2} ~ {nmeas2} ~ {nref2} ~ {ncent2} ~ {fr2} ~ {nbias2}
+        ~ 3~{d3} ~ {dmin3} ~ {rmrg3} ~ {rfull3} ~ {rcum3} ~ {ranom3} ~ {nanom3} ~ {avi3} ~ {sigma3} ~ {isig3} ~ {sd3} ~ {mn3} ~ {nmeas3} ~ {nref3} ~ {ncent3} ~ {fr3} ~ {nbias3}
+        ~ 4~{d4} ~ {dmin4} ~ {rmrg4} ~ {rfull4} ~ {rcum4} ~ {ranom4} ~ {nanom4} ~ {avi4} ~ {sigma4} ~ {isig4} ~ {sd4} ~ {mn4} ~ {nmeas4} ~ {nref4} ~ {ncent4} ~ {fr4} ~ {nbias4}
+        ~ 5~{d5} ~ {dmin5} ~ {rmrg5} ~ {rfull5} ~ {rcum5} ~ {ranom5} ~ {nanom5} ~ {avi5} ~ {sigma5} ~ {isig5} ~ {sd5} ~ {mn5} ~ {nmeas5} ~ {nref5} ~ {ncent5} ~ {fr5} ~ {nbias5}
+        ~ 6~{d6} ~ {dmin6} ~ {rmrg6} ~ {rfull6} ~ {rcum6} ~ {ranom6} ~ {nanom6} ~ {avi6} ~ {sigma6} ~ {isig6} ~ {sd6} ~ {mn6} ~ {nmeas6} ~ {nref6} ~ {ncent6} ~ {fr6} ~ {nbias6}
+        ~ 7~{d7} ~ {dmin7} ~ {rmrg7} ~ {rfull7} ~ {rcum7} ~ {ranom7} ~ {nanom7} ~ {avi7} ~ {sigma7} ~ {isig7} ~ {sd7} ~ {mn7} ~ {nmeas7} ~ {nref7} ~ {ncent7} ~ {fr7} ~ {nbias7}
+        ~ 8~{d8} ~ {dmin8} ~ {rmrg8} ~ {rfull8} ~ {rcum8} ~ {ranom8} ~ {nanom8} ~ {avi8} ~ {sigma8} ~ {isig8} ~ {sd8} ~ {mn8} ~ {nmeas8} ~ {nref8} ~ {ncent8} ~ {fr8} ~ {nbias8}
+        ~ 9~{d9} ~ {dmin9} ~ {rmrg9} ~ {rfull9} ~ {rcum9} ~ {ranom9} ~ {nanom9} ~ {avi9} ~ {sigma9} ~ {isig9} ~ {sd9} ~ {mn9} ~ {nmeas9} ~ {nref9} ~ {ncent9} ~ {fr9} ~ {nbias9}
+        ~ 10~{d10} ~ {dmin10} ~ {rmrg10} ~ {rfull10} ~ {rcum10} ~ {ranom10} ~ {nanom10} ~ {avi10} ~ {sigma10} ~ {isig10} ~ {sd10} ~ {mn10} ~ {nmeas10} ~ {nref10} ~ {ncent10} ~ {fr10} ~ {nbias10}
+        ~$$
+        "><b>For inline graphs use a Java browser</b></applet>
+        ~
+        ~Overall: ~ {rmrgov} ~ {rfullov} ~ {rcumov} ~ {ranomov} ~ {nanomov} ~ {aviov} ~ {sigmaov} ~ {isigmaov} ~ {sdov} ~ {mnov} ~ {nmeasov} ~ {nrefov} ~ {ncentov} ~ {frcov} ~ {nbov}
+        ~ Rmrg ~ Rfull ~ Rcum ~ Ranom ~ Nanom ~ Av_I ~ SIGMA~I/sigma ~ sd~Mn(I/sd) ~ Nmeas ~ Nref ~ Ncent~FRCBIAS ~ Nbias
+      - |
+        $TEXT:Result:~$$~$$
+        {result:TEXT_BLOCK}
+        $$
+        ~
+        ================================================================================
+      - |
+        $TEXT:Warning:~$$~$$
+        ~
+        {warning:TEXT_BLOCK}
+        $$
+      - |
+        ~====|~WARNING~WARNING~WARNING~WARNING~WARNING~ |====
+        ~ {fatal_warning:TEXT_BLOCK}
+        ~
+        ~
+        ~
+        ~
+        ~
+        ~
+        ~
+        ~
+        ~Initial{stuff:TEXT_BLOCK}
+
+- id: ScalaSummaryParserTemplate
+  className: org.restflow.beans.TextScanner
+  properties:
+    absorbWhiteSpaceSymbol: "~"
+    template: 
+      - |
+        ~ Rmeas~(all~I+~&~I-) ~ {Rmeas_overall} ~ {Rmeas_inner} ~ {Rmeas_outer}
+      - |
+        ~ Completeness ~ {compl_overall} ~ {compl_inner} ~ {compl_outer}
+      - |
+        ~ Multiplicity ~ {mult_overall} ~ {mult_inner} ~ {mult_outer}
+      - |
+        Average mosaicity: ~ {mosaicity}
+      - |
+        ~ Maximum resolution:  ~ {resolution}A
+        
+
+
+
+- id: ScalaInputTemplate
+  className: java.lang.String
+  singleton: true 
+  constructor: 
+  - value: |
+      scala HKLIN $mtzin HKLOUT $mtzout << eof
+      INSCALE OFF
+      <% if ( res.toFloat() != 0.0 ) {
+      println "RESOLUTION HIGH $res"
+      }
+      %>eof
+      
+#<% if (res.toFloat() != 0.0) {
+#      println "resolution " + String.format('%4.2f', res) + " 40"
+#      }
+#      %>
+
+

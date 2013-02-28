@@ -106,22 +106,6 @@ components:
   constructor: 
   - value: phenix.xtriage $mtzIn log=$logFile
 
-- id: ScalaInputTemplate
-  className: java.lang.String
-  singleton: true 
-  constructor: 
-  - value: |
-      scala HKLIN $mtzin HKLOUT $mtzout << eof
-      INSCALE OFF
-      <% if ( res.toFloat() != 0.0 ) {
-      println "RESOLUTION HIGH $res"
-      }
-      %>eof
-      
-#<% if (res.toFloat() != 0.0) {
-#      println "resolution " + String.format('%4.2f', res) + " 40"
-#      }
-#      %>
 - id: TruncateInputTemplate
   className: java.lang.String
   singleton: true 
