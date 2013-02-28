@@ -8,7 +8,25 @@ imports:
 
 components:
 
-
+- id: ScalaWorkflow1
+  type: Workflow
+  properties:
+    director: !ref PublishSubscribeDirector
+    inputs: 
+      res:
+      mtzIn: 
+    nodes:
+    - !ref WebiceProcessing.SetEnvironment
+    - !lref Inputs
+    - !lref Outputs
+    - !lref WriteScalaInputFile
+    - !lref RunScala
+    - !lref ParseScalaOutputFile
+    - !lref ParseScalaSummary
+    outputs:
+      mtzout1: 
+      isig:
+      res:
       
 - id: ScalaWorkflow2
   type: Workflow
@@ -19,8 +37,8 @@ components:
       mtzIn: 
     nodes:
     - !ref WebiceProcessing.SetEnvironment
-    - !lref Scala2Inputs
-    - !lref Scala2Outputs
+    - !lref Inputs
+    - !lref Outputs
     - !lref WriteScalaInputFile
     - !lref RunScala
     - !lref ParseScalaOutputFile
@@ -28,47 +46,14 @@ components:
     outputs:
       mtzout1: 
 
-- id: Scala2Inputs
+- id: Inputs
   type: InPortal
   properties:
     outflows:
       res: /inres/
       mtzIn: file:/point1.mtz
-      
-- id: Scala2Outputs
-  type: OutPortal
-  properties:
-    inflows:
-      mtzout1: file:/scala1.mtz
-      
-- id: ScalaWorkflow1
-  type: Workflow
-  properties:
-    director: !ref PublishSubscribeDirector
-    inputs: 
-      res:
-      mtzIn: 
-    nodes:
-    - !ref WebiceProcessing.SetEnvironment
-    - !lref Scala1Inputs
-    - !lref Scala1Outputs
-    - !lref WriteScalaInputFile
-    - !lref RunScala
-    - !lref ParseScalaOutputFile
-    - !lref ParseScalaSummary
-    outputs:
-      mtzout1: 
-      isig:
-      res:
 
-- id: Scala1Inputs
-  type: InPortal
-  properties:
-    outflows:
-      res: /inres/
-      mtzIn: file:/point1.mtz
-      
-- id: Scala1Outputs
+- id: Outputs
   type: OutPortal
   properties:
     inflows:
