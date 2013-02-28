@@ -1,0 +1,11 @@
+<%
+
+    //add a method to File which checks to see if it exists before reading, otherwise return empty string
+	File.metaClass.contents={-> delegate.exists()? delegate.text : "" }
+
+    //add a method to Yaml which checks to see if the file object exists before reading, otherwise return null
+	tools.yaml.metaClass.safeLoad={file -> file==null ? null: delegate.load(file.contents()) }
+
+	def plots = ['rfactor': tools.yaml.safeLoad(rFactorFile), 'ltest': tools.yaml.safeLoad(lTestFile), 'ztest': tools.yaml.safeLoad(zTestFile)]
+%>
+${tools.yaml.dump(plots)}

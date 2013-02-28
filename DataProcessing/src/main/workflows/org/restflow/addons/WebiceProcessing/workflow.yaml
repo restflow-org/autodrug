@@ -1,0 +1,353 @@
+namespace:
+
+  module: WebiceProcessing
+
+imports:
+
+- classpath:/common/scriptActors.yaml
+- classpath:/common/groovy/actors.yaml
+- classpath:/common/bash/actors.yaml
+- classpath:/common/perl/perlActor.yaml
+- classpath:/common/directors.yaml
+- classpath:/common/types.yaml 
+- classpath:/common/support.yaml
+- classpath:org/restflow/addons/WebiceProcessing/nodes.yaml
+- classpath:org/restflow/addons/WebiceProcessing/actors.yaml
+- classpath:org/restflow/addons/WebiceProcessing/parserTemplate.yaml
+- classpath:org/restflow/addons/WebiceProcessing/inputTemplate.yaml
+- classpath:org/restflow/addons/Crystallography/map/spacegroup.yaml
+- classpath:org/restflow/addons/Crystallography/map/enant.yaml
+- classpath:org/restflow/addons/WebiceProcessing/reports.yaml
+
+components:
+
+- id: DataDrivenJobDependencyDirector
+  type: DataDrivenDirector
+  singleton: false
+  properties: 
+    nodesStepOnce: true
+
+- id: Img2Structure
+  type: Workflow
+  properties: 
+    director: !lref DataDrivenJobDependencyDirector
+    inputs:
+      FileName:
+        default: 
+        description: full path of first image file
+      FirstImgNum:
+        default: '1'
+        description: image number for first image to be analyzed
+      LastImgNum:
+        default: '0'
+        description: image number for the last image to be analyzed
+      Resolution:
+        default: '0.0'
+        description: input resolution
+      ISigma: 
+        default: '0.0'
+        description: input I/Sigma cutoff
+      PDBFile:
+        default: 'null'
+        description: full path to pdb file for protein homologous to target
+      RefmacNumCycles:
+        default: 5
+        description: number of cycles for Refmac refinement; default is 5
+      RefmacRefiType:
+        default: REST
+        description: type of Refmac refinement; REST - restrained refinement; RIGI - rigid body refinement
+    nodes:
+    - !lref SetEnvironment
+    - !lref InputFileName
+    - !lref InputFirstImgNum
+    - !lref InputLastImgNum
+    - !lref InputPDBFile
+    - !lref SetPDBFile
+    - !lref InputResolution
+    - !lref InputISigma
+    #- !lref InputIdentity
+    #- !lref InputMolecWt
+    - !lref InputRefmacNumCycles
+    - !lref InputRefmacRefiType
+    - !lref ExtractFromFileName
+    - !lref FindFirstImg
+    - !lref FindFirstImgNum
+    - !lref CheckFirstImageNum
+    - !lref FindLastImg
+    - !lref FindLastImgNum
+    - !lref SetLastImgNum
+    - !lref CheckOscillation
+    - !lref SetEndImgNum
+    - !lref MakeHashString
+    - !lref MakeHashNameString
+    - !lref RunGetImgHeader
+    - !lref ParseGetImgHeaderOutput
+    - !lref SetResolution
+    #- !lref SetISigma
+    - !lref MakeQuesString
+    - !lref MakeQuesNameString
+    - !lref DetermineXDSDetectorInfo
+    - !lref DetermineXDSFormatInfo
+    - !lref DetermineXDSSpotRange
+    - !lref CalculateDetectorOrigin
+    - !lref WriteXDSInputFile
+    - !lref RunXDSInput
+    - !lref WriteXDSJobsInputFile
+    - !lref RunXDSJobs
+    - !lref WriteXDSScaleFile
+    - !lref WriteXDSConvFile    
+    - !lref ParseXDSOutputFile
+    - !lref ParseXDSCorrFile
+    - !lref WritePointlessInputFile
+    - !lref RunPointless
+    - !lref ParsePointlessOutputFile
+    - !lref WriteXtriageInputFile
+    - !lref RunXtriage
+    - !lref ParseXtriageOutputFile
+    - !lref ParseXtriageLogFile
+    - !lref Scala1
+    - !lref SetISigResolution
+    - !lref Scala2
+    - !lref WriteTruncateInputFile
+    - !lref RunTruncate
+    - !lref WriteFreeRInputFile
+    - !lref RunFreeR
+    - !lref MolecularReplacement
+    - !lref Enant
+    - !lref WriteZTestOutput
+    - !lref WriteLTestOutput
+    reports:
+      plots: !lref PlotReport 
+      log: !lref LogReport
+      summary: !lref SummaryReport
+      status: !inline
+        type: UnixProcessStatusReporter
+
+- id: MolecularReplacement
+  type: Node
+  properties:
+    stepsOnce: true
+    actor: !lref ModelRefine
+    nestedUriPrefix: /modelrefine/
+    inflows: 
+      RefmacNumCycles: /refmac/cycles/
+      RefmacRefiType: /refmac/refitype/
+      PDBFile: file:/molrep/mr.pdb
+      MTZFile: file:/molrep/mr.mtz
+    outflows: 
+      mtzfile: file:/refmac/refmac_1.mtz
+      pdbfile: file:/refmac/refmac_1.pdb
+      refout: /refmac/outtext
+
+- id: ModelRefine
+  type: Workflow
+  properties: 
+    director: !lref DataDrivenJobDependencyDirector
+    inputs:
+      RefmacNumCycles: 
+      RefmacRefiType: 
+      PDBFile:
+      MTZFile: 
+    nodes:
+    - !lref SetEnvironment
+    - !lref MRInputs
+    - !lref MROutputs
+    - !lref WriteMolrepInputFile
+    - !lref RunMolrep
+    - !lref WriteRefmacInputFile
+    - !lref RunRefmac
+    - !lref ParseRefmacOutputFile
+    - !lref ParseRefmacRStat
+    - !lref WriteRefmacOutput
+    outputs:
+      mtzfile:
+      pdbfile:
+      refout:
+    
+- id: MRInputs
+  type: InPortal
+  properties: 
+    outflows: 
+      RefmacNumCycles: /refmac/cycles/
+      RefmacRefiType: /refmac/refitype/
+      PDBFile: file:/molrep/mr.pdb
+      MTZFile: file:/molrep/mr.mtz
+
+- id: MROutputs
+  type: OutPortal
+  properties: 
+    inflows:
+      mtzfile: file:/refmac/refmac_1.mtz
+      pdbfile: file:/refmac/refmac_1.pdb
+      refout: /refmac/outtext
+      
+- id: Enant
+  type: Node
+  properties:
+    stepsOnce: true
+    actor: !lref EnantWorkflow
+    nestedUriPrefix: /enantwk/
+    inflows: 
+      spacegroup: /pointless/sgnum/
+      mtzfile: file:/molrep/mr.mtz
+      pdbfile: file:/molrep/mr.pdb
+      refnumcycles: /refmac/cycles/
+      reftype: /refmac/refitype/
+    outflows: 
+      outmtz: file:/enant/mr.mtz
+      mtzoutfile: file:/enant/refmac_1.mtz
+      pdboutfile: file:/enant/refmac_1.pdb
+      refout: /enant/outtext
+    exceptions:
+      java.lang.Exception: stderr:/noenant/
+      
+- id: EnantInputs
+  type: InPortal
+  properties:
+    outflows:
+      spacegroup: /sg/
+      mtzfile: file:/mr.mtz
+      pdbfile: file:/mr.pdb
+      refnumcycles: /cycles/
+      reftype: /refitype/
+      
+- id: EnantOutputs
+  type: OutPortal
+  properties:
+    inflows:
+      outmtz: file:/enant.mtz
+      mtzoutfile: file:/refmac_1.mtz
+      pdboutfile: file:/refmac_1.pdb
+      refout: /outtext
+
+- id: EnantWorkflow
+  type: Workflow
+  properties:
+    director: !lref DataDrivenJobDependencyDirector
+    inputs: 
+      spacegroup: 
+      mtzfile: 
+      pdbfile: 
+      refnumcycles:
+      reftype: 
+    nodes:
+    - !lref SetEnvironment
+    - !lref EnantInputs
+    - !lref EnantOutputs
+    - !lref FindEnantNum
+    - !lref MakeEnantMTZInputFile
+    - !lref RunEnantMTZ
+    - !lref EnantMR
+    outputs:
+      outmtz:
+      mtzoutfile: 
+      pdboutfile:
+      refout: 
+      
+- id: EnantMR
+  type: Node
+  properties:
+    stepsOnce: true
+    actor: !lref ModelRefine
+    nestedUriPrefix: /enantmr/
+    inflows: 
+      RefmacNumCycles: /cycles/
+      RefmacRefiType: /refitype/
+      PDBFile: file:/mr.pdb
+      MTZFile: file:/enant.mtz
+    outflows: 
+      mtzfile: file:/refmac_1.mtz
+      pdbfile: file:/refmac_1.pdb
+      refout: /outtext
+      
+- id: Scala1
+  type: Node
+  properties:
+    stepsOnce: true
+    actor: !lref ScalaWorkflow1
+    nestedUriPrefix: /scala1/
+    inflows:
+      res: /scala/input/highres/
+      mtzIn: file:/pointless/point1.mtz
+    outflows:
+      mtzout1: file:/trunc1/scala1.mtz
+      isig: /scala/isig
+      res: /scala/res
+      
+- id: Scala2
+  type: Node
+  properties:
+    stepsOnce: true
+    actor: !lref ScalaWorkflow2
+    nestedUriPrefix: /scala2/
+    inflows:
+      res: /trunc/res
+      mtzIn: file:/pointless/point1.mtz
+    outflows:
+      mtzout1: file:/truncate/scala1.mtz
+      
+- id: ScalaWorkflow2
+  type: Workflow
+  properties:
+    director: !lref DataDrivenJobDependencyDirector
+    inputs: 
+      res:
+      mtzIn: 
+    nodes:
+    - !lref SetEnvironment
+    - !lref Scala2Inputs
+    - !lref Scala2Outputs
+    - !lref WriteScalaInputFile
+    - !lref RunScala
+    - !lref ParseScalaOutputFile
+    - !lref ParseScalaSummary
+    outputs:
+      mtzout1: 
+
+- id: Scala2Inputs
+  type: InPortal
+  properties:
+    outflows:
+      res: /inres/
+      mtzIn: file:/point1.mtz
+      
+- id: Scala2Outputs
+  type: OutPortal
+  properties:
+    inflows:
+      mtzout1: file:/scala1.mtz
+      
+- id: ScalaWorkflow1
+  type: Workflow
+  properties:
+    director: !lref DataDrivenJobDependencyDirector
+    inputs: 
+      res:
+      mtzIn: 
+    nodes:
+    - !lref SetEnvironment
+    - !lref Scala1Inputs
+    - !lref Scala1Outputs
+    - !lref WriteScalaInputFile
+    - !lref RunScala
+    - !lref ParseScalaOutputFile
+    - !lref ParseScalaSummary
+    outputs:
+      mtzout1: 
+      isig:
+      res:
+
+- id: Scala1Inputs
+  type: InPortal
+  properties:
+    outflows:
+      res: /inres/
+      mtzIn: file:/point1.mtz
+      
+- id: Scala1Outputs
+  type: OutPortal
+  properties:
+    inflows:
+      mtzout1: file:/scala1.mtz
+      isig: /isig
+      res: /res

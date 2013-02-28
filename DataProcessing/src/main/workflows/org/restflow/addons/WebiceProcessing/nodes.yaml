@@ -1,0 +1,1543 @@
+namespace:
+
+  module: WebiceProcessing
+
+imports:
+- classpath:org/restflow/addons/Crystallography/actors/Crystallography-actors.yaml
+
+components:
+
+- id: StartWorkflow
+  type: GroovyActorStep
+  properties:
+    actor.step: |
+      println new Date().format('HH:mm:ss') + "   start workflow";
+
+- id: SetEnvironment
+  type: GroovyActorStep
+  properties:
+    inflows: 
+      env_script: workspace:setup_env.csh
+    actor.step: |
+      println new Date().format('HH:mm:ss') + "   Setting up environment";
+      cmd1 = "chmod +x $env_script";
+      cmd1.execute().text;
+      
+      setenvCmd = ['tcsh', '-c', env_script];
+      ProcessBuilder pb = new ProcessBuilder(setenvCmd).redirectErrorStream(true);
+      env = pb.start().text.split('\n');
+      
+      // debugging // 
+      // println setenv;
+      // print "which labelit.index".execute(env, new File(env_script.parent)).text;
+      // print "which fft".execute(env, new File(env_script.parent)).text;
+    outflows:
+      env: /env/set/
+
+- id: InputFileName
+  type: InPortal
+  properties:
+    outflows:
+      FileName: /img/imagePathName/
+
+- id: InputFirstImgNum
+  type: InPortal
+  properties: 
+    outflows: 
+      FirstImgNum: /img/InputFirstImgNum/
+
+- id: InputLastImgNum
+  type: InPortal
+  properties:
+    outflows:
+      LastImgNum: /img/InputLastImgNum/
+
+- id: InputPDBFile
+  type: InPortal
+  properties:
+    outflows:
+      PDBFile: /protein/pdbfile/
+
+- id: SetPDBFile
+  type: GroovyActorStep
+  properties: 
+    inflows:
+      FileName: /protein/pdbfile/
+      mtzIn: file:/molrep/mr.mtz 
+    actor.step: |
+      if ( FileName == 'null' || ! new File(FileName).exists() ) {
+        println new Date().format('HH:mm:ss') + "   No PDB file";
+        throw new Exception("No PDB file loaded");
+      }
+      cmd1 = "cat $FileName";
+      mrpdb = cmd1.execute(null, new File(mtzIn.parent)).text
+    outflows:
+      mrpdb: file:/molrep/mr.pdb
+
+- id: InputResolution
+  type: InPortal
+  properties:
+    outflows:
+      Resolution: /input/resolution/
+
+- id: InputISigma
+  type: InPortal
+  properties:
+    outflows:
+      ISigma: /input/isigma/
+
+- id: InputAASeqPirFile
+  type: InPortal
+  properties:
+    outflows:
+      PirFile: /protein/pirfile/
+
+- id: SetAASeqPirFile
+  type: GroovyActorStep
+  properties: 
+    inflows: 
+      runfile: file:/arpwarp/mr.mtz
+      pirfile: /protein/pirfile/
+    actor.step: |
+      cmd1 = "cat $pirfile";
+      seqfile = cmd1.execute(null, new File(runfile.parent)).text
+    outflows: 
+      seqfile: file:/arpwarp/seq.pir
+    
+- id: InputIdentity
+  type: InPortal
+  properties:
+    outflows:
+      Identity: /protein/identity/
+      
+- id: InputMolecWt
+  type: InPortal
+  properties:
+    outflows:
+      MolecWt: /protein/molecwt/
+
+- id: InputRefmacNumCycles
+  type: InPortal
+  properties:
+    outflows:
+      RefmacNumCycles: /refmac/cycles/
+
+- id: InputRefmacRefiType
+  type: InPortal
+  properties:
+    outflows:
+      RefmacRefiType: /refmac/refitype/
+
+- id: FindFirstImg
+  type: Step
+  properties:
+    inflows:
+      directory: /img/imageDir/
+      imgroot: /img/prefixString/
+      imgtype: /img/imgTypeName/
+    actor: !lref FirstImgFinder
+    outflows:
+      firstimg: /img/FoundFirstImgFile/
+
+- id: FindFirstImgNum
+  type: Step
+  properties:
+    inflows:
+      fileOne: /img/FoundFirstImgFile/
+    actor: !lref FileNameExtractor
+    outflows:
+      dirName: /img/dirf/
+      nameOnly: /img/namef/
+      imgTypeName: /img/typef/
+      prefixString: /img/prefixf/
+      imgNum: /img/FoundFirstImgNum/
+      imgNumString: /img/FirstImgNumString/
+      imgNumDigits: /img/FirstImgNumDigits/
+
+- id: CheckFirstImageNum
+  type: GroovyActorStep
+  properties:
+    inflows:
+      imgNumInput: /img/InputFirstImgNum/
+      imgNumFound: /img/FoundFirstImgNum/
+    actor.step: |
+      if (imgNumInput.toInteger() >= imgNumFound.toInteger()) {
+        startimg = imgNumInput;
+      }
+      else {
+        startimg = imgNumFound;
+      }
+    outflows:
+      startimg: /img/FirstImgNum/
+
+- id: FindLastImg
+  type: Step
+  properties: 
+    inflows:
+      directory: /img/imageDir/
+      imgroot: /img/prefixString/
+      imgtype: /img/imgTypeName/
+    actor: !lref LastImgFinder
+    outflows:
+      endimg: /img/LastImgFile/
+
+- id: FindLastImgNum
+  type: Step
+  properties:
+    inflows:
+      fileOne: /img/LastImgFile/
+    actor: !lref FileNameExtractor
+    outflows:
+      dirName: /img/dir2/
+      nameOnly: /img/name2/
+      imgTypeName: /img/type2/
+      prefixString: /img/prefix2/
+      imgNum: /img/FoundLastImgNum/
+      imgNumString: /img/LastImgNumString/
+      imgNumDigits: /img/LastImgNumDigits/
+
+- id: SetEndImgNum
+  type: GroovyActorStep
+  properties:
+    inflows:
+      imgNumInput: /img/InputLastImgNum/
+      imgNumFound: /img/FoundLastImgNum/
+    actor.step: |
+      if ( (imgNumInput.toInteger() > 0) && (imgNumInput.toInteger() <= imgNumFound.toInteger()) ) {
+        endimg = imgNumInput;
+      }
+      else {
+        endimg = imgNumFound;
+      }
+    outflows: 
+      endimg: /img/end/
+
+- id: CheckOscillation
+  type: Step
+  properties:
+    inflows:
+      imageDir: /img/imageDir/
+      prefix: /img/prefixString/
+      imageType: /img/imgTypeName/
+      imageNumDigits: /img/imgNumDigits/
+      startNum: /img/FirstImgNum/
+      endNum: /img/end/
+      env: /env/set/
+      check_osc: workspace:check_osc.pl
+    actor: !lref OscillationChecker 
+    outflows:
+      oscNum: /img/oscNum/
+
+- id: CheckOsc
+  type: Step
+  properties:
+    inflows:
+      imageDir: /img/imageDir/
+      prefix: /img/prefixString/
+      imageType: /img/imgTypeName/
+      imageNumDigits: /img/imgNumDigits/
+      startNum: /img/FirstImgNum/
+      endNum: /img/end/
+      env: /env/set/
+    actor: !lref OscCheck
+    outflows:
+      oscNum: /img/oscNum2/
+
+- id: SetLastImgNum
+  type: GroovyActorStep
+  properties:
+    inflows: 
+      oscNum: /img/oscNum/
+      endNum: /img/end/
+    actor.step: |
+      if (oscNum.toInteger() != 0) {
+        endimg = oscNum;
+      }
+      else {
+        endimg = endNum;
+      }
+    outflows:
+      endimg: /img/LastImgNum/
+
+- id: ExtractFromFileName
+  type: GroovyActorStep
+  properties:
+    inflows:
+      fileOne: /img/imagePathName/
+    actor.step: | 
+      println new Date().format('HH:mm:ss') + "   Extracting names from " + fileOne;
+      // begin extracting directory //
+      dirindex = fileOne.lastIndexOf("/");
+      if ( dirindex == -1 ) {
+        dirName = "";
+      }
+      else {
+        dirName = fileOne.substring(0, dirindex+1);
+      }
+      nameOnly = fileOne.substring(dirindex+1);
+      // end extracting directory //
+      ptIndex = nameOnly.indexOf(".");
+      imgTypeName = nameOnly.substring(ptIndex+1);
+      pos = nameOnly.lastIndexOf("_");
+      prefixString = nameOnly.substring(0, pos);
+      imgNumString = nameOnly.substring(pos + 1, ptIndex);
+      imgNum = nameOnly.substring(pos + 1, ptIndex).toInteger();
+      imgNumDigits = ptIndex - pos - 1;
+    outflows: 
+      dirName: /img/imageDir/
+      nameOnly: /img/imageName/
+      imgTypeName: /img/imgTypeName/
+      prefixString: /img/prefixString/
+      imgNum: /img/imgNum/
+      imgNumString: /img/imgNumString/
+      imgNumDigits: /img/imgNumDigits/
+
+- id: MakeHashString
+  type: GroovyActorStep
+  properties:
+    inflows:
+      imgNumString: /img/imgNumString/
+    actor.step: hash = imgNumString.replaceAll("[0-9]", "#");
+    outflows:
+      hash: /img/hash/
+
+- id: MakeHashNameString
+  type: Step
+  properties:
+    inflows:
+      pathName: /img/imageDir/
+      prefixString: /img/prefixString/
+      imgTypeName: /img/imgTypeName/
+      num: /img/hash/
+    actor: !lref ImgNameMaker
+    outflows:
+      newImg: /img/newImgHash/
+    
+
+- id: RunGetImgHeader
+  type: GroovyActorStep
+  properties:
+    inflows:
+      image: /img/imagePathName/
+      env: /env/set/
+    actor.step: |
+      println new Date().format('HH:mm:ss') + "   Parsing image header info";
+
+      cmd = ['sh', '-c', 'getImgHeader ' + image]
+      ProcessBuilder pb = new ProcessBuilder(cmd).redirectErrorStream(true).environment(env);
+      imageHeaderOut = pb.start().text;
+    outflows:
+      imageHeaderOut: /img/header/out/
+
+- id: ParseGetImgHeaderOutput
+  type: Step
+  properties: 
+    inflows:
+      getHeader: /img/header/out/
+    actor: !lref ImageHeaderReader
+    outflows:
+      header: /img/header/parsed/
+      oscStart: /img/header/oscStart/
+      oscRange: /img/header/oscRange/
+      size1: /img/header/size1/
+      size2: /img/header/size2/
+      beamCenterX: /img/header/beamCenterX/
+      beamCenterY: /img/header/beamCenterY/
+      pixelSize: /img/header/pixelSize/
+      detector: /img/header/detector/
+      wave: /img/header/wavelength/
+
+- id: Calc90DegImgNum
+  type: GroovyActorStep
+  properties:
+    inflows:
+      oscStart: /img/header/oscStart/
+      oscRange: /img/header/oscRange/
+      firstNum: /img/FirstImgNum/
+      lastNum: /img/LastImgNum/
+    actor.step: |
+      println new Date().format('HH:mm:ss') + "   Calculating image number 90 degrees from " + firstNum;
+      degImg = 90.0 / oscRange.toFloat();
+      output = firstNum.toInteger() + degImg.toInteger();
+      if (output > lastNum.toInteger()) {
+        println new Date().format('HH:mm:ss') + "   Calculated image number is " + output;
+        output = lastNum.toInteger();
+        println new Date().format('HH:mm:ss') + "   Image number is beyond range, will use " + output + " for LABELIT";
+      }
+      else {
+        println new Date().format('HH:mm:ss') + "   90 degree image number is " + output;
+      }
+    outflows:
+      output: /img/90DegImgNum/
+
+- id: WriteLabelitInputFile
+  type: Step
+  properties: 
+    inflows:
+      template: /img/newImgHash/
+      start: /img/FirstImgNum/
+      end: /img/90DegImgNum/
+    actor: !lref LabelitInputMaker
+    outflows:
+      template: file:/labelit/labelit.run
+
+- id: RunLabelit
+  type: GroovyActorStep
+  properties:
+    inflows:
+      runfile: file:/labelit/labelit.run
+      template: /img/newImgHash/
+      start: /img/FirstImgNum/
+      end: /img/90DegImgNum/
+      env: /env/set/
+    actor.step: |
+      println new Date().format('HH:mm:ss') + "   Running LABELIT";
+      dir = new File(runfile.parent);
+      cmd = ['sh', '-c', 'labelit.index ' + template + ' ' + start]
+      ProcessBuilder pb = new ProcessBuilder(cmd).redirectErrorStream(true).directory(dir).environment(env);
+      labelitOut = pb.start().text
+    outflows:
+      labelitOut: file:/labelit/labelit.out
+
+- id: ParseLabelitOutputFile
+  type: Step
+  properties: 
+    inflows:
+      labelitOut: file:/labelit/labelit.out
+    actor: !lref IndexingResultFinder
+    outflows: 
+      a: /img/labelit/unitcell/a/
+      b: /img/labelit/unitcell/b/
+      c: /img/labelit/unitcell/c/
+      alpha: /img/labelit/unitcell/alpha/
+      beta: /img/labelit/unitcell/beta/
+      gamma: /img/labelit/unitcell/gamma/
+      spaceGroup: /img/labelit/spaceGroup/
+      highres: /img/highres/
+
+- id: FindSpaceGroupNum
+  type: Step
+  properties: 
+    inflows:
+      spaceGroup: /img/labelit/spaceGroup/
+    actor: !lref Crystallography.SpaceGroup_StringToNumber
+    outflows:
+      spaceGroupNum: /xds/input/spaceGroup/
+
+- id: SetResolution
+  type: GroovyActorStep
+  properties:
+    inflows:
+      inputRes: /input/resolution/
+    actor.step: |
+      inRes = inputRes.toFloat().abs();
+      
+      if (inRes > 30.0) {
+        res = 0.0
+        println new Date().format('HH:mm:ss') + "Input resolution lower than low resolution range. Resolution will be determined." 
+      }
+      else {
+        res = inRes;
+      }
+      trustedRegion = 1.05
+      
+      // debugging //
+      // println "SetResolution: " + res;
+    outflows:
+      res: /xds/input/resolution/
+      trustedRegion: /xds/trustedRegion/
+
+- id: MakeQuesString
+  type: GroovyActorStep
+  properties:
+    inflows:
+      imgNumString: /img/imgNumString/
+    actor.step: hash = imgNumString.replaceAll("[0-9]", "?");
+    outflows:
+      hash: /img/ques/
+
+- id: MakeQuesNameString
+  type: Step
+  properties:
+    inflows:
+      pathName: /img/imageDir/
+      prefixString: /img/prefixString/
+      imgTypeName: /img/imgTypeName/
+      num: /img/ques/
+    actor: !lref ImgNameMaker
+    outflows:
+      newImg: /img/newImgQues/
+
+- id: DetermineXDSDetectorInfo
+  type: GroovyActorStep
+  properties:
+    inflows:
+      detector: /img/header/detector/
+    actor.step: |
+      if (detector.contains("MARCCD")) {
+        detectorName = "MARCCD";
+        minPixel = 1;
+        overloadCutoff = 65000;
+        sensor = "!";
+      }
+      else if (detector.contains("PILATUS")) {
+        detectorName = "PILATUS";
+        minPixel = 0;
+        overloadCutoff = 1048576;
+        sensor = "SENSOR_THICKNESS= 0.32";
+      }
+      else if (detector.contains("ADSC")) {
+        detectorName = "ADSC";
+        minPixel = 1;
+        overloadCutoff = 65000;
+        sensor = "!";
+      }
+    outflows:
+      detectorName: /xds/input/detector/
+      minPixel: /xds/input/minPixel/
+      overloadCutoff: /xds/input/overloadCutoff/
+      sensor: /xds/input/sensor/
+
+- id: DetermineXDSFormatInfo
+  type: GroovyActorStep
+  properties:
+    inflows: 
+      detectorName: /xds/input/detector/
+    actor.step: |
+      if (detectorName == "PILATUS") {
+        nameTemplateFormat = "CBF";
+      }
+      else if (detectorName == "MARCCD") {
+        nameTemplateFormat = "DIRECT TIFF";
+      }
+      else {
+        nameTemplateFormat = "";
+      }
+    outflows:
+      nameTemplateFormat: /xds/input/format/
+
+- id: DetermineXDSSpotRangeOld
+  type: GroovyActorStep
+  properties: 
+    inflows:
+      start: /img/FirstImgNum/
+      end: /img/LastImgNum/
+    actor.step: |
+      diff = end.toInteger() - start.toInteger();
+      ranges = 0;
+      if (diff <= 10) {
+        ranges += 1;
+        start1 = start.toInteger();
+        end1 = end.toInteger(); 
+      }
+      else {
+        ranges += 2;
+        start1 = start.toInteger();
+        end1 = start.toInteger() + 4;
+        start2 = end.toInteger() - 4;
+        end2 = end.toInteger(); 
+      }
+      if (diff > 20) {
+        ranges += 1;
+        half = diff / 2;
+        start3 = start.toInteger() + half.toInteger() - 2;
+        end3 = start.toInteger() + half.toInteger() + 2;
+      }
+      if (ranges == 1) {
+        spotRange = new int[2];
+        spotRange[0] = start1;
+        spotRange[1] = start2;
+      }
+      else if (ranges == 2) {
+        spotRange = new int[4];
+        spotRange[0] = start1;
+        spotRange[1] = end1;
+        spotRange[2] = start2;
+        spotRange[3] = end2;
+      }
+      else if (ranges == 3) {
+        spotRange = new int[6];
+        spotRange[0] = start1;
+        spotRange[1] = end1;
+        spotRange[2] = start2;
+        spotRange[3] = end2;
+        spotRange[4] = start3;
+        spotRange[5] = end3;
+      }
+    outflows:
+      spotRange: /xds/input/spotRange/  
+
+# three ranges, three degrees each
+- id: DetermineXDSSpotRange
+  type: GroovyActorStep
+  properties:
+    inflows:
+      start: /img/FirstImgNum/
+      end: /img/LastImgNum/
+      osc: /img/header/oscRange/
+      startphi: /img/header/oscStart/
+    actor.step: |
+      start1 = start.toInteger()
+      numdiff = (3.0 / osc.toFloat()).toInteger()
+      end1 = start1 + numdiff
+      
+      end3 = start1 + (90.0 / osc.toFloat()).toInteger()
+      
+      if (end3 > end.toInteger() ) {
+        end3 = end.toInteger()
+      }
+      
+      start3 = end3 - numdiff
+      
+      start2 = (( start3 + end1 ) / 2).toInteger() 
+      end2 = start2 + numdiff
+      
+      spotRange = new int[6];
+      spotRange[0] = start1;
+      spotRange[1] = end1;
+      spotRange[2] = start2;
+      spotRange[3] = end2;
+      spotRange[4] = start3;
+      spotRange[5] = end3;
+    outflows:
+      spotRange: /xds/input/spotRange/
+
+- id: CalculateDetectorOrigin
+  type: GroovyActorStep
+  properties:
+    inflows:
+      detectorName: /xds/input/detector/
+      size1: /img/header/size1/
+      size2: /img/header/size2/
+      beamCenterX: /img/header/beamCenterX/
+      beamCenterY: /img/header/beamCenterY/
+      pixelSize: /img/header/pixelSize/
+    actor.step: |
+      if (detectorName == "ADSC") {
+        originX = beamCenterX.toFloat() / pixelSize.toFloat();
+        originY = size1.toInteger() - beamCenterY.toFloat() / pixelSize.toFloat();
+      }
+      else if (detectorName == "PILATUS") {
+        originX = size2.toInteger() - beamCenterX.toFloat() / pixelSize.toFloat();
+        originY = size1.toInteger() - beamCenterY.toFloat() / pixelSize.toFloat();
+      }
+      else if (detectorName == "MARCCD") {
+        originX = size2.toInteger() - beamCenterX.toFloat() / pixelSize.toFloat();
+        originY = size1.toInteger() - beamCenterY.toFloat() / pixelSize.toFloat();
+      }
+    outflows:
+      originX: /xds/input/originX/
+      originY: /xds/input/originY/
+
+- id: WriteXDSInputFile
+  type: Step
+  properties: 
+    constants: 
+      two: 0
+    inflows:
+      getImgHeader: /img/header/parsed/
+      nameTemplate: /img/newImgQues/
+      nameTemplateFormat: /xds/input/format/
+      start: /img/FirstImgNum/
+      end: /img/LastImgNum/
+      wave: /img/header/wavelength/
+      spotRange: /xds/input/spotRange/
+      detectorName: /xds/input/detector/ 
+      minPixel: /xds/input/minPixel/
+      overloadCutoff: /xds/input/overloadCutoff/
+      sensor: /xds/input/sensor/
+      sizeX: /img/header/size2/
+      sizeY: /img/header/size1/
+      pixelSize: /img/header/pixelSize/
+      originX: /xds/input/originX/
+      originY: /xds/input/originY/
+      highres: /xds/input/resolution/
+      trustedRegion: /xds/trustedRegion/
+    actor: !lref XDSInputMaker
+    outflows: 
+      template: file:/xds/1/XDS.INP 
+
+# other files that are output by XDS: BKGINIT.cbf, BLANK.cbf, FRAME.cbf
+# IDXREF.LP, SPOT.XDS, XYCORR.LP, COLSPOT.LP, GAIN.cbf, INIT.LP
+# X-CORRECTIONS.cbf, XPARM.XDS, Y-CORRECTIONS.cbf
+- id: RunXDSInput
+  type: Step
+  properties: 
+    inflows: 
+      infile: file:/xds/1/XDS.INP
+      env: /env/set/
+    actor: !lref XDSInputRunner
+    outflows: 
+      stdout: file:/xds/1/xds.out
+      xdsdir: file:/xds1/
+
+- id: WriteXDSConvFile
+  type: Step
+  properties:
+    actor: !lref XDSConvFileMaker
+    outflows:
+      filename: file:/xds/2/XDSCONV.INP
+
+- id: WriteXDSScaleFile
+  type: Step
+  properties:
+    actor: !lref XDSScaleFileMaker
+    outflows:
+      filename: file:/xds/2/XSCALE.INP
+
+- id: WriteXDSJobsInputFile
+  type: Step
+  properties: 
+    constants:
+      two: 1
+    inflows:
+      getImgHeader: /img/header/parsed/
+      nameTemplate: /img/newImgQues/
+      nameTemplateFormat: /xds/input/format/
+      start: /img/FirstImgNum/
+      end: /img/LastImgNum/
+      spotRange: /xds/input/spotRange/
+      detectorName: /xds/input/detector/ 
+      wave: /img/header/wavelength/
+      minPixel: /xds/input/minPixel/
+      overloadCutoff: /xds/input/overloadCutoff/
+      sensor: /xds/input/sensor/
+      sizeX: /img/header/size2/
+      sizeY: /img/header/size1/
+      pixelSize: /img/header/pixelSize/
+      originX: /xds/input/originX/
+      originY: /xds/input/originY/
+      highres: /xds/input/resolution/
+      # listen to files before running
+      prevrun: file:/xds/1/xds.out
+      trustedRegion: /xds/trustedRegion/
+    actor: !lref XDSInputMaker
+    outflows:
+      template: file:/xds/2/XDS.INP
+
+# other files needed by XDS: XDSCONV.INP, XSCALE.INP, BKGINIT.cbf, BLANK.cbf
+# FRAME.cbf, IDXREF.LP, SPOT.XDS, XYCORR.LP, COLSPOT.LP, GAIN.cbf, INIT.LP
+# X-CORRECTIONS.cbf, XPARM.XDS, Y-CORRECTIONS.cbf
+# other files output by XDS: ABS.cbf, CORRECT.LP, FRAME.cbf, INIT.LP, XDS_ASCII.HKL, XYCORR.LP
+# ABSORP.cbf, GAIN.cbf, INTEGRATE.HKL, Y-CORRECTIONS.cbf, BKGINIT.cbf, DECAY.cbf, GX-CORRECTIONS.cbf
+# INTEGRATE.LP, BKGPIX.cbf, DEFPIX.LP, GXPARM.XDS, MODPIX.cbf, BLANK.cbf, DX-CORRECTIONS.cbf
+# GY-CORRECTIONS.cbf, SPOT.XDS, XPARM.XDS, COLSPOT.LP, DY-CORRECTIONS.cbf, IDXREF.LP, X-CORRECTIONS.cbf 
+- id: RunXDSJobs
+  type: Step
+  properties: 
+    inflows:
+      env: /env/set/
+      xdsdir: file:/xds1/
+      infile: file:/xds/2/XDS.INP
+    actor: !lref XDSJobsRunner
+    outflows: 
+      stdout: file:/xds/final/xds.out
+      outdir: file:/xds2/
+      xdsascii1: file:/pointless/XDS_ASCII.HKL
+      corr: file:/xds/final/CORRECT.LP
+      
+- id: RunXscale
+  type: GroovyActorStep
+  properties:
+    inflows:
+      xdsdir: file:/xds2/
+    actor.step: |
+      println new Date().format('HH:mm:ss') + "   Running XSCALE";
+      cmdline = "sh -c xscale_par";
+      proc = cmdline.execute(env, new File(xdsdir.parent + "/" + xdsdir.name + "/"));
+      xdsout = proc.text;
+      outdir = new File(xdsdir.parent + "/" + xdsdir.name + "/")
+    outflows:
+      xdsout: file:/xds/final/xscale.out
+      outdir: file:/xdsfinal/
+      ascii: file:/pointless/XDS_ASCII.HKL
+
+- id: ParseXDSCorrFile
+  type: GroovyActorStep
+  properties:
+    actor.settings: 
+      parser: !lref XDSCorrectLPParserTemplate
+    inflows:
+      corrfile: file:/xds/final/CORRECT.LP
+    actor.step: |
+      println new Date().format('HH:mm:ss') + "   Parsing XDS CORRECT.LP";
+      parser.compile();
+      parsed = parser.search(corrfile.text);
+      mosaicity = parsed.mosaic;
+      println "\nMosaicity: " + mosaicity + "\n";
+    outflows:
+      mosaicity: /xds/mosaicity/
+
+- id: ParseXDSOutputFile
+  type: Step
+  properties:
+    inflows:
+      xdsfile: file:/xds/final/xds.out
+      xdshkl: file:/pointless/XDS_ASCII.HKL
+    actor: !lref XDSOutputFileParser
+    outflows:
+      a: /xds/a
+      b: /xds/b
+      c: /xds/c
+      alpha: /xds/alpha
+      beta: /xds/beta
+      gamma: /xds/gamma
+      sg: /xds/sg
+      high: /xds/resolution
+
+- id: WritePointlessInputFile
+  type: Step
+  properties: 
+    #inflows:
+      #isigma: /pointless/input/isigma/
+    actor: !lref PointlessInputFileWriter
+    outflows:
+      template: file:/pointless/point.run 
+
+# not obvious why a script is needed to be able to run pointless
+- id: RunPointless
+  type: GroovyActorStep
+  properties:
+    inflows:
+      xdsIn: file:/pointless/XDS_ASCII.HKL
+      runfile: file:/pointless/point.run
+      env: /env/set/
+    actor.step: |
+      println new Date().format('HH:mm:ss') + "   Run pointless";
+      cmd1 = "chmod +x ${runfile.name}";
+      cmd1.execute(null, new File(xdsIn.parent)).text;
+      cmd2 = "sh -c ${runfile.name}";
+      outtext = cmd2.execute(env, new File(xdsIn.parent)).text;
+      
+      // files //
+      pointless1 = new File(xdsIn.parent + "/point1.mtz");
+      pointless2 = new File(xdsIn.parent + "/point1.mtz");
+    outflows:
+      outtext: file:/pointless/point.out
+      pointless1: file:/pointless/point1.mtz
+      pointless2: file:/xtriage/point1.mtz
+
+- id: ParsePointlessOutputFile
+  type: Step
+  properties:
+    inflows:
+      pointOut: file:/pointless/point.out
+    actor: !lref PointlessOutputFileParser
+    outflows: 
+      sgnum: /pointless/sgnum/
+      unitcell: /pointless/unitcell/
+      sg: /pointless/sg/
+      a: /pointless/a/
+      b: /pointless/b/
+      c: /pointless/c/
+      alpha: /pointless/alpha/
+      beta: /pointless/beta/
+      gamma: /pointless/gamma/
+      high: /scala/input/highres/
+
+- id: FindEnantNum
+  type: Step
+  properties:
+    inflows:
+      SpaceGroup: /sg/
+    actor: !ref Crystallography.EnantNumFinder
+    outflows:
+      enant: /enant/
+      
+- id: MakeEnantMTZInputFile
+  type: GroovyActorStep
+  properties:
+    inflows:
+      enant: /enant/
+      mtzfile: file:/mr.mtz
+    actor.settings:
+      MTZInputTemplate: !lref EnantMTZInputTemplate
+    actor.step: |
+      def model = [mtzin: mtzfile.name, mtzout: "enant.mtz"];
+      model.enant = enant
+      import groovy.text.SimpleTemplateEngine;
+      def engine = new SimpleTemplateEngine();
+      template1 = engine.createTemplate(MTZInputTemplate).make(model);
+      outfile = template1.toString();
+    outflows:
+      outfile: file:/mtzutils.run
+
+- id: RunEnantMTZ
+  type: GroovyActorStep
+  properties:
+    inflows:
+      enant: /enant/
+      env: /env/set/
+      runfile: file:/mtzutils.run
+      mtzfile: file:/mr.mtz
+    actor.step: |
+      println new Date().format('HH:mm:ss') + "   Run mtzutils for enantiomorph";
+      cmd1 = "chmod +x ${runfile.name}";
+      cmd1.execute(null, new File(mtzfile.parent)).text;
+      cmd2 = "sh -c ${runfile.name}";
+      outtext = cmd2.execute(env, new File(mtzfile.parent)).text;
+      outmtz = new File(mtzfile.parent + "/enant.mtz");
+    actor.outputs:
+      outtext:
+        nullable: true
+      outmtz:
+        nullable: true
+    outflows:
+      outtext: file:/mtzutils.out
+      outmtz: file:/enant.mtz
+
+- id: WriteXtriageInputFile
+  type: Step
+  properties: 
+    actor: !lref XtriageInputFileWriter
+    outflows:
+      template: file:/xtriage/xtriage.run 
+
+- id: RunXtriage
+  type: GroovyActorStep
+  properties:
+    inflows:
+      mtzIn: file:/xtriage/point1.mtz
+      runfile: file:/xtriage/xtriage.run
+      env: /env/set/
+    actor.step: |
+      println new Date().format('HH:mm:ss') + "   Run phenix.xtriage";
+      cmd1 = "chmod +x ${runfile.name}";
+      cmd1.execute(null, new File(mtzIn.parent)).text;
+      cmd2 = "sh ${runfile.name}";
+      outtext = cmd2.execute(env, new File(mtzIn.parent)).text;
+      
+      // files // 
+      xtriageOut = new File(mtzIn.parent + "/xtriage.log");
+    outflows:
+      outtext: file:/xtriage/xtriage.out
+      xtriageOut: file:/xtriage/xtriage.log
+
+- id: ParseXtriageOutputFile
+  type: Step
+  properties:
+    inflows:
+      outfile: file:/xtriage/xtriage.out
+    actor: !lref XtriageOutputFileParser
+    outflows: 
+      xtriageSum: /xtriage/summary/
+      xtriageTwin: /xtriage/twinned/
+
+- id: WriteScalaInputFile
+  type: Step
+  properties:
+    inflows: 
+      highres: /inres/
+    actor: !lref ScalaInputFileWriter
+    outflows:
+      template: file:/scala.run
+
+# other files output by scala: ANOMPLOT, CORRELPLOT, NORMPLOT, ROGUEPLOT, ROGUES, SCALES
+- id: RunScala
+  type: Step
+  properties: 
+    inflows:
+      mtzIn: file:/point1.mtz
+      runfile: file:/scala.run
+      env: /env/set/
+    actor: !lref ScalaRunner
+    outflows: 
+      mtzout1: file:/scala1.mtz
+      outtext: file:/scala.out
+
+- id: ParseScalaOutputFile
+  type: Step
+  properties:
+    inflows:
+      scalaout: file:/scala.out
+    actor: !lref ScalaOutputFileParser
+    outflows:
+      scalaresult: /summary/
+      isigfinal: /isig_finalshell/
+      isigoverall: /isig_overall/
+      isig: /isig
+      res: /res
+      block1: /isigblock/
+      block2: /isigovblock/
+      block3: /isigheader/
+      block4: /isigovheader/
+
+- id: ParseScalaSummary
+  type: Step
+  properties: 
+    inflows:
+      scalasum: /summary/
+    actor: !lref ScalaSummaryParser
+    outflows: 
+      oRmeas: /Rmeas_overall/
+      fRmeas: /Rmeas_finalshell/
+      oCompl: /complet_overall/
+      fCompl: /complet_finalshell/
+      oMult: /mult_overall/
+      mos: /mosaicity/
+      res: /resolution/
+
+- id: SetISigma
+  type: GroovyActorStep
+  properties:
+    inflows:
+      isigin: /input/isigma/
+    actor.step: |
+      isig = isigin
+    outflows:
+      isig: /pointless/input/isigma/
+
+- id: SetISigResolution
+  type: GroovyActorStep
+  properties:
+    inflows:
+      isig: /scala/isig
+      res: /scala/res
+      inres: /scala/input/highres/
+      isigin: /input/isigma/
+    actor.step: |
+      println new Date().format('HH:mm:ss') + "   Determine resolution based on I/Sigma";
+      tres = 0.0
+      println "\nResolution from scala: " + inres + "\u212B\n"
+      //println "Input I/Sigma cutoff: " + isigin
+      //println "   Resolution   Avg I/Sigma"
+      //for ( i = 0; i < 10; i += 1 ) {
+      //  println "     " + String.format('%5.2f', res[i].toFloat()) + "         " + String.format('%5.2f', isig[i].toFloat())
+      //}
+      //println ""
+      if ( isigin.toFloat() != 0.0 ) {
+        for ( i = 10; i >=1; i -= 1) {
+          if ( (i == 10) && ( isigin.toFloat() <= isig[i-1].toFloat() ) && ( isigin.toFloat() > 0.0 ) ) {
+            break
+          }
+          else if ( ( isigin.toFloat() <= isig[i-1].toFloat() ) && ( isigin.toFloat() > isig[i].toFloat() ) ) {
+            m = ( isig[i-1].toFloat() - isig[i].toFloat() ) / ( res[i-1].toFloat() - res[i].toFloat() )
+            b = isig[i-1].toFloat() - ( m.toFloat() * res[i-1].toFloat() )
+            tres = ( isigin.toFloat() - b.toFloat() ) / m.toFloat()
+            break;
+          }
+        }
+        println ""
+        println "Input I/Sigma cutoff: " + isigin
+        println ""
+        println "   Resolution   Avg I/Sigma"
+        for ( i = 0; i < 10; i += 1 ) {
+          println "     " + String.format('%5.2f', res[i].toFloat()) + "         " + String.format('%5.2f', isig[i].toFloat())
+        }
+        println ""
+        if ( tres.toFloat() > inres.toFloat() ) {
+          println "Resolution cutoff: " + String.format('%4.2f', tres) + "\u212B"
+        }
+        else {
+          tres = inres
+          println "No resolution cutoff"
+        }
+        println ""
+      }
+      else {
+        //throw Exception("No I/Sigma cutoff")
+        tres = inres
+      }
+    outflows:
+      tres: /trunc/res
+
+- id: WriteScalaInputFileRes
+  type: Step
+  properties:
+    inflows:
+      highres: /trunc/res
+    actor: !lref ScalaInputFileWriter
+    outflows:
+      template: file:/scala/final/scala.run
+
+- id: RunScalaRes
+  type: Step
+  properties:
+    inflows:
+      mtzIn: file:/scala/final/point1.mtz
+      runfile: file:/scala/final/scala.run
+      env: /env/set/
+    actor: !lref ScalaRunner
+    outflows: 
+      #mtzout1: file:/scala/final/scala1.mtz
+      mtzout1: file:/truncate/scala1.mtz
+      outtext: file:/scala/final/scala.out
+
+- id: ParseScalaOutputFileRes
+  type: Step
+  properties:
+    inflows:
+      scalaout: file:/scala/final/scala.out
+    actor: !lref ScalaOutputFileParser
+    outflows:
+      scalaresult: /scala/final/summary/
+      isigfinal: /scala/final/isig_finalshell/
+      isigoverall: /scala/final/isig_overall/
+      isig: /scala/final/isig
+      res: /scala/final/res
+      block1: /scala/final/isigblock/
+      block2: /scala/final/isigovblock/
+      block3: /scala/final/isigheader/
+      block4: /scala/final/isigovheader/
+
+- id: ParseScalaSummaryRes
+  type: Step
+  properties: 
+    inflows:
+      scalasum: /scala/final/summary/
+    actor: !lref ScalaSummaryParser
+    outflows: 
+      oRmeas: /scala/final/Rmeas_overall/
+      fRmeas: /scala/final/Rmeas_finalshell/
+      oCompl: /scala/final/complet_overall/
+      fCompl: /scala/final/complet_finalshell/
+      oMult: /scala/final/mult_overall/
+      mos: /scala/final/mosaicity/
+      res: /scala/final/resolution/
+
+- id: WriteTruncateInputFile
+  type: Step
+  properties:
+    actor: !lref TruncateInputFileWriter
+    outflows: 
+      template: file:/truncate/truncate.run
+
+- id: RunTruncate
+  type: GroovyActorStep
+  properties: 
+    inflows:
+      mtzIn: file:/truncate/scala1.mtz
+      runfile: file:/truncate/truncate.run
+      env: /env/set/
+    actor.step: |
+      println new Date().format('HH:mm:ss') + "   Run truncate";
+      //if ( res.toFloat() != 0.0 ) {
+      //  println ""
+      //  println "Resolution limited to " + String.format('%4.2f', res) + "\u212B"
+      //  println ""
+      //}
+      cmd1 = "chmod +x ${runfile.name}";
+      cmd1.execute(null, new File(mtzIn.parent)).text;
+      cmd2 = "sh -c ${runfile.name}";
+      outtext = cmd2.execute(env, new File(mtzIn.parent)).text;
+      
+      // files //
+      mtzout1 = new File(mtzIn.parent + "/trunc1.mtz");
+      mtzout2 = new File(mtzIn.parent + "/trunc1.mtz");
+    outflows: 
+      outtext: file:/truncate/trunc.out
+      mtzout1: file:/truncate/trunc1.mtz
+      mtzout2: file:/freeR/trunc1.mtz
+
+- id: WriteFreeRInputFile
+  type: Step
+  properties:
+    actor: !lref FreeRInputFileWriter
+    outflows: 
+      template: file:/freeR/freeR.run
+
+- id: RunFreeR
+  type: GroovyActorStep
+  properties:
+    inflows:
+      mtzIn: file:/freeR/trunc1.mtz
+      runfile: file:/freeR/freeR.run
+      env: /env/set/
+    actor.step: |
+      println new Date().format('HH:mm:ss') + "   Run freerflag";
+      cmd1 = "chmod +x ${runfile.name}";
+      cmd1.execute(null, new File(mtzIn.parent)).text;
+      cmd2 = "sh -c ${runfile.name}";
+      outtext = cmd2.execute(env, new File(mtzIn.parent)).text;
+      
+      // files //
+      mtzout1 = new File(mtzIn.parent + "/mr.mtz");
+      mtzout2 = new File(mtzIn.parent + "/mr.mtz");
+    outflows:
+      outtext: file:/freeR/freeR.out
+      mtzout1: file:/freeR/mr.mtz
+      mtzout2: file:/molrep/mr.mtz
+
+- id: WriteMolrepInputFile
+  type: Step
+  properties: 
+    actor: !lref MolrepInputFileWriter
+    outflows:
+      template: file:/molrep/molrep.run
+
+- id: RunMolrep
+  type: GroovyActorStep
+  properties: 
+    inflows:
+      mtzIn: file:/molrep/mr.mtz
+      pdbIn: file:/molrep/mr.pdb
+      runfile: file:/molrep/molrep.run
+      env: /env/set/
+    actor.step: | 
+      println new Date().format('HH:mm:ss') + "   Run molrep";
+      cmd1 = "chmod +x ${runfile.name}";
+      cmd1.execute(null, new File(mtzIn.parent)).text;
+      cmd2 = "sh -c ${runfile.name}";
+      outtext = cmd2.execute(env, new File(mtzIn.parent)).text;
+      
+      // files //
+      mrmtz = new File(mtzIn.parent + "/mr.mtz")
+      crd = new File(mtzIn.parent + "/molrep.crd")
+      molpdb1 = new File(mtzIn.parent + "/molrep.pdb")
+      molpdb2 = new File(mtzIn.parent + "/molrep.pdb")
+      doc = new File(mtzIn.parent + "/molrep.doc")
+      btc = new File(mtzIn.parent + "/molrep.btc")
+      rf = new File(mtzIn.parent + "/molrep_rf.tab")
+      xml = new File(mtzIn.parent + "/molrep.xml")
+      mrcrd = new File(mtzIn.parent + "/mr.crd")
+    outflows:
+      outtext: file:/molrep/molrep.out
+      mrmtz: file:/refmac/mr.mtz
+      crd: file:/molrep/molrep.crd
+      molpdb1: file:/molrep/molrep.pdb
+      molpdb2: file:/refmac/molrep.pdb
+      doc: file:/molrep/molrep.doc
+      btc: file:/molrep/molrep.btc
+      rf: file:/molrep/molrep_rf.tab
+      xml: file:/molrep/molrep.xml
+      mrcrd: file:/molrep/mr.crd
+
+- id: WriteRefmacInputFile
+  type: Step
+  properties:
+    inflows:
+      mtz: file:/refmac/mr.mtz
+      pdb: file:/refmac/molrep.pdb
+      cycles: /refmac/cycles/
+      type: /refmac/refitype/
+    actor: !lref RefmacInputFileWriter
+    outflows:
+      template: file:/refmac/refmac.run
+
+- id: RunRefmac
+  type: Step
+  properties:
+    inflows:
+      runfile: file:/refmac/refmac.run
+      mtz: file:/refmac/mr.mtz
+      pdb: file:/refmac/molrep.pdb
+      env: /env/set/
+    actor: !lref RefmacRunner
+    outflows:
+      outfile: file:/refmac/refmac.out
+      outtext: /refmac/outtext
+      outmtz: file:/refmac/refmac_1.mtz
+      outpdb: file:/refmac/refmac_1.pdb
+
+# for workflow_all
+# only when need to run peakmax analysis and arpwarp
+- id: SetRefmacOutputFiles
+  type: GroovyActorStep
+  properties:
+    inflows:
+      mtz: file:/refmac/refmac_1.mtz
+      pdb: file:/refmac/refmac_1.pdb
+    actor.step: |
+      mtz1 = new File(mtz.parent + "/" + mtz.name)
+      mtz2 = new File(mtz.parent + "/" + mtz.name)
+      pdb1 = new File(pdb.parent + "/" + pdb.name)
+    outflows:
+      mtz1: file:/peakmax/refmac_1.mtz
+      mtz2: file:/arpwarp/refmac_1.mtz
+      pdb1: file:/arpwarp/refmac_1.pdb
+
+- id: ParseRefmacOutputFile
+  type: Step
+  properties:
+    inflows:
+      #refmacOut: file:/refmac/refmac.out
+      refmacOut: /refmac/outtext
+    actor: !lref RefmacOutputFileParser
+    outflows: 
+      refmacSum: /refmac/summary/
+      x_ref: /refmac/plot/x/
+      y_ref: /refmac/plot/y/
+      x_ref_name: /refmac/plot/x_name/
+      y_ref_name: /refmac/plot/y_name/
+      ref_plotname: /refmac/plot/plotname/
+      ref_xaxis: /refmac/plot/xaxis/
+      ref_yaxis: /refmac/plot/yaxis/
+
+- id: ParseRefmacRStat
+  type: Step
+  properties:
+    inflows:
+      refmacSum: /refmac/summary/
+    actor: !lref RefmacRStatParser
+    outflows:
+      rinit: /refmac/r_initial/
+      rfin: /refmac/r_final/
+      rfreeinit: /refmac/rfree_inital/
+      rfreefin: /refmac/rfree_final/
+
+- id: WriteFFTMapInputFile
+  type: Step
+  properties:
+    inflows:
+      mtzfile: file:/peakmax/refmac_1.mtz
+    actor: !lref FFTMapInputFileWriter
+    outflows:
+      template: file:/peakmax/fft.run
+
+- id: RunFFTMap
+  type: GroovyActorStep
+  properties:
+    inflows:
+      mtzfile: file:/peakmax/refmac_1.mtz
+      runfile: file:/peakmax/fft.run
+      env: /env/set/
+    actor.step: |
+      println new Date().format('HH:mm:ss') + "   Running FFT for map calculation";
+      cmd1 = "chmod +x ${runfile.name}";
+      cmd1.execute(null, new File(runfile.parent)).text;
+      cmd2 = "sh -c ${runfile.name}"; 
+      outtext = cmd2.execute(env, new File(runfile.parent)).text;
+      
+      // files //
+      mapfile = new File(runfile.parent + "/refmac_1.map");
+    outflows:
+      outtext: file:/peakmax/fft.out
+      mapfile: file:/peakmax/refmac_1.map
+
+- id: WritePeakmax3pt0InputFile
+  type: Step
+  properties:
+    constants:
+      sigma: 3.0
+    inflows:
+      mapfile: file:/peakmax/refmac_1.map
+    actor: !lref PeakmaxInputFileWriter
+    outflows:
+      template: file:/peakmax/peakmax3pt0.run
+
+- id: WritePeakmax5pt0InputFile
+  type: Step
+  properties:
+    constants:
+      sigma: 5.0
+    inflows:
+      mapfile: file:/peakmax/refmac_1.map
+    actor: !lref PeakmaxInputFileWriter
+    outflows:
+      template: file:/peakmax/peakmax5pt0.run
+
+- id: RunPeakmax3pt0
+  type: Step
+  properties:
+    inflows:
+      mapfile: file:/peakmax/refmac_1.map
+      runfile: file:/peakmax/peakmax3pt0.run
+      env: /env/set/
+    actor: !lref PeakmaxRunner
+    outflows:
+      outtext: file:/peakmax/peakmax3pt0.out
+
+- id: RunPeakmax5pt0
+  type: Step
+  properties:
+    inflows:
+      mapfile: file:/peakmax/refmac_1.map
+      runfile: file:/peakmax/peakmax5pt0.run
+      env: /env/set/
+    actor: !lref PeakmaxRunner
+    outflows:
+      outtext: file:/peakmax/peakmax5pt0.out
+
+- id: ParsePeakmax3pt0OutputFile
+  type: Step
+  properties:
+    inflows:
+      outfile: file:/peakmax/peakmax3pt0.out
+    actor: !lref PeakmaxOutputFileParser
+    outflows:
+      peaks: /peakmax/numpeaks3pt0/  
+      sigma: /peakmax/sigma3pt0/
+
+- id: ParsePeakmax5pt0OutputFile
+  type: Step
+  properties:
+    inflows:
+      outfile: file:/peakmax/peakmax5pt0.out
+    actor: !lref PeakmaxOutputFileParser
+    outflows:
+      peaks: /peakmax/numpeaks5pt0/  
+      sigma: /peakmax/sigma5pt0/
+
+# only when need to run Phaser Matthews
+- id: SetPhaserMatthFiles
+  type: GroovyActorStep
+  properties:
+    inflows:
+      mtz: file:/refmac/mr.mtz
+      pdb: file:/refmac/molrep.pdb
+    actor.step: |
+      mtz1 = new File(mtz.parent + "/" + mtz.name);
+      pdb1 = new File(pdb.parent + "/" + pdb.name);
+    outflows:
+      mtz1: file:/phasermatth/mr.mtz
+      pdb1: file:/phasermatth/molrep.pdb
+
+- id: WritePhaserMatthInputFile
+  type: Step
+  properties:
+    inflows:
+      mtzfile: file:/phasermatth/mr.mtz
+      pdbfile: file:/phasermatth/molrep.pdb
+      identity: /protein/identity/
+      mw: /protein/molecwt/
+      highres: /img/highres/
+    actor: !lref PhaserMatthInputFileWriter
+    outflows: 
+      template: file:/phasermatth/phasermatth.run
+
+- id: RunPhaserMatth
+  type: GroovyActorStep
+  properties:
+    inflows:
+      mtzfile: file:/phasermatth/mr.mtz
+      pdbfile: file:/phasermatth/molrep.pdb
+      template: file:/phasermatth/phasermatth.run
+      env: /env/set/
+    actor.step: |
+      println new Date().format('HH:mm:ss') + "   Running Phaser Matthews calculation";
+      cmd1 = "chmod +x ${template.name}";
+      cmd1.execute(null, new File(mtzfile.parent));
+      cmd2 = "sh -c ${template.name}";
+      outtext = cmd2.execute(env, new File(mtzfile.parent)).text;
+      
+      // files //
+      sumfile = new File(mtzfile.parent + "/phaser.sum");
+    outflows:
+      outtext: /phasermatth/phasermatthout/
+      sumfile: file:/phasermatth/phaser.sum
+
+- id: ParsePhaserMatthOutputFile
+  type: Step
+  properties:
+    inflows:
+      phaserOut: /phasermatth/phasermatthout/
+    actor: !lref PhaserMatthOutputFileParser
+    outflows: 
+      ncs: /img/ncs/
+
+- id: WriteArpwarpInputFile
+  type: Step
+  properties:
+    inflows:
+      mtzfile: file:/arpwarp/refmac_1.mtz
+      pdbfile: file:/arpwarp/refmac_1.pdb
+      resinasu: /protein/molecwt/
+      ncs: /img/ncs/
+      seq: file:/refmac/seq.pir
+    actor: !lref ArpwarpInputFileWriter
+    outflows:
+      template: file:/arpwarp/arpwarp.run
+
+- id: RunArpwarp
+  type: GroovyActorStep
+  properties:
+    inflows:
+      mtzfile: file:/arpwarp/refmac_1.mtz
+      pdbfile: file:/arpwarp/refmac_1.pdb
+      seq: file:/arpwarp/seq.pir
+      arprun: file:/arpwarp/arpwarp.run
+      env: /env/set/
+    actor.step: |
+      println new Date().format('HH:mm:ss') + "   Running Arpwarp";
+      cmd1 = "chmod +x ${arprun.name}";
+      cmd1.execute(null, new File(mtzfile.parent));
+      cmd2 = "${arprun.name}";
+      outtext = cmd2.execute(env, new File(mtzfile.parent)).text;
+      
+      // files //
+      outmtz = new File(mtzfile.parent + "/refmac_1_warpNtrace.mtz");
+      outpdb = new File(mtzfile.parent + "/refmac_1_warpNtrace.pdb");
+    outflows:
+      outtext: file:/arpwarp/arp.out
+      outmtz: file:/arpwarp/refmac_1_warpNtrace.mtz
+      outpdb: file:/arpwarp/refmac_1_warpNtrace.pdb
+
+- id: EndWorkflow
+  type: GroovyActorStep
+  properties:
+    inflows:
+      outtext: /img/ncs/
+    actor.step: println new Date().format('HH:mm:ss') + "   Completed workflow";
+
+- id: ParseXtriageLogFile
+  type: Step
+  properties:
+    inflows:
+      logfile: file:/xtriage/xtriage.log
+    actor: !lref XtriageLogFileParser
+    outflows:
+      x_nz: /xtriage/nztest/x/
+      y_nz: /xtriage/nztest/y/
+      actw_nz: /xtriage/nztest/tw/
+      acob_nz: /xtriage/nztest/obs/
+      acob_nz: /xtriage/nztest/untw/
+      x_nz_name: /xtriage/nztest/xname/
+      y_nz_name: /xtriage/nztest/yname/
+      nz_plotname: /xtriage/nztest/plotname/
+      nz_xaxis: /xtriage/nztest/xaxis/
+      nz_yaxis: /xtriage/nztest/yaxis/
+      x_ltest: /xtriage/ltest/x/
+      y_ltest: /xtriage/ltest/y/
+      obs_ltest: /xtriage/ltest/obs/
+      untw_ltest: /xtriage/ltest/untw/
+      tw_ltest: /xtriage/ltest/tw/
+      x_ltest_name: /xtriage/ltest/xname/
+      y_ltest_name: /xtriage/ltest/yname/
+      ltest_plotname: /xtriage/ltest/plotname/
+      ltest_xaxis: /xtriage/ltest/xaxis/
+      ltest_yaxis: /xtriage/ltest/yaxis/
+
+- id: WriteZTestOutput
+  type: Step
+  properties:
+    inflows:
+      x_num: /xtriage/nztest/x/
+      y_num: /xtriage/nztest/y/
+      x_name: /xtriage/nztest/xname/
+      y_name: /xtriage/nztest/yname/
+      plotname: /xtriage/nztest/plotname/
+      x_axis: /xtriage/nztest/xaxis/
+      y_axis: /xtriage/nztest/yaxis/
+    actor: !lref PlotOutputWriter
+    outflows:
+      plotfile: file:/plots/ztest.out
+
+- id: WriteLTestOutput
+  type: Step
+  properties:
+    inflows:
+      x_num: /xtriage/ltest/x/
+      y_num: /xtriage/ltest/y/
+      x_name: /xtriage/ltest/xname/
+      y_name: /xtriage/ltest/yname/
+      plotname: /xtriage/ltest/plotname/
+      x_axis: /xtriage/ltest/xaxis/
+      y_axis: /xtriage/ltest/yaxis/
+    actor: !lref PlotOutputWriter
+    outflows:
+      plotfile: file:/plots/ltest.out
+
+- id: WriteRefmacOutput
+  type: Step
+  properties:
+    inflows:
+      x_num: /refmac/plot/x/
+      y_num: /refmac/plot/y/
+      x_name: /refmac/plot/x_name/
+      y_name: /refmac/plot/y_name/
+      plotname: /refmac/plot/plotname/
+      x_axis: /refmac/plot/xaxis/
+      y_axis: /refmac/plot/yaxis/
+    actor: !lref PlotOutputWriter
+    outflows:
+      plotfile: file:/plots/rfactor.out

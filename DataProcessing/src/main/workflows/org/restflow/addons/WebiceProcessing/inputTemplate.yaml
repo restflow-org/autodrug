@@ -1,0 +1,257 @@
+namespace:
+
+  module: WebiceProcessing
+
+components: 
+
+- id: LabelitInputTemplate
+  className: java.lang.String
+  singleton: true
+  constructor: 
+  - value: labelit.index $template $start $end
+  
+- id: XdsInputTemplate
+  className: java.lang.String
+  singleton: true
+  constructor:
+  - value: | 
+      ! Job definition parameters
+      ! 
+      NAME_TEMPLATE_OF_DATA_FRAMES= $nameTemplate $format
+      DATA_RANGE= $start $end
+      <% spotRange.each {
+      println "SPOT_RANGE= $it.start $it.end"
+      }
+      %>!
+      JOB= XYCORR INIT COLSPOT IDXREF 
+      ! 
+      ! Detector parameters
+      ! 
+      DIRECTION_OF_DETECTOR_X-AXIS= 1.0 0.0 0.0
+      DIRECTION_OF_DETECTOR_Y-AXIS= 0.0 1.0 0.0
+      TRUSTED_REGION= 0.0 $trusted
+      DETECTOR= $detector MINIMUM_VALID_PIXEL_VALUE= $minPixel OVERLOAD= $overloadCutoff
+      <%
+      println sensor
+      %>!
+      NX= $sizeX NY= $sizeY QX= $pixelSize QY= $pixelSize
+      ORGX= $originX ORGY= $originY
+      !
+      ! Experiment parameters
+      !
+      DETECTOR_DISTANCE= $distance
+      OSCILLATION_RANGE= $oscRange
+      X-RAY_WAVELENGTH= $wave
+      ROTATION_AXIS= 1.0 0.0 0.0
+      INCIDENT_BEAM_DIRECTION= 0.0 0.0 1.0
+      FRACTION_OF_POLARIZATION= 0.9
+      POLARIZATION_PLANE_NORMAL= 0.0 1.0 0.0
+      ! AIR= 0.001 
+      ! 
+      ! Crystal parameters
+      ! 
+      INCLUDE_RESOLUTION_RANGE= 40 $highRes
+      FRIEDEL'S_LAW= TRUE
+      SPACE_GROUP_NUMBER= 0
+      !
+      MAXIMUM_NUMBER_OF_PROCESSORS= 4 
+      MAXIMUM_NUMBER_OF_JOBS= 8
+      ! 
+      <% if (two.toInteger() == 1) {
+      println "JOB= DEFPIX INTEGRATE CORRECT"
+      }
+      %>!
+
+- id: XDSConvFileTemplate 
+  className: java.lang.String 
+  singleton: true 
+  constructor: 
+  - value: | 
+      ! 
+      ! Output file format conversion
+      ! 
+      OUTPUT_FILE= XDS_CONV.HKL CCP4_F
+      INPUT_FILE= XDS_SCALE.HKL
+      GENERATE_FRACTION_OF_TEST_REFLECTIONS= 0.05
+      WILSON_STATISTICS= $wilson
+      FRIEDEL'S_LAW= $friedel
+
+- id: XDSScaleFileTemplate 
+  className: java.lang.String 
+  singleton: true 
+  constructor: 
+  - value: | 
+      ! 
+      ! Scaling parameters
+      ! 
+      OUTPUT_FILE= XDS_SCALE.HKL
+      INPUT_FILE= XDS_ASCII.HKL
+      MERGE= $merge
+      FRIEDEL'S_LAW= $friedel
+
+# ISIGLIMIT $isig 
+- id: PointlessInputTemplate
+  className: java.lang.String 
+  singleton: true 
+  constructor: 
+  - value: |
+      pointless << eof
+      XDSIN $xdsascii
+      HKLOUT $pointmtz
+      eof
+
+- id: XtriageInputTemplate
+  className: java.lang.String
+  singleton: true 
+  constructor: 
+  - value: phenix.xtriage $mtzIn log=$logFile
+
+- id: ScalaInputTemplate
+  className: java.lang.String
+  singleton: true 
+  constructor: 
+  - value: |
+      scala HKLIN $mtzin HKLOUT $mtzout << eof
+      INSCALE OFF
+      <% if ( res.toFloat() != 0.0 ) {
+      println "RESOLUTION HIGH $res"
+      }
+      %>eof
+      
+#<% if (res.toFloat() != 0.0) {
+#      println "resolution " + String.format('%4.2f', res) + " 40"
+#      }
+#      %>
+- id: TruncateInputTemplate
+  className: java.lang.String
+  singleton: true 
+  constructor: 
+  - value: |
+      truncate HKLIN $mtzin HKLOUT $mtzout << eof
+      truncate yes
+      labout F=FP SIGF=SIGFP
+      eof
+
+- id: FreeRInputTemplate
+  className: java.lang.String 
+  singleton: true 
+  constructor: 
+  - value: |
+      freerflag HKLIN $mtzin HKLOUT $mtzout << eof
+      eof
+
+- id: MolrepInputTemplate
+  className: java.lang.String 
+  singleton: true 
+  constructor: 
+  - value: |
+      molrep -f $mtzIn -m $pdbIn << eof
+      DYAD=M
+      SURF=O
+      eof
+
+- id: RefmacInputTemplate
+  className: java.lang.String 
+  singleton: true 
+  constructor: 
+  - value: | 
+      refmac hklin $mtzfile xyzin $pdbfile hklout refmac_1.mtz xyzout refmac_1.pdb << eof
+      MAKE HYDROGENS NO
+      REFI TYPE $refitype
+      NCYCLES $ncycles
+      WEIGHT AUTO
+      END
+      eof
+
+- id: PhaserMatthInputTemplate
+  className: java.lang.String 
+  singleton: true 
+  constructor: 
+  - value: |
+      phaser << eof
+      MODE CCA
+      HKLIN $mtzfile
+      LABIN F=FP SIGF=SIGFP
+      SEARCH MATTHEWS ON
+      ENSEMBLE model PDBFILE $pdbfile IDENTITY $ident
+      COMPOSITION PROTEIN MW $mw NUM 1
+      RESOLUTION 90 $highres
+      SEARCH ENSEMBLE model
+      ROOT phaser
+      eof
+
+- id: ArpwarpInputTemplate  
+  className: java.lang.String 
+  singleton: true 
+  constructor: 
+  - value: auto_tracing.sh jobId '.' datafile $mtzfile modelin $pdbfile residues $resinasu freelabin FreeR_flag cgr $ncscopies seqin $sequence
+
+- id: FFTMapInputTemplate
+  className: java.lang.String
+  singleton: true
+  constructor:
+  - value: |
+      fft HKLIN $hklin MAPOUT refmac_1.map << eof
+      LABIN F1=FP SIG1=SIGFP PHI=PHIC
+      SCALE F1 1.0
+      XYZLIM ASU
+      eof
+
+- id: PeakmaxInputTemplate
+  className: java.lang.String
+  singleton: true
+  constructor:
+  - value: |
+      peakmax MAPIN $map << eof
+      THRESHOLD RMS $sigma
+      NUMPEAKS 50
+      OUTPUT PDB
+      RESIDUE WAT
+      ATNAME OW
+      CHAIN X
+      eof
+
+- id: PlotTemplate
+  className: java.lang.String
+  singleton: true
+  constructor:
+  - value: |
+      <% println "plotname: " + "\'" + plotname + "\'" 
+      %><% println "axis_x: " + "\'" + xaxis + "\'"
+      %><% println "axis_y: " + "\'" + yaxis + "\'"
+      %><% for (i=0; i<xtotal; i+=1) {
+        println "name_x" + i + ": " + "\'" + xname[i] + "\'";
+      }
+      %><% for (i=0; i<ytotal; i+=1) {
+        println "name_y" + i + ": " + "\'" + yname[i] + "\'";
+      }
+      %><% for (i=0; i<xtotal; i+=1) {
+        print "x" + i + ": [";
+        for (j=0; j<x[i].size()-1; j+=1) {
+          print x[i][j] + ", ";
+        }
+        for (j=x[i].size()-1; j<x[i].size(); j+=1) {
+          print x[i][j];
+        }
+        print "]\n";
+      }
+      %><% for (i=0; i<ytotal; i+=1) {
+        print "y" + i + ": [";
+          for (j=0; j<y[i].size()-1; j+=1) {
+            print y[i][j] + ", ";
+          }
+          for (j=y[i].size()-1; j<y[i].size(); j+=1) {
+            print y[i][j];
+          }
+        print "]\n";
+      }
+      %>
+
+- id: EnantMTZInputTemplate
+  className: java.lang.String
+  singleton: true
+  constructor: 
+  - value: |
+      mtzutils hklin $mtzin hklout $mtzout << eof
+      symmetry $enant
+      eof

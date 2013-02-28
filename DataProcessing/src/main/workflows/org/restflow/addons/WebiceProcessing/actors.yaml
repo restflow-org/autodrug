@@ -1,0 +1,1227 @@
+namespace:
+
+  module: WebiceProcessing
+
+components: 
+
+- id: FirstImgFinder
+  type: BashActor
+  properties:
+    inputs:
+      directory: 
+      imgroot: 
+      imgtype: 
+    step: |
+      line1=`find ${directory} -name ${imgroot}_*.${imgtype} -prune -maxdepth 1 | sort`
+      firstimg=`echo ${line1} | awk '{print $1}'`
+    outputs:
+      firstimg: 
+
+- id: LastImgFinder
+  type: BashActor
+  properties:
+    inputs:
+      directory:
+      imgroot:
+      imgtype: 
+    step: |
+      line1=`find ${directory} -name ${imgroot}_*.${imgtype} -prune -maxdepth 1 | sort -r`
+      endimg=`echo ${line1} | awk '{print $1}'`
+    outputs: 
+      endimg: 
+
+- id: ImgNumSetter
+  type: GroovyActor
+  properties:
+    inputs:
+      imgNumInput: 
+      imgNumFound: 
+      defaultNum: 
+    step: |
+      if (imgNumInput.toInteger() == defaultNum.toInteger()) {
+        endimg = imgNumFound;
+      }
+      else {
+        endimg = imgNumInput;
+      }
+      // println "endimg " + endimg;
+    outputs: 
+      endimg: 
+
+- id: OscillationChecker
+  type: BashActor
+  properties:
+    inputs:
+      imageDir:
+      prefix:
+      imageType:
+      imageNumDigits:
+      startNum:
+      endNum:
+      check_osc:
+        type: File
+      env: 
+    step: |
+      echo `date +%T` '  Checking oscillation angles between image number' ${startNum} 'and' ${endNum}
+      `chmod +x ${check_osc}`
+      oscNum=`${check_osc} ${imageDir} ${prefix} ${imageType} ${imageNumDigits} ${startNum} ${endNum}`
+      if [ $oscNum -ne 0 ] ; then
+        echo `date +%T` '  There is a jump in the oscillation angle after image number' ${oscNum} 
+      else echo `date +%T` '  No jump in oscillation angles.'
+      fi
+    outputs:
+      oscNum: 
+
+- id: OscCheck2 
+  type: PerlActor
+  properties:
+    inputs: 
+      imageDir: 
+      prefix: 
+      imageType: 
+      imageNumDigits: 
+      startNum: 
+      endNum: 
+      env: 
+    step: | 
+      print "perl actor";
+      $oscNum = 2;
+    outputs:
+      oscNum: 
+
+- id: OscCheck
+  type: PerlActor
+  properties:
+    inputs:
+      imageDir:
+      prefix:
+      imageType:
+      imageNumDigits:
+      startNum:
+      endNum:
+      env: 
+    step: |
+      print "starting perl check osc\n";
+      # something something
+      $prevstart = -1;
+      $prevrange = -1;
+      $oscNum = 0;
+      # print "startNum: " . $startNum . "\n";
+      # print "endNum: " . $endNum . "\n";
+      #print "imageNumDigits: " . $imageNumDigits . "\n";
+      for ($numfile = $startNum; $numfile < $endNum+1; $numfile = $numfile+1) {
+        $currnum = "";
+        # print "numfile: " . $numfile . "\n";
+        $filelength = length($numfile);
+        # print "filelength: " . $filelength . "\n";
+        $difflength = $imageNumDigits - $filelength;
+        # print "difflength: " .$difflength . "\n";
+        $tracklength = $difflength;
+        # print "tracklength: " . $tracklength . "\n";
+        while ($tracklength != 0) {
+          # print "tracklength: " . $tracklength . "\n";
+          $currnum = $currnum . "0";
+          $tracklength  = $tracklength - 1;
+        }
+        # print "numfile: " . $numfile . "\n";
+        $currnum = $currnum . $numfile;
+        # set the current file name
+        $currentfile = $imageDir . $prefix . "_" . $currnum . "." . $imageType; 
+        # print "currentfile " . $currentfile . "\n";
+        # getImgHeader <file> | grep OSC_START | awk '{print $2}'
+        $startline = "getImgHeader " . $currentfile . " | grep OSC_START | awk '{print \$2}'";
+        $startout = `$startline`;
+        chomp($startout);
+        if ($startout eq "") {
+          print "The file " . $currentfile . " does not contain image header information.\n";
+          exit;
+        }
+        $rangeline = "getImgHeader " . $currentfile . " | grep OSC_RANGE | awk '{print \$2}'";
+        $rangeout = `$rangeline`;
+        chomp($rangeout);
+        $prevnum = $prevstart + $prevrange;
+        if (($startout - $prevnum > 0.01) && ($prevrange != -1) && ($prevstart != -1)) {
+          $numimg = $numfile - 1;
+          $oscNum = $numimg;
+        }
+        if ($oscNum != 0) {
+          last;
+        }
+        # make the current values the previous values for the next cycle
+        $prevstart = $startout;
+        $prevrange = $rangeout;
+      }
+      print "oscNum: " . $oscNum . "\n";
+    outputs:
+      oscNum:
+
+- id: FileNameExtractor
+  type: GroovyActor
+  properties:
+    inputs:
+      fileOne:
+    step: | 
+      println new Date().format('HH:mm:ss') + "   Extracting names from " + fileOne;
+      // begin extracting directory //
+      dirindex = fileOne.lastIndexOf("/");
+      if ( dirindex == -1 ) {
+        dirName = "";
+      }
+      else {
+        dirName = fileOne.substring(0, dirindex+1);
+      }
+      nameOnly = fileOne.substring(dirindex+1);
+      // end extracting directory //
+      ptIndex = nameOnly.indexOf(".");
+      imgTypeName = nameOnly.substring(ptIndex+1);
+      pos = nameOnly.lastIndexOf("_");
+      prefixString = nameOnly.substring(0, pos);
+      imgNumString = nameOnly.substring(pos + 1, ptIndex);
+      imgNum = nameOnly.substring(pos + 1, ptIndex).toInteger();
+      imgNumDigits = ptIndex - pos - 1;
+    outputs: 
+      dirName: 
+      nameOnly: 
+      imgTypeName: 
+      prefixString: 
+      imgNum: 
+      imgNumString: 
+      imgNumDigits: 
+
+- id: ImgNameMaker
+  type: GroovyActor
+  singleton: false
+  properties:
+    inputs:
+      pathName:
+      prefixString:
+      num:
+      imgTypeName:
+    step: newImg = pathName + prefixString + "_" + num + "." + imgTypeName;
+    outputs:
+      newImg:
+
+- id: ImageHeaderReader
+  type: GroovyActor
+  singleton: false
+  properties:
+    settings: 
+      parser: !lref ImgHeaderTemplate
+    inputs:
+      getHeader:
+    step: |
+      println new Date().format('HH:mm:ss') + "   Reading image header";
+      parser.compile();
+      header = parser.search (getHeader);
+      oscStart = header.oscStart;
+      oscRange = header.oscRange;
+      size1 = header.size1;
+      size2 = header.size2;
+      beamCenterX = header.beamCenterX;
+      beamCenterY = header.beamCenterY; 
+      pixelSize = header.pixelSize; 
+      detector = header.detector; 
+      wave = header.wavelength
+    outputs:
+      header:
+      oscStart:
+      oscRange:
+      size1:
+      size2: 
+      beamCenterX: 
+      beamCenterY: 
+      pixelSize: 
+      detector:
+      wave: 
+
+- id: LabelitInputMaker
+  type: GroovyActor  
+  properties:
+    settings: 
+      LabelitTemplate: !lref LabelitInputTemplate
+    inputs:
+      template: 
+      start: 
+      end: 
+    step: |
+      def model = [template: template, start: start, end: end];
+      import groovy.text.SimpleTemplateEngine;
+      def engine = new SimpleTemplateEngine();
+      template1 = engine.createTemplate(LabelitTemplate).make(model);
+      template = template1.toString();
+    outputs:
+      template: 
+
+- id: IndexingResultFinder
+  type: GroovyActor
+  singleton: false
+  properties:
+    settings:
+      parser: !lref LabelitParser
+    inputs:
+      labelitOut:
+    step: |
+      println new Date().format('HH:mm:ss') + "   Parsing indexing results";
+      parser.compile();
+      parsed = parser.search (labelitOut.text);
+      // println parsed;
+      error = parsed.error;
+      mosflm = parsed.merror;
+      if ( error.equals(null) && mosflm.equals(null) ) { 
+        bestResult = parsed.integrationResults[0];
+        bestIndexResult = parsed.indexResults.find {it.id == bestResult.id};
+        bestResult.putAll(bestIndexResult);
+        spaceGroup = bestResult.spaceGroup;
+        highres = bestResult.resolution
+        a = bestResult.unitCell.a
+        b = bestResult.unitCell.b
+        c = bestResult.unitCell.c
+        alpha = bestResult.unitCell.alpha
+        beta = bestResult.unitCell.beta
+        gamma = bestResult.unitCell.gamma
+      
+        // output info //
+        println "";
+        println("Best result from LABELIT:");
+        println("Space group: " + bestResult.spaceGroup);
+        println("Unit cell: a: " + bestResult.unitCell.a + " b: " + bestResult.unitCell.b + " c: " + bestResult.unitCell.c + " alpha: " + bestResult.unitCell.alpha + " beta: " + bestResult.unitCell.beta + " gamma: " + bestResult.unitCell.gamma);
+        println("Resolution: " + bestResult.resolution);
+        println "";
+      }
+      else {
+        if ( !error.equals(null) ) {
+          println new Date().format('HH:mm:ss') + "   Error in LABELIT: " + error;
+        }
+        if ( !mosflm.equals(null) ) {
+          println new Date().format('HH:mm:ss') + "   Error in MOSFLM: " + mosflm;
+        }
+        println new Date().format('HH:mm:ss') + "   No space group or unit cell for XDS"
+        a = '0.0' 
+        b = '0.0'
+        c = '0.0' 
+        alpha = '0.0'
+        beta = '0.0'
+        gamma = '0.0'
+        spaceGroup = '0'
+        highres = '0.0'
+      }
+    outputs:
+      a: 
+      b: 
+      c: 
+      alpha:
+      beta: 
+      gamma: 
+      spaceGroup: 
+      highres: 
+
+
+- id: XDSInputMaker
+  type: GroovyActor
+  properties:
+    settings: 
+      xdsInputTemplate: !lref XdsInputTemplate
+    inputs: 
+      getImgHeader: 
+      nameTemplate: 
+      nameTemplateFormat: 
+      start:
+      end: 
+      spotRange: 
+      detectorName:
+      minPixel: 
+      overloadCutoff: 
+      sensor: 
+      wave: 
+      sizeX:
+      sizeY:
+      pixelSize: 
+      originX:
+      originY:
+      highres: 
+      two: 
+      trustedRegion: 
+      # wait for files
+      prevrun: 
+    step: |
+      // create the model to fill in the template //      
+      def model = [nameTemplate: nameTemplate, format: nameTemplateFormat];
+      model.putAll([start: start, end: end]);
+      
+      // set spot ranges //
+      if (spotRange.length == 2) {
+        model.putAll([spotRange: [[start: spotRange[0], end: spotRange[1]]]]);
+      }
+      else if (spotRange.length == 4) {
+        model.putAll([spotRange: [[start: spotRange[0], end: spotRange[1]], [start: spotRange[2], end: spotRange[3]]]]);
+      }
+      else if (spotRange.length == 6) {
+        model.putAll([spotRange: [[start: spotRange[0], end: spotRange[1]], [start: spotRange[2], end: spotRange[3]], [start: spotRange[4], end: spotRange[5]]]]);
+      }
+      model.putAll([detector: detectorName, minPixel: minPixel, overloadCutoff: overloadCutoff, sensor: sensor]);
+      model.putAll([sizeX: sizeX, sizeY: sizeY, pixelSize: pixelSize, originX: originX, originY: originY]);
+      model.putAll([distance: getImgHeader.distance, oscRange: getImgHeader.oscRange]);
+      model.highRes = highres;
+      model.wave = wave;
+      // model.spaceGroupNum = spaceGroupNum;
+      // model.putAll([a: a, b: b, c: c, alpha: alpha, beta: beta, gamma: gamma])
+      // model.putAll(labelit.unitCell);
+      model.two = two;
+      model.trusted = trustedRegion;
+      
+      // create xds input file //
+      import groovy.text.SimpleTemplateEngine;
+      def engine = new SimpleTemplateEngine();
+      template1 = engine.createTemplate(xdsInputTemplate).make(model);
+      template = template1.toString();
+    outputs:
+      template: 
+
+- id: XDSInputRunner
+  type: GroovyActor
+  properties:
+    settings:
+      xdserrorparser: !lref XDSErrorParserTemplate
+    inputs:
+      infile:
+      env: 
+    step: |
+      println new Date().format('HH:mm:ss') + "   Running XDS XYCORR INIT COLSPOT IDXREF" 
+      cmdline = "sh -c xds_par";
+      proc = cmdline.execute(env, new File(infile.parent));
+      stdout = proc.text;
+      xdserrorparser.compile();
+      errors = xdserrorparser.search(stdout);
+      xdserror = errors.summary;
+      xdssorry = errors.sorry;
+      error = 0;
+      if ( xdserror.equals(null) && xdssorry.equals(null) ) {
+        ;
+      } 
+      else {
+        print new Date().format('HH:mm:ss') + "   Error in XDS:";
+        if ( !xdserror.equals(null) ) {
+          print " " + xdserror;
+        }
+        if ( !xdssorry.equals(null) ) {
+          print " " + xdssorry;
+        }
+        print "; continue integration\n";
+        // throw new Exception("Major error in XDS");
+      }
+      
+      // files //
+      xdsdir = new File(infile.parent)
+    outputs: 
+      stdout: 
+      xdsdir: 
+
+- id: XDSConvFileMaker
+  type: GroovyActor
+  properties:
+    settings: 
+      xdsInputTemplate: !lref XDSConvFileTemplate
+    step: |
+      def model = [wilson: "TRUE"];
+      model.friedel = "TRUE";
+      import groovy.text.SimpleTemplateEngine;
+      def engine = new SimpleTemplateEngine();
+      template1 = engine.createTemplate(xdsInputTemplate).make(model);
+      filename = template1.toString();
+    outputs:
+      filename: 
+
+- id: XDSScaleFileMaker
+  type: GroovyActor
+  properties:
+    settings: 
+      xdsInputTemplate: !lref XDSScaleFileTemplate
+    step: |
+      def model = [merge: "TRUE"];
+      model.friedel = "TRUE";
+      import groovy.text.SimpleTemplateEngine;
+      def engine = new SimpleTemplateEngine();
+      file1 = engine.createTemplate(xdsInputTemplate).make(model);
+      filename = file1.toString();
+    outputs:
+      filename:
+
+- id: XDSJobsRunner
+  type: GroovyActor
+  properties:
+    settings:
+      xdserrorparser: !lref XDSErrorParserTemplate
+    inputs:
+      env: 
+      xdsdir: 
+      infile: 
+    step: |
+      println new Date().format('HH:mm:ss') + "   Running XDS DEFPIX INTEGRATE CORRECT";
+      
+      b = new File(xdsdir.parent + "/" + xdsdir.name + "/XDS.INP").renameTo(new File(xdsdir.parent + "/" + xdsdir.name + "/XDS_OLD.INP"))
+      a = infile.renameTo(new File(xdsdir.parent + "/" + xdsdir.name + "/XDS.INP"))
+      
+      cmdline = "sh -c xds_par";
+      proc = cmdline.execute(env, new File(xdsdir.parent + "/" + xdsdir.name + "/"));
+      stdout = proc.text;
+      xdserrorparser.compile();
+      errors = xdserrorparser.search(stdout);
+      xdserror = errors.summary;
+      xdssorry = errors.sorry;
+      error = 0;
+      if ( xdserror.equals(null) && xdssorry.equals(null) ) {
+        ;
+      }
+      else {
+        print new Date().format('HH:mm:ss') + "   Error in XDS";
+        if ( !xdserror.equals(null) ) {
+          print " " + xdserror;
+        }
+        if ( !xdssorry.equals(null) ) {
+          print " " + xdssorry;
+        }
+        print "\n";
+      }
+      
+      // files //
+      outdir = new File(xdsdir.parent + "/" + xdsdir.name + "/")
+      xdsascii1 = new File(xdsdir.parent + "/" + xdsdir.name + "/XDS_ASCII.HKL");
+      corr = new File(xdsdir.parent + "/" + xdsdir.name + "/CORRECT.LP");
+    outputs: 
+      stdout: 
+      outdir: 
+      xdsascii1: 
+      corr: 
+
+- id: PointlessInputFileWriter
+  type: GroovyActor
+  properties:
+    settings:
+      xdsInputTemplate: !lref PointlessInputTemplate
+    step: |
+      // create the model to fill in the template //    
+      def model = [xdsascii: "XDS_ASCII.HKL", pointmtz: "point1.mtz"];
+      // model.isig = isigma
+      // pointless script file //
+      import groovy.text.SimpleTemplateEngine;
+      def engine = new SimpleTemplateEngine();
+      template1 = engine.createTemplate(xdsInputTemplate).make(model);
+      template = template1.toString();
+    outputs:
+      template: 
+
+- id: PointlessOutputFileParser
+  type: GroovyActor
+  singleton: false
+  properties:
+    settings:
+      parser: !lref PointlessParserTemplate
+      SpaceGroupMap: !ref Crystallography.SpaceGroup_NumberToStringMap
+    inputs:
+      pointOut: 
+    step: |
+      //println "finding sg";
+      println new Date().format('HH:mm:ss') + "   Parsing pointless output";
+      parser.compile();
+      parsed = parser.search (pointOut.text);
+      //println parsed;
+      sgnum = parsed.number;
+      sg = SpaceGroupMap[sgnum];
+      unitcell = parsed.unitcell;
+      a = unitcell.a;
+      b = unitcell.b;
+      c = unitcell.c;
+      alpha = unitcell.alpha;
+      beta = unitcell.beta;
+      gamma = unitcell.gamma;
+      high = parsed.high;
+      mtzhigh = parsed.highmtz;
+      // output info //
+      println "";
+      println("Space group from pointless: " + sg);
+      println "Unit cell from pointless: ";
+      println "a: " + a + " b: " + b + " c: " + c;
+      println "alpha: " + alpha + " beta: " + beta + " gamma: " + gamma;
+      
+      if (!high.equals(null)) {
+        println "Resolution cutoff by pointless: " + high
+      }
+      else {
+        println "Resolution in pointless: " + mtzhigh
+        high = 0.0
+        //println "high: " + high
+      }
+      println "";
+    outputs:
+      sgnum: 
+      unitcell: 
+      sg:
+      a:
+      b:
+      c:
+      alpha:
+      beta:
+      gamma:
+      high: 
+
+- id: EnantNumFinder
+  type: GroovyActor
+  properties:
+    settings:
+      EnantMap: !ref Enantiomorph.EnantiomorphMap
+      SpaceGroupMap: !ref  Crystallography.SpaceGroup_NumberToStringMap
+    inputs:
+      SpaceGroup:
+    step: |
+      println new Date().format('HH:mm:ss') + "   Checking for possible enantiomorphs";
+      enant = EnantMap[SpaceGroup];
+      if (enant.equals(null)) {
+        throw new Exception("No enantiomorph\n")
+      }
+      else {
+        // output info //
+        println "";
+        println "Possible enantiomorph: " + SpaceGroupMap[enant];
+        println "";
+      }
+    outputs:
+      enant: 
+
+- id: XtriageInputFileWriter
+  type: GroovyActor
+  properties:
+    settings:
+      xdsInputTemplate: !lref XtriageInputTemplate
+    step: |
+      // create the model to fill in the template //    
+      def model = [mtzIn: "point1.mtz" , logFile: "xtriage.log"];
+      // output a pointless script file //
+      import groovy.text.SimpleTemplateEngine;
+      def engine = new SimpleTemplateEngine();
+      template1 = engine.createTemplate(xdsInputTemplate).make(model);
+      template = template1.toString();
+    outputs:
+      template: 
+
+- id: XtriageOutputFileParser
+  type: GroovyActor
+  properties:
+    settings:
+      parser: !lref XtriageParserTemplate
+    inputs:
+      outfile: 
+    step: |
+      println new Date().format('HH:mm:ss') + "   Parsing xtriage output";
+      parser.compile();
+      parsed = parser.search (outfile.text);
+      xtriageSum = parsed.summary;
+
+      if (xtriageSum.contains("No (pseudo)merohedral twin laws were found.")) {
+        xtriageTwin = 0;
+      }
+      else if (xtriageSum.contains("The results of the L-test indicate that the intensity statistics\nare significantly different than is expected from good to reasonable,\nuntwinned data.")) {
+        xtriageTwin = 1;
+      }
+      else {
+        xtriageTwin = 1;
+      }
+      
+      // output info //
+      println "";
+      println "Twinning and intensity statistics summary (acentric data):"
+      println xtriageSum;
+      println "";
+    outputs:
+      xtriageSum:
+      xtriageTwin: 
+
+- id: ScalaInputFileWriter
+  type: GroovyActor
+  properties:
+    inputs:
+      highres: 
+    settings: 
+      scalaTemplate: !lref ScalaInputTemplate
+    step: |
+      def model = [mtzin: "point1.mtz", mtzout: "scala1.mtz"];
+      model.res = highres
+      import groovy.text.SimpleTemplateEngine;
+      def engine = new SimpleTemplateEngine();
+      template1 = engine.createTemplate(scalaTemplate).make(model);
+      template = template1.toString();
+    outputs:
+      template:
+
+- id: ScalaRunner
+  type: GroovyActor
+  properties: 
+    settings: 
+      scalaparser: !lref ScalaParserTemplate
+    inputs:
+      mtzIn: 
+      runfile: 
+      env: 
+    step: |
+      println new Date().format('HH:mm:ss') + "   Run scala";
+      cmd1 = "chmod +x ${runfile.name}";
+      cmd1.execute(null, new File(mtzIn.parent)).text;
+      cmd2 = "sh -c ${runfile.name}";
+      outtext = cmd2.execute(env, new File(mtzIn.parent)).text;
+      scalaparser.compile();
+      parsed = scalaparser.search(outtext);
+      warning = parsed.fatal_warning;
+      if ( !warning.equals(null) ) {
+        println new Date().format('HH:mm:ss') + "   Warning from scala: " + warning;
+      }
+      
+      // files //
+      mtzout1 = new File(mtzIn.parent + "/scala1.mtz");
+    outputs: 
+      mtzout1: 
+      outtext: 
+
+- id: ScalaOutputFileParser
+  type: GroovyActor
+  properties:
+    settings:
+      scalaparser: !lref ScalaParserTemplate
+    inputs:
+      scalaout: 
+    step: |
+      println new Date().format('HH:mm:ss') + "   Parsing scala output";
+      scalaparser.compile();
+      parsed = scalaparser.search(scalaout.text);
+      scalaerror = parsed.warning;
+      if ( !scalaerror.equals(null) ) {
+        // ouput info //
+        println new Date().format('HH:mm:ss') + "   Scala warning" 
+        println "";
+        println scalaerror;
+        println "";
+      }
+      
+      scalaresult = parsed.result;
+      block3 = parsed.isigheader
+      block1 = parsed.isigblock
+      block2 = parsed.isigoverallblock
+      block4 = parsed.isigoverallheader
+      
+      // output info //
+      println new Date().format('HH:mm:ss') + "   Scala result";
+      println "";
+      println scalaresult;
+      println "";
+
+      //println "   " + block3
+      //println block1
+      //println " " + block2
+      //println block4
+      //println ""
+
+      isig = new float[10]
+      // isig = [;]
+      isig[0] = parsed.mn1.toFloat()
+      isig[1] = parsed.mn2.toFloat()
+      isig[2] = parsed.mn3.toFloat()
+      isig[3] = parsed.mn4.toFloat()
+      isig[4] = parsed.mn5.toFloat()
+      isig[5] = parsed.mn6.toFloat()
+      isig[6] = parsed.mn7.toFloat()
+      isig[7] = parsed.mn8.toFloat()
+      isig[8] = parsed.mn9.toFloat()
+      isig[9] = parsed.mn10.toFloat()
+      
+      //println isig
+      
+      res = new float[10]
+      res[0] = parsed.dmin1.toFloat()
+      res[1] = parsed.dmin2.toFloat()
+      res[2] = parsed.dmin3.toFloat()
+      res[3] = parsed.dmin4.toFloat()
+      res[4] = parsed.dmin5.toFloat()
+      res[5] = parsed.dmin6.toFloat()
+      res[6] = parsed.dmin7.toFloat()
+      res[7] = parsed.dmin8.toFloat()
+      res[8] = parsed.dmin9.toFloat()
+      res[9] = parsed.dmin10.toFloat()
+      
+      //println res
+
+      isigfinal = parsed.isig10;
+      isigoverall = parsed.isigmaov;
+      
+      // output info //
+      println new Date().format('HH:mm:ss') + "   Parsing I/sigma statistics";
+      println "";
+      println "I/sigma final shell: " + isigfinal;
+      println "I/sigma overall: " + isigoverall;
+      println "";
+    outputs:
+      scalaresult: 
+      isigfinal:
+      isigoverall:
+      isig:
+      res:
+      block1:
+      block2:
+      block3:
+      block4: 
+
+- id: ScalaSummaryParser
+  type: GroovyActor
+  properties:
+    settings: 
+      scalaparser: !lref ScalaSummaryParserTemplate
+    inputs:
+      scalasum: 
+    step: |
+      println new Date().format('HH:mm:ss') + "   Parsing scala summary";
+      scalaparser.compile();
+      parsed = scalaparser.search(scalasum);
+      oRmeas = parsed.Rmeas_overall;
+      fRmeas = parsed.Rmeas_outer;
+      oCompl = parsed.compl_overall
+      fCompl = parsed.compl_outer
+      oMult = parsed.mult_overall
+      mos = parsed.mosaicity
+      res = parsed.resolution
+      // output info //
+      println "";
+      println "Rmeas overall " + oRmeas + "   Rmeas final shell " + fRmeas;
+      println "Compl overall " + oCompl + "   Compl final shell " + fCompl;
+      println "Multiplicity overall " + oMult 
+      // + "   Mosaicity " + mos;
+      println "Resolution " + res
+      println "";
+    outputs:
+      oRmeas: 
+      fRmeas: 
+      oCompl:
+      fCompl:
+      oMult:
+      mos: 
+      res: 
+
+- id: TruncateInputFileWriter
+  type: GroovyActor
+  properties:
+    settings: 
+      truncateTemplate: !lref TruncateInputTemplate
+    step: |
+      def model = [mtzin: "scala1.mtz", mtzout: "trunc1.mtz"];
+      //model.res = res
+      import groovy.text.SimpleTemplateEngine;
+      def engine = new SimpleTemplateEngine();
+      template1 = engine.createTemplate(truncateTemplate).make(model);
+      template = template1.toString();
+    outputs:
+      template:
+
+- id: FreeRInputFileWriter
+  type: GroovyActor
+  properties:
+    settings:
+      freeRTemplate: !lref FreeRInputTemplate
+    step: |
+      def model = [mtzin: "trunc1.mtz", mtzout: "mr.mtz"];
+      import groovy.text.SimpleTemplateEngine;
+      def engine = new SimpleTemplateEngine();
+      template1 = engine.createTemplate(freeRTemplate).make(model);
+      template = template1.toString();
+    outputs:
+      template:
+
+- id: MolrepInputFileWriter
+  type: GroovyActor
+  properties:
+    inputs: 
+      molrepTemplate: 
+        default: !lref MolrepInputTemplate
+    step: |
+      def model = [mtzIn: "mr.mtz", pdbIn: "mr.pdb"] 
+      import groovy.text.SimpleTemplateEngine
+      def engine = new SimpleTemplateEngine()
+      template1 = engine.createTemplate(molrepTemplate).make(model)
+      template = template1.toString()
+    outputs:
+      template: 
+
+- id: RefmacInputFileWriter
+  type: GroovyActor
+  properties:
+    inputs:
+      mtz:
+      pdb:
+      cycles:
+      type:
+      refmacTemplate: 
+        default: !lref RefmacInputTemplate
+    step: |
+      print new Date().format('HH:mm:ss') + "   Write refmac input file: ";
+      print "number of cycles: " + cycles + "; refinement: ";
+      if (type.contains("REST")) {
+        print "restrained\n";
+      }
+      else if (type.contains("RIGI")) {
+        print "rigid body\n";
+      }
+      def model = [mtzfile: mtz.name, pdbfile: pdb.name, refitype: type, ncycles: cycles] 
+      import groovy.text.SimpleTemplateEngine
+      def engine = new SimpleTemplateEngine()
+      template1 = engine.createTemplate(refmacTemplate).make(model)
+      template = template1.toString()
+    outputs:
+      template:
+
+- id: RefmacRunner
+  type: GroovyActor
+  properties:
+    inputs:
+      runfile:
+      mtz:
+      pdb:
+      env: 
+    step: |
+      println new Date().format('HH:mm:ss') + "   Running refmac";
+      cmd1 = "chmod +x ${runfile.name}";
+      cmd1.execute(null, new File(mtz.parent));
+      cmd2 = "sh -c ${runfile.name}";
+      outtext = cmd2.execute(env, new File(mtz.parent)).text;
+      outfile = outtext
+      // files //
+      outmtz = new File(mtz.parent + "/refmac_1.mtz");  
+      outpdb = new File(mtz.parent + "/refmac_1.pdb");
+    outputs:
+      outtext:
+      outfile: 
+      outmtz:
+      outpdb:
+
+- id: RefmacOutputFileParser
+  type: GroovyActor
+  properties:
+    settings:
+      parser: !lref RefmacParserTemplate
+    inputs:
+      refmacOut: 
+    step: |
+      println new Date().format('HH:mm:ss') + "   Parsing refmac output";
+      parser.compile();
+      // parsed = parser.search (refmacOut.text);
+      parsed = parser.search (refmacOut);
+      refanalysis = parsed.analysis;
+      y_ref = [refanalysis.rfact, refanalysis.rfree];
+      x_ref = [refanalysis.ncyc];
+      y_ref_name = ["R-factor", "R-free"];
+      x_ref_name = ["Cycle"]
+      ref_plotname = "R-factor vs. cycle"
+      ref_yaxis = "stat"
+      ref_xaxis = "cycle";
+      refmacSum = parsed.rfactors;
+      
+      // output info //
+      println "";
+      println "Refmac final results: "
+      println refmacSum;
+      println "";
+    outputs:
+      refmacSum:
+      x_ref:
+      y_ref:
+      x_ref_name:
+      y_ref_name: 
+      ref_plotname: 
+      ref_xaxis:
+      ref_yaxis:
+
+- id: RefmacRStatParser
+  type: GroovyActor
+  properties:
+    settings:
+      parser: !lref RStatParserTemplate
+    inputs:
+      refmacSum:
+    step: |
+      println new Date().format('HH:mm:ss') + "   Parsing R statistics";
+      parser.compile();
+      parsed = parser.search(refmacSum);
+      rinit = parsed.rfactinit;
+      rfin = parsed.rfactfin;
+      rfreeinit = parsed.rfreeinit;
+      rfreefin = parsed.rfreefin;
+      
+      // output info //
+      println "";
+      println "R initial: " + rinit + "   R final: " + rfin;
+      println "R free initial: " + rfreeinit + "   R free final: " + rfreefin;
+      println "";
+    outputs:
+      rinit:
+      rfin:
+      rfreeinit: 
+      rfreefin:
+
+- id: FFTMapInputFileWriter
+  type: GroovyActor
+  properties:
+    inputs: 
+      mtzfile:
+      fftmaptemplate: 
+        default: !lref FFTMapInputTemplate
+    step: |
+      def model = [hklin: mtzfile.name];
+      import groovy.text.SimpleTemplateEngine
+      def engine = new SimpleTemplateEngine()
+      template1 = engine.createTemplate(fftmaptemplate).make(model);
+      template = template1.toString();
+    outputs:
+      template: 
+
+- id: PeakmaxInputFileWriter
+  type: GroovyActor
+  properties:
+    inputs: 
+      mapfile:
+      sigma: 
+      peaktemplate: 
+        default: !lref PeakmaxInputTemplate
+    step: |
+      def model = [map: mapfile.name, sigma: sigma]
+      import groovy.text.SimpleTemplateEngine
+      def engine = new SimpleTemplateEngine()
+      template1 = engine.createTemplate(peaktemplate).make(model);
+      template = template1.toString()
+    outputs:
+      template: 
+
+- id: PeakmaxRunner
+  type: GroovyActor
+  properties:
+    inputs:
+      mapfile: 
+      runfile: 
+      env: 
+    step: |
+      println new Date().format('HH:mm:ss') + "   Running peakmax to calculate peaks";
+      cmd1 = "chmod +x ${runfile.name}";
+      cmd1.execute(null, new File(mapfile.parent)).text;
+      cmd2 = "sh -c ${runfile.name}";
+      outtext = cmd2.execute(env, new File(mapfile.parent)).text;
+    outputs:
+      outtext: 
+
+- id: PeakmaxOutputFileParser 
+  type: GroovyActor
+  properties: 
+    settings: 
+      parser: !lref PeakmaxParserTemplate
+    inputs:
+      outfile:
+    step: |
+      println new Date().format('HH:mm:ss') + "   Parsing Peakmax calculation";
+      parser.compile();
+      parsed = parser.search(outfile.text);
+      peaks = parsed.num;
+      sigma = parsed.sigma;
+      
+      // output info //
+      println "";
+      println "There are " + peaks + " peaks higher than " + sigma + " sigma";
+      println "";
+    outputs:
+      peaks: 
+      sigma: 
+
+- id: PhaserMatthInputFileWriter
+  type: GroovyActor
+  properties:
+    inputs:
+      mtzfile:
+      pdbfile: 
+      identity: 
+      mw: 
+      highres: 
+      phasermatthTemplate: 
+        default: !lref PhaserMatthInputTemplate
+    step: |
+      def model = [mtzfile: mtzfile.name, pdbfile: pdbfile.name]
+      model.ident = identity
+      model.mw = mw
+      model.highres = highres 
+      import groovy.text.SimpleTemplateEngine
+      def engine = new SimpleTemplateEngine()
+      template1 = engine.createTemplate(phasermatthTemplate).make(model)
+      template = template1.toString()
+    outputs: 
+      template: 
+
+- id: PhaserMatthOutputFileParser
+  type: GroovyActor
+  properties:
+    settings:
+      parser: !lref PhaserMatthParserTemplate
+    inputs:
+      phaserOut: 
+    step: |
+      println new Date().format('HH:mm:ss') + "   Parsing Phaser Matthews calculation";
+      parser.compile();
+      parsed = parser.search (phaserOut);
+      ncs = parsed.ncs
+      
+      // output info //
+      println "";
+      println "Number of molecules in the asymmetric unit (Matthews coefficient): " + ncs;
+      println "";
+    outputs:
+      ncs: 
+
+- id: ArpwarpInputFileWriter
+  type: GroovyActor
+  properties:
+    inputs:
+      mtzfile:
+      pdbfile:
+      resinasu:
+      ncs:
+      seq: 
+      arpwarpTemplate: 
+        default: !lref ArpwarpInputTemplate
+    step: |
+      def model = [mtzfile: mtzfile.name, pdbfile: pdbfile.name]
+      model.resinasu = resinasu
+      model.ncscopies = ncs
+      model.sequence = seq.name
+      import groovy.text.SimpleTemplateEngine
+      def engine = new SimpleTemplateEngine()
+      template1 = engine.createTemplate(arpwarpTemplate).make(model)
+      template = template1.toString()
+    outputs:
+      template:
+
+- id: XDSOutputFileParser
+  type: GroovyActor
+  properties:
+    settings:
+      parser: !lref XDSParserTemplate
+      SpaceGroupMap: !ref  Crystallography.SpaceGroup_NumberToStringMap
+    inputs:
+      xdsfile:
+      xdshkl: 
+    step: |
+      println new Date().format('HH:mm:ss') + "   Parsing XDS output file";
+      parser.compile()
+      // parsed = parser.search(xdsfile.text)
+      parsed = parser.search(xdshkl.text)
+      sgnum = parsed.sgnum
+      a = parsed.a
+      b = parsed.b
+      c = parsed.c
+      alpha = parsed.alpha
+      beta = parsed.beta
+      gamma = parsed.gamma
+      sg = SpaceGroupMap[sgnum]
+      high = parsed.high
+      println ""
+      println "Space group from XDS: " + sg
+      println "Unit cell from XDS:"
+      println "a: " + a + " b: " + b + " c: " + c
+      println "alpha: " + alpha + " beta: " + beta + " gamma: " + gamma
+      println "Resolution: " + high
+      println ""
+    outputs:
+      a:
+      b:
+      c:
+      alpha:
+      beta:
+      gamma:
+      sg: 
+      high: 
+
+- id: XtriageLogFileParser
+  type: GroovyActor
+  properties:
+    settings:
+      parser: !lref XtriageLogFileParserTemplate
+    inputs:
+      logfile: 
+    step: |
+      println new Date().format('HH:mm:ss') + "   Parsing xtriage log file";
+      parser.compile();
+      parsed = parser.search(logfile.text);
+      
+      // parse nztest output //
+      nztest = parsed.nztest;
+      x_nz = [nztest.z];
+      actw_nz = [0.000000, 0.017523, 0.061552, 0.121901, 0.191208, 0.264241, 0.337372, 0.408167, 0.475069, 0.537163, 0.593994]
+      acob_nz = nztest.acob;
+      acuntw_nz = nztest.acuntw;
+      y_nz = [nztest.acob, nztest.acuntw, actw_nz];
+      x_nz_name = ["Normalized Intensity"];
+      y_nz_name = ["Acentric Observed", "Acentric Untwinned", "Acentric Twinned"];
+      nz_plotname = "Z test"
+      nz_xaxis = "z"
+      nz_yaxis = "N(z)";
+      
+      // parse ltest output //
+      ltest = parsed.ltest;
+      x_ltest = [ltest.l]
+      obs_ltest = ltest.lobs;
+      untw_ltest = ltest.luntw;
+      tw_ltest = ltest.ltw;
+      y_ltest = [ltest.lobs, ltest.luntw, ltest.ltw]
+      x_ltest_name = ["Local Intensity Difference"]
+      y_ltest_name = ["Acentric Observed", "Acentric Untwinned", "Acentric Perfectly Twinned"]
+      ltest_plotname = "L test"
+      ltest_xaxis = "|L|"
+      ltest_yaxis = "N(|L|)"
+    outputs:
+      x_nz:
+      y_nz:
+      actw_nz: 
+      acob_nz: 
+      acuntw_nz: 
+      x_nz_name: 
+      y_nz_name: 
+      nz_plotname:
+      nz_xaxis:
+      nz_yaxis: 
+      x_ltest:
+      y_ltest:
+      obs_ltest: 
+      untw_ltest: 
+      tw_ltest: 
+      x_ltest_name:
+      y_ltest_name:
+      ltest_plotname:
+      ltest_xaxis:
+      ltest_yaxis:
+
+- id: PlotOutputWriter
+  type: GroovyActor
+  properties:
+    settings:
+      template: !lref PlotTemplate
+    inputs:
+      x_num:
+      y_num: 
+      x_name: 
+      y_name:
+      plotname:
+      x_axis:
+      y_axis: 
+    step: |
+      def model = [x: x_num, y: y_num]
+      model.xtotal = x_num.size();
+      model.ytotal = y_num.size();
+      model.xname = x_name;
+      model.yname = y_name;
+      model.plotname = plotname
+      model.xaxis = x_axis;
+      model.yaxis = y_axis;
+      import groovy.text.SimpleTemplateEngine
+      def engine = new SimpleTemplateEngine()
+      tempengine = engine.createTemplate(template).make(model)
+      plotfile = tempengine.toString()
+    outputs:
+      plotfile: 

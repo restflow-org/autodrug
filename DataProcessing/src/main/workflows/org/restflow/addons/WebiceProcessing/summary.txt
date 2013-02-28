@@ -1,0 +1,10 @@
+<%
+    
+    def labelit = ['a': labelit_a, 'b': labelit_b, 'c': labelit_c, 'alpha': labelit_alpha, 'beta': labelit_beta, 'gamma': labelit_gamma, 'space_group': labelit_sg]
+    def pointless = ['a': pointless_a, 'b': pointless_b, 'c': pointless_c, 'alpha': pointless_alpha, 'beta': pointless_beta, 'gamma': pointless_gamma, 'space_group': pointless_sg]
+    def scala = ['summary': scala_summary, 'isig_finalshell': isig_final, 'isig_overall': isig_overall, 'mosaicity': mosaicity, 'multiplicity_overall': mult_overall, 'completeness_overall': complet_overall, 'completeness_finalshell': complet_final, 'Rmeas_overall': rmeas_overall, 'Rmeas_finalshell': rmeas_final]
+    def refmac = ['summary': refmac_summary, 'Rfree_inital': rfree_initial, 'R_final': r_final, 'R_initial': r_initial, 'Rfree_final': rfree_final]
+	
+%>
+
+${tools.yaml.dump(['labelit': labelit, 'pointless': pointless, 'refmac': refmac, 'scala': scala, 'phenix.xtriage': xtriage])}
