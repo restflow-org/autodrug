@@ -8,7 +8,7 @@ imports:
 
 components:
 
-- id: ScalaWorkflow1
+- id: Workflow
   type: Workflow
   properties:
     director: !ref PublishSubscribeDirector
@@ -28,24 +28,6 @@ components:
       isig:
       res:
       
-- id: ScalaWorkflow2
-  type: Workflow
-  properties:
-    director: !ref PublishSubscribeDirector
-    inputs: 
-      res:
-      mtzIn: 
-    nodes:
-    - !ref WebiceProcessing.SetEnvironment
-    - !lref Inputs
-    - !lref Outputs
-    - !lref WriteScalaInputFile
-    - !lref RunScala
-    - !lref ParseScalaOutputFile
-    - !lref ParseScalaSummary
-    outputs:
-      mtzout1: 
-
 - id: Inputs
   type: InPortal
   properties:
@@ -115,27 +97,27 @@ components:
       mos: /mosaicity/
       res: /resolution/
 
-- id: WriteScalaInputFileRes
-  type: Step
-  properties:
-    inflows:
-      highres: /trunc/res
-    actor: !lref ScalaInputFileWriter
-    outflows:
-      template: file:/scala/final/scala.run
+#- id: WriteScalaInputFileRes
+#  type: Step
+#  properties:
+#    inflows:
+#      highres: /trunc/res
+#    actor: !lref ScalaInputFileWriter
+#    outflows:
+#      template: file:/scala/final/scala.run
 
-- id: RunScalaRes
-  type: Step
-  properties:
-    inflows:
-      mtzIn: file:/scala/final/point1.mtz
-      runfile: file:/scala/final/scala.run
-      env: /env/set/
-    actor: !lref ScalaRunner
-    outflows: 
-      #mtzout1: file:/scala/final/scala1.mtz
-      mtzout1: file:/truncate/scala1.mtz
-      outtext: file:/scala/final/scala.out
+#- id: RunScalaRes
+#  type: Step
+#  properties:
+#    inflows:
+#      mtzIn: file:/scala/final/point1.mtz
+#      runfile: file:/scala/final/scala.run
+#      env: /env/set/
+#    actor: !lref ScalaRunner
+#    outflows: 
+#      #mtzout1: file:/scala/final/scala1.mtz
+#      mtzout1: file:/truncate/scala1.mtz
+#      outtext: file:/scala/final/scala.out
 
 - id: ParseScalaOutputFileRes
   type: Step
@@ -434,10 +416,3 @@ components:
       println "RESOLUTION HIGH $res"
       }
       %>eof
-      
-#<% if (res.toFloat() != 0.0) {
-#      println "resolution " + String.format('%4.2f', res) + " 40"
-#      }
-#      %>
-
-

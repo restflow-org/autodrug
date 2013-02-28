@@ -265,7 +265,7 @@ components:
   type: Node
   properties:
     stepsOnce: true
-    actor: !ref scala.WebiceProcessing.ScalaWorkflow1
+    actor: !ref scala.WebiceProcessing.Workflow
     nestedUriPrefix: /scala1/
     inflows:
       res: /scala/input/highres/
@@ -279,7 +279,7 @@ components:
   type: Node
   properties:
     stepsOnce: true
-    actor: !ref scala.WebiceProcessing.ScalaWorkflow2
+    actor: !ref scala.WebiceProcessing.Workflow
     nestedUriPrefix: /scala2/
     inflows:
       res: /trunc/res
