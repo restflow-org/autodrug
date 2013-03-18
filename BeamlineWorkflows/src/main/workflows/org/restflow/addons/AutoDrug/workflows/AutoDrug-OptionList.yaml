@@ -17,22 +17,22 @@ components:
   singleton: false
 
 - id: ReadBeamlineValues.__ReadBeamlineValues
-  type: BluIce.Actor.ReadBeamlineValues
+  type: org.restflow.addons.BeamlineControl.BluIce.Actor.ReadBeamlineValues
 
 - id: __MountNextSample
-  type: BluIce.Actor.MountNextSample
+  type: org.restflow.addons.BeamlineControl.BluIce.Actor.MountNextSample
 
 - id: __UnselectSamples
-  type: BluIce.Actor.UnselectSamples
+  type: org.restflow.addons.BeamlineControl.BluIce.Actor.UnselectSamples
 
 - id: __LoopCenterAndRaster
-  type: BluIce.Actor.LoopCenterAndRaster
+  type: org.restflow.addons.BeamlineControl.BluIce.Actor.LoopCenterAndRaster
 
 - id: __CollectTwoImages
-  type: BluIce.Actor.CollectTwoImages
+  type: org.restflow.addons.BeamlineControl.BluIce.Actor.CollectTwoImages
 
 - id: __CollectRun
-  type: BluIce.Actor.CollectRun
+  type: org.restflow.addons.BeamlineControl.BluIce.Actor.CollectRun
 
 
 #define global objects
