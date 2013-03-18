@@ -1,5 +1,5 @@
 namespace:
-  module: BluIce
+  module: org.restflow.addons.BeamlineControl.BluIce
 
 imports:
 - classpath:/common/types.yaml
@@ -280,6 +280,7 @@ components:
       set currentDewarPort ${currentPos}${currentRow}${currentCol}
       
       if { $currentDewarPort != $dewarPort} {
+        puts "CURRENT DEWAR PORT $currentDewarPort"
         #only mount and loop center if not currently mounted 
         set op_mount_sample [start_waitable_operation sequenceManual mount ${dewarPort} $_sessionId]
         set rval [lindex [wait_for_operation_to_finish $op_mount_sample] 1]
