@@ -28,7 +28,7 @@ class ScreenParameters implements Serializable {
 			'minimum_score',
 			'exposure_photons_per_image'].each { field ->
 			if ( this."$field" == null ) {
-				throw new Exception("$field must be defined in screeing_parameters");
+				throw new Exception("$field must be defined in screening_parameters");
 			}
 		}
 		if (rastering_parameters == null) {
