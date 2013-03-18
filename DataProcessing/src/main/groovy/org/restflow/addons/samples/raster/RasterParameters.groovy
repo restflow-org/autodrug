@@ -15,7 +15,7 @@ class RasterParameters implements Serializable {
 	Float exposure_photons_per_image;
 	
 	
-	public void inheritFromScreeningParameters(ScreenParameters screenParameters) {
+	public void inheritFromScreeningParameters(ScreenParameters screeningParameters) {
 		[	'detector_resolution_angstroms',
 			'energy_ev',
 			'beamstop_position_mm',
