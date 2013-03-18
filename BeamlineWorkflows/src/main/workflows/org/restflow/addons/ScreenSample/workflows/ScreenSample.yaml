@@ -69,7 +69,7 @@ components:
       sample: /sample
     actor.step: |
       sampleName = sample.name;
-      port = sample.port;
+      dewarPort = sample.dewarPort;
       screeningParams = sample.strategy.screening_parameters;
       minimum_score = screeningParams.minimum_score;
       criteriaBySpaceGroup = sample.strategy.returnSpaceGroupCollectCriteria();
@@ -86,14 +86,14 @@ components:
       uniqueId: /sample-uniqueId
       spreadsheetRow: /sample-spreadsheet/row
       sampleName: /sampleName/
-      port: /port
+      dewarPort: /dewarPort
 
 
 - id: MountNextCrystal
   type: Step
   properties: 
     inflows:
-      dewarPort: /port/
+      dewarPort: /dewarPort
       beamline: /beamline/name      
       activeKey: /activeKey
     actor: !ref __MountNextSample
