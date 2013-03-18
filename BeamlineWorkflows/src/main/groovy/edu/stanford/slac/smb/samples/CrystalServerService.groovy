@@ -15,6 +15,7 @@ import sil.beans.Sil;
 import ssrl.beans.AppSession;
 import org.restflow.modelgrep.ModelGrep;
 import org.restflow.modelgrep.RegularExpressionWithModel;
+import edu.stanford.slac.smb.samples.*;
 
 import static groovyx.net.http.Method.*
 import groovyx.net.http.*
@@ -28,7 +29,7 @@ class CrystalServerClient implements SampleManagerInterface {
 	
 	public CrystalServerClient() {
 		super();
-		setAppSession( ssrl.CachedSessionIdGrabber.grabSession() );
+		setAppSession( CachedSessionIdGrabber.grabSession() );
 	}
 	
 	public setAppSession (AppSession appSession) {
@@ -86,11 +87,6 @@ class CrystalServerClient implements SampleManagerInterface {
 
 	String beamlinePositionAssignedToSil( String beamlineId, String silId ) {
 
-		def http = new HTTPBuilder  ( "${crystalServerUrl}")
-		
-		http.handler.failure = { resp ->
-			throw new Exception ("Unexpected failure: ${resp.statusLine}")
-		}
 		
 
 		def assigned = ''; 
@@ -98,9 +94,15 @@ class CrystalServerClient implements SampleManagerInterface {
 		positions.each { positionIndex, positionLabel -> 
 			Sil sil;
 			def query = [silId: silId, userName: userName, SMBSessionID: sessionId, beamline: beamlineId, forCassetteIndex: positionIndex ]
-			
 			try {
-				def html = http.get(path: "getCrystalData.do", contentType: TEXT, query: query ) { resp, reader ->
+                def http = new HTTPBuilder  ( "${crystalServerUrl}")
+		        println ("url ${crystalServerUrl} query: $query");	
+
+		        http.handler.failure = { resp ->
+			        throw new Exception ("Unexpected failure: ${resp.statusLine}")
+                }
+
+                def html = http.get(path: "getCrystalData.do", contentType: TEXT, query: query ) { resp, reader ->
 					def text = reader.text
 					//println text
 
@@ -123,11 +125,11 @@ class CrystalServerClient implements SampleManagerInterface {
 					println ("Matched spreadsheet '"+ assignedSil + "' at positionIndex: " +positionIndex);
 					assigned = positionLabel;
 					return;
-				}
+                }
 			//Yaml yaml = new Yaml(new SilBeanFilterConstructor());
 			//sil = yaml.load(text);
 			} catch (Exception e) {
-				println ("Could not read SIL information at positionIndex:" +positionIndex);
+				println ("Could not read SIL information at positionIndex:" +positionIndex + " :" + e.message);
 			};
 		}
 		return assigned;
