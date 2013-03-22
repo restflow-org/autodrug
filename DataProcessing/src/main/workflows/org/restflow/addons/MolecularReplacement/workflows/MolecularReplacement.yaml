@@ -25,7 +25,8 @@ imports:
 
 components:
 
-- id: Workflow
+
+- id: Base.Workflow
   type: Workflow
   className: org.restflow.actors.Workflow
   properties: 
@@ -35,8 +36,6 @@ components:
         description: full path to pdb file for protein homologous to target
       mtz:
         description: full path of mtz file
-      rcutoff: 
-        description: resolution cutoff
       numCycles:
         default: 10
         description: number of cycles for Refmac refinement; default is 5
@@ -50,13 +49,37 @@ components:
     - !ref MolecularReplacement.Inputs
     - !ref MolecularReplacement.Outputs
     - !ref MolecularReplacement.RunMolrep
-    - !ref MolecularReplacement.RunRefmac
     - !ref MolecularReplacement.RunFFTMap
     - !ref MolecularReplacement.RunPeakmax_3sigma
     - !ref MolecularReplacement.RunPeakmax_5sigma
     outputs:
       mtzfile: 
       pdbfile: 
+
+- id: NoCutoff.Workflow
+  type: Workflow
+  className: org.restflow.actors.Workflow
+  properties: 
+    director: !ref PublishSubscribeDirector
+    nodes:
+    - !ref MolecularReplacement.RunRefmac
+    mixins:
+    - !ref MolecularReplacement.Base.Workflow
+
+- id: RfactorCutoff.Workflow
+  type: Workflow
+  className: org.restflow.actors.Workflow
+  properties: 
+    director: !ref PublishSubscribeDirector
+    inputs:
+      rcutoff: 
+        description: resolution cutoff
+    nodes:
+    - !ref MolecularReplacement.NoCutoff.RunRefmac
+    mixins:
+    - !ref MolecularReplacement.Base.Workflow
+    nodes:
+    - !ref refmac.Rcutoff.Inputs
 
 
 - id: Inputs
