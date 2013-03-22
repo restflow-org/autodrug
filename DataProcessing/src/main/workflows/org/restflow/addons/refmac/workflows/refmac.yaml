@@ -18,18 +18,19 @@ imports:
 
 components:
 
-- id: Workflow
+
+
+#refmac workflow without R cutoff
+- id: NoCutoff.Workflow
   type: Workflow
   className: org.restflow.actors.Workflow
   properties: 
-    director: !ref DataDrivenJobDependencyDirector
+    director: !ref PublishSubscribeDirector
     inputs:
       pdb:
         description: file handle for protein homologous to target
       mtz:
         description: file handle of mtz file
-      rcutoff: 
-        description: resolution cutoff
       numCycles:
         default: 10
         description: number of cycles for Refmac refinement; default is 5
@@ -40,12 +41,29 @@ components:
         default: ~
         nullable: true
     nodes:
-    - !ref refmac.Inputs
-    - !ref refmac.Outputs
-    - !ref refmac.RunRefmac
-    - !ref refmac.ParseRefmacOutputFile
-    - !ref refmac.ParseRefmacRStat
-    - !ref refmac.CheckRStat
+    - !lref Inputs
+    - !lref Outputs
+    - !lref RunRefmac
+    - !lref ParseRefmacOutputFile
+    - !lref ParseRefmacRStat
+    outputs:
+      mtzfile: 
+      pdbfile: 
+
+#refmac workflow with r cutoff
+- id: Workflow
+  type: Workflow
+  className: org.restflow.actors.Workflow
+  properties: 
+    director: !ref DataDrivenJobDependencyDirector
+    nodes:
+    - !lref Rcutoff.Inputs
+    - !lref CheckRStat
+    - !lref Rcutoff.Outputs
+    mixins:
+    - !ref refmac.NoCutoff.Workflow
+    inputs:
+      rcutoff:
     outputs:
       mtzfile: 
       pdbfile: 
@@ -61,7 +79,13 @@ components:
       pdb: file:/in/mr.pdb
       mtz: file:/in/mr.mtz
       cif: file:/in/refmac.cif
+
+- id: Rcutoff.Inputs
+  type: InPortal
+  properties: 
+    outflows: 
       rcutoff: /in/rcutoff
+
 
 - id: Outputs
   type: OutPortal
@@ -69,7 +93,13 @@ components:
     inflows:
       mtzfile: file:/out/refmac_1.mtz
       pdbfile: file:/out/refmac_1.pdb
+
+- id: Rcutoff.Outputs
+  type: OutPortal
+  properties: 
+    inflows:
       RfactorOk: /run/RfactorOk
+
 
 - id: RunRefmac
   type: Step
