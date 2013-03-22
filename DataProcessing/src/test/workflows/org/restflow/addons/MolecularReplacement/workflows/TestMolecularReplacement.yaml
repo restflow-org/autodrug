@@ -81,7 +81,7 @@ components:
       rcutoff: /in/rcutoff
       refiType: /in/refitype/
       cif: file:/protein.cif
-    actor: !ref MolecularReplacement.Workflow
+    actor: !ref MolecularReplacement.RfactorCutoff.Workflow
     outflows:
       mtzfile: file:/out/mr.mtz
       pdbfile: file:/out/mr.pdb
