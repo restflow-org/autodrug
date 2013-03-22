@@ -1,0 +1,42 @@
+groups:
+  myoglobin: &P6_myoglobin
+
+    screening_parameters:
+      detector_resolution_angstroms: 1.5     
+      energy_ev: 12657
+      beam_size_width_height_microns: [100,100]
+      beamstop_position_mm: 32
+      phi_delta_degrees: 1
+      exposure_photons_per_image: 5e10
+      minimum_score: 1
+      rastering_parameters:
+        peak_cutoff_percent: 20
+        exposure_photons_per_image: 5e9
+        phi_delta_degrees: 1
+      
+    spacegroups:
+      P3: 
+        collection_criteria:
+          priority: 2
+          unit_cell_angstroms_degrees: 90.2 90.2 45.2 90 90 90
+          unit_cell_length_tolerance_percent: 1 
+          minimum_resolution_angstroms: 3.0
+          maximum_mosaicity_degrees: 1.0          
+        
+        collection_parameters:   
+          detector_resolution_angstroms: 1.5
+          energy_ev: 12657
+          beam_size_width_height_microns: [100,100]
+          beamstop_position_mm: 32
+          phi_delta_degrees: 0.5
+          phi_range_degrees: 60
+          exposure_photons_per_image: 5e10
+   
+    molecular_replacement:
+      intensity_cutoff_sigma: 1.0
+      r_measure_cutoff_percent: 40.0
+      mr_model: /data/ana/ENERGY_RADDAM-MYO/MODEL/2MBW.pdb
+      alt_mr_model: ~
+
+  myo1: *P6_myoglobin
+  myo2: *P6_myoglobin
