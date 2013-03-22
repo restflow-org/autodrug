@@ -1,10 +1,14 @@
 package org.restflow.addons.samples.process;
 
 class MolecularReplacementParameters implements Serializable {
+	Float intensity_cutoff_sigma;
 	Float r_measure_cutoff_percent;
 	String mr_model;
 	String alt_mr_model;
 	String cif_file;
+	String space_group_number;
+	String unit_cell_angstroms_degrees;
+	Float resolution_angstroms;
 	
 	public void validate () {
 		[ 'mr_model', 'alt_mr_model'].each { it->
@@ -23,6 +27,11 @@ class MolecularReplacementParameters implements Serializable {
 			File f_cif_file = new File(cif_file);
 			if (! f_cif_file.canRead() ) throw new Exception("file $cif_file is not readable") ;
 		}
+
+
+
+
+
 		
 	}
 	
