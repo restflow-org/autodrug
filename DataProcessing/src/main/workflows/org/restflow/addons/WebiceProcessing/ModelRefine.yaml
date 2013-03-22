@@ -1,0 +1,312 @@
+namespace:
+
+  module: ModelRefine
+  route: WebiceProcessing
+
+imports:
+- classpath:org/restflow/addons/Crystallography/actors/Crystallography-actors.yaml
+- classpath:org/restflow/addons/Molrep/workflows/Molrep.yaml
+- classpath:org/restflow/addons/refmac/workflows/refmac.yaml
+
+components:
+
+- id: Workflow
+  type: Workflow
+  properties: 
+    director: !ref PublishSubscribeDirector
+    inputs:
+      RefmacNumCycles: 
+      RefmacRefiType: 
+      PDBFile:
+      MTZFile: 
+    nodes:
+    - !ref WebiceProcessing.SetEnvironment
+    - !lref Inputs
+    - !lref Outputs
+    - !lref RunMolrep
+    - !lref RunRefmac
+    - !lref ParseRefmacOutputFile
+    - !lref ParseRefmacRStat
+    - !lref WriteRefmacOutput
+    outputs:
+      mtzfile:
+      pdbfile:
+    
+- id: Inputs
+  type: InPortal
+  properties: 
+    outflows: 
+      RefmacNumCycles: /refmac/cycles/
+      RefmacRefiType: /refmac/refitype/
+      PDBFile: file:/molrep/mr.pdb
+      MTZFile: file:/molrep/mr.mtz
+
+- id: Outputs
+  type: OutPortal
+  properties: 
+    inflows:
+      mtzfile: file:/refmac/refmac_1.mtz
+      pdbfile: file:/refmac/refmac_1.pdb
+
+- id: RunMolrep
+  type: Step 
+  properties:
+    nestedUriPrefix: /molrep/
+    inflows:
+      MTZFile: file:/molrep/mr.mtz
+      PDBFile: file:/molrep/mr.pdb
+    actor: !ref Molrep.Workflow
+    outflows:
+      mtzfile: file:/refmac/mr.mtz
+      pdbfile: file:/refmac/molrep.pdb
+
+- id: RunRefmac
+  type: Step
+  properties:
+    inflows:
+      mtz: file:/refmac/mr.mtz
+      pdb: file:/refmac/molrep.pdb
+      ncycles: /refmac/cycles/
+      refitype: /refmac/refitype/
+    actor: !ref refmac.RefmacRunner
+    outflows:
+      mtzfile: file:/refmac/refmac_1.mtz
+      pdbfile: file:/refmac/refmac_1.pdb
+
+- id: RunRefmac
+  type: Step 
+  properties:
+    nestedUriPrefix: /refmac/
+    inflows:
+      mtz: file:/refmac/mr.mtz
+      pdb: file:/mr.pdb
+      numCycles: /refmac/cycles/
+      refiType: /in/refitype/
+    actor: !ref refmac.NoCutoff.Workflow
+    outflows:
+      mtzfile: file:/out/mr.mtz
+      pdbfile: file:/out/mr.pdb
+
+
+# for workflow_all
+# only when need to run peakmax analysis and arpwarp
+- id: SetRefmacOutputFiles
+  type: GroovyActorStep
+  properties:
+    inflows:
+      mtz: file:/refmac/refmac_1.mtz
+      pdb: file:/refmac/refmac_1.pdb
+    actor.step: |
+      mtz1 = new File(mtz.parent + "/" + mtz.name)
+      mtz2 = new File(mtz.parent + "/" + mtz.name)
+      pdb1 = new File(pdb.parent + "/" + pdb.name)
+    outflows:
+      mtz1: file:/peakmax/refmac_1.mtz
+      mtz2: file:/arpwarp/refmac_1.mtz
+      pdb1: file:/arpwarp/refmac_1.pdb
+
+- id: ParseRefmacOutputFile
+  type: Step
+  properties:
+    inflows:
+      #refmacOut: file:/refmac/refmac.out
+      refmacOut: /refmac/outtext
+    actor: !lref RefmacOutputFileParser
+    outflows: 
+      refmacSum: /refmac/summary/
+      x_ref: /refmac/plot/x/
+      y_ref: /refmac/plot/y/
+      x_ref_name: /refmac/plot/x_name/
+      y_ref_name: /refmac/plot/y_name/
+      ref_plotname: /refmac/plot/plotname/
+      ref_xaxis: /refmac/plot/xaxis/
+      ref_yaxis: /refmac/plot/yaxis/
+
+- id: ParseRefmacRStat
+  type: Step
+  properties:
+    inflows:
+      refmacSum: /refmac/summary/
+    actor: !lref RefmacRStatParser
+    outflows:
+      rinit: /refmac/r_initial/
+      rfin: /refmac/r_final/
+      rfreeinit: /refmac/rfree_inital/
+      rfreefin: /refmac/rfree_final/
+
+- id: WriteRefmacOutput
+  type: Step
+  properties:
+    inflows:
+      x_num: /refmac/plot/x/
+      y_num: /refmac/plot/y/
+      x_name: /refmac/plot/x_name/
+      y_name: /refmac/plot/y_name/
+      plotname: /refmac/plot/plotname/
+      x_axis: /refmac/plot/xaxis/
+      y_axis: /refmac/plot/yaxis/
+    actor: !ref WebiceProcessing.PlotOutputWriter
+    outflows:
+      plotfile: file:/plots/rfactor.out
+
+
+
+
+- id: MolrepInputFileWriter
+  type: GroovyActor
+  properties:
+    inputs: 
+      molrepTemplate: 
+        default: !lref MolrepInputTemplate
+    step: |
+      def model = [mtzIn: "mr.mtz", pdbIn: "mr.pdb"] 
+      import groovy.text.SimpleTemplateEngine
+      def engine = new SimpleTemplateEngine()
+      template1 = engine.createTemplate(molrepTemplate).make(model)
+      template = template1.toString()
+    outputs:
+      template: 
+
+- id: RefmacInputFileWriter
+  type: GroovyActor
+  properties:
+    inputs:
+      mtz:
+      pdb:
+      cycles:
+      type:
+      refmacTemplate: 
+        default: !lref RefmacInputTemplate
+    step: |
+      print new Date().format('HH:mm:ss') + "   Write refmac input file: ";
+      print "number of cycles: " + cycles + "; refinement: ";
+      if (type.contains("REST")) {
+        print "restrained\n";
+      }
+      else if (type.contains("RIGI")) {
+        print "rigid body\n";
+      }
+      def model = [mtzfile: mtz.name, pdbfile: pdb.name, refitype: type, ncycles: cycles] 
+      import groovy.text.SimpleTemplateEngine
+      def engine = new SimpleTemplateEngine()
+      template1 = engine.createTemplate(refmacTemplate).make(model)
+      template = template1.toString()
+    outputs:
+      template:
+
+
+- id: RefmacRunner
+  type: GroovyActor
+  properties:
+    inputs:
+      runfile:
+      mtz:
+      pdb:
+      env: 
+    step: |
+      println new Date().format('HH:mm:ss') + "   Running refmac";
+      cmd1 = "chmod +x ${runfile.name}";
+      cmd1.execute(null, new File(mtz.parent));
+      cmd2 = "sh -c ${runfile.name}";
+      outtext = cmd2.execute(env, new File(mtz.parent)).text;
+      outfile = outtext
+      // files //
+      outmtz = new File(mtz.parent + "/refmac_1.mtz");  
+      outpdb = new File(mtz.parent + "/refmac_1.pdb");
+    outputs:
+      outtext:
+      outfile: 
+      outmtz:
+      outpdb:
+
+- id: RefmacOutputFileParser
+  type: GroovyActor
+  properties:
+    settings:
+      parser: !lref RefmacParserTemplate
+    inputs:
+      refmacOut: 
+    step: |
+      println new Date().format('HH:mm:ss') + "   Parsing refmac output";
+      parser.compile();
+      // parsed = parser.search (refmacOut.text);
+      parsed = parser.search (refmacOut);
+      refanalysis = parsed.analysis;
+      y_ref = [refanalysis.rfact, refanalysis.rfree];
+      x_ref = [refanalysis.ncyc];
+      y_ref_name = ["R-factor", "R-free"];
+      x_ref_name = ["Cycle"]
+      ref_plotname = "R-factor vs. cycle"
+      ref_yaxis = "stat"
+      ref_xaxis = "cycle";
+      refmacSum = parsed.rfactors;
+      
+      // output info //
+      println "";
+      println "Refmac final results: "
+      println refmacSum;
+      println "";
+    outputs:
+      refmacSum:
+      x_ref:
+      y_ref:
+      x_ref_name:
+      y_ref_name: 
+      ref_plotname: 
+      ref_xaxis:
+      ref_yaxis:
+
+- id: RefmacRStatParser
+  type: GroovyActor
+  properties:
+    settings:
+      parser: !lref RStatParserTemplate
+    inputs:
+      refmacSum:
+    step: |
+      println new Date().format('HH:mm:ss') + "   Parsing R statistics";
+      parser.compile();
+      parsed = parser.search(refmacSum);
+      rinit = parsed.rfactinit;
+      rfin = parsed.rfactfin;
+      rfreeinit = parsed.rfreeinit;
+      rfreefin = parsed.rfreefin;
+      
+      // output info //
+      println "";
+      println "R initial: " + rinit + "   R final: " + rfin;
+      println "R free initial: " + rfreeinit + "   R free final: " + rfreefin;
+      println "";
+    outputs:
+      rinit:
+      rfin:
+      rfreeinit: 
+      rfreefin:
+
+
+
+- id: RefmacParserTemplate
+  className: org.restflow.beans.TextScanner
+  properties:
+    absorbWhiteSpaceSymbol: "~"
+    template: 
+      - '{header:ANALYSIS_HEADER}{analysis[]:ANALYSIS}'
+      - |
+        ~ $TEXT:Result: ~ $$ ~ Final ~ results ~ $$
+        {rfactors:TEXT_BLOCK}
+        ~ $$
+    tags:
+      ANALYSIS_HEADER: '~ Ncyc ~ Rfact ~ Rfree ~ FOM ~ -LL ~ -LLfree ~ rmsBOND ~ zBOND ~ rmsANGL ~ zANGL ~ rmsCHIRAL ~ $$ ~ $$ ~'
+      ANALYSIS: "~ {ncyc:INT} ~ {rfact:FLOAT} ~ {rfree:FLOAT} ~ {fom:FLOAT} ~ {LL} ~ {LLfree:FLOAT} ~ {rmsBond:FLOAT} ~ {zBond:FLOAT} ~ {rmsAngl:FLOAT} ~ {zAngl:FLOAT} ~ {rmsChiral:FLOAT}"
+
+- id: RStatParserTemplate
+  className: org.restflow.beans.TextScanner
+  properties:
+    absorbWhiteSpaceSymbol: "~"
+    template:
+      - |
+        ~ R~factor ~ {rfactinit} ~ {rfactfin}
+        ~ R~free ~ {rfreeinit} ~ {rfreefin}
+
+
+

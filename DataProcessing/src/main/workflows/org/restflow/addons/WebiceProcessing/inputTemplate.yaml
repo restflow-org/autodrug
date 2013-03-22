@@ -124,29 +124,6 @@ components:
       freerflag HKLIN $mtzin HKLOUT $mtzout << eof
       eof
 
-- id: MolrepInputTemplate
-  className: java.lang.String 
-  singleton: true 
-  constructor: 
-  - value: |
-      molrep -f $mtzIn -m $pdbIn << eof
-      DYAD=M
-      SURF=O
-      eof
-
-- id: RefmacInputTemplate
-  className: java.lang.String 
-  singleton: true 
-  constructor: 
-  - value: | 
-      refmac hklin $mtzfile xyzin $pdbfile hklout refmac_1.mtz xyzout refmac_1.pdb << eof
-      MAKE HYDROGENS NO
-      REFI TYPE $refitype
-      NCYCLES $ncycles
-      WEIGHT AUTO
-      END
-      eof
-
 - id: PhaserMatthInputTemplate
   className: java.lang.String 
   singleton: true 

@@ -19,6 +19,7 @@ imports:
 - classpath:org/restflow/addons/Crystallography/map/enant.yaml
 - classpath:org/restflow/addons/WebiceProcessing/reports.yaml
 - classpath:org/restflow/addons/WebiceProcessing/scala.yaml
+- classpath:org/restflow/addons/WebiceProcessing/ModelRefine.yaml
 
 components:
 
@@ -128,7 +129,7 @@ components:
   type: Node
   properties:
     stepsOnce: true
-    actor: !lref ModelRefine
+    actor: !ref ModelRefine.WebiceProcessing.Workflow
     nestedUriPrefix: /modelrefine/
     inflows: 
       RefmacNumCycles: /refmac/cycles/
@@ -138,49 +139,8 @@ components:
     outflows: 
       mtzfile: file:/refmac/refmac_1.mtz
       pdbfile: file:/refmac/refmac_1.pdb
-      refout: /refmac/outtext
 
-- id: ModelRefine
-  type: Workflow
-  properties: 
-    director: !lref DataDrivenJobDependencyDirector
-    inputs:
-      RefmacNumCycles: 
-      RefmacRefiType: 
-      PDBFile:
-      MTZFile: 
-    nodes:
-    - !lref SetEnvironment
-    - !lref MRInputs
-    - !lref MROutputs
-    - !lref WriteMolrepInputFile
-    - !lref RunMolrep
-    - !lref WriteRefmacInputFile
-    - !lref RunRefmac
-    - !lref ParseRefmacOutputFile
-    - !lref ParseRefmacRStat
-    - !lref WriteRefmacOutput
-    outputs:
-      mtzfile:
-      pdbfile:
-      refout:
-    
-- id: MRInputs
-  type: InPortal
-  properties: 
-    outflows: 
-      RefmacNumCycles: /refmac/cycles/
-      RefmacRefiType: /refmac/refitype/
-      PDBFile: file:/molrep/mr.pdb
-      MTZFile: file:/molrep/mr.mtz
 
-- id: MROutputs
-  type: OutPortal
-  properties: 
-    inflows:
-      mtzfile: file:/refmac/refmac_1.mtz
-      pdbfile: file:/refmac/refmac_1.pdb
-      refout: /refmac/outtext
       
 - id: Enant
   type: Node
@@ -249,7 +209,7 @@ components:
   type: Node
   properties:
     stepsOnce: true
-    actor: !lref ModelRefine
+    actor: !ref ModelRefine.WebiceProcessing.Workflow
     nestedUriPrefix: /enantmr/
     inflows: 
       RefmacNumCycles: /cycles/

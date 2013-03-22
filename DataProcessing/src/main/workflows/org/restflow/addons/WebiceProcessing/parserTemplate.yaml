@@ -100,31 +100,6 @@ components:
         ~
         -------------------------------------------------------------------------------
 
-
-
-- id: RefmacParserTemplate
-  className: org.restflow.beans.TextScanner
-  properties:
-    absorbWhiteSpaceSymbol: "~"
-    template: 
-      - '{header:ANALYSIS_HEADER}{analysis[]:ANALYSIS}'
-      - |
-        ~ $TEXT:Result: ~ $$ ~ Final ~ results ~ $$
-        {rfactors:TEXT_BLOCK}
-        ~ $$
-    tags:
-      ANALYSIS_HEADER: '~ Ncyc ~ Rfact ~ Rfree ~ FOM ~ -LL ~ -LLfree ~ rmsBOND ~ zBOND ~ rmsANGL ~ zANGL ~ rmsCHIRAL ~ $$ ~ $$ ~'
-      ANALYSIS: "~ {ncyc:INT} ~ {rfact:FLOAT} ~ {rfree:FLOAT} ~ {fom:FLOAT} ~ {LL} ~ {LLfree:FLOAT} ~ {rmsBond:FLOAT} ~ {zBond:FLOAT} ~ {rmsAngl:FLOAT} ~ {zAngl:FLOAT} ~ {rmsChiral:FLOAT}"
-
-- id: RStatParserTemplate
-  className: org.restflow.beans.TextScanner
-  properties:
-    absorbWhiteSpaceSymbol: "~"
-    template:
-      - |
-        ~ R~factor ~ {rfactinit} ~ {rfactfin}
-        ~ R~free ~ {rfreeinit} ~ {rfreefin}
-
 - id: PhaserMatthParserTemplate
   className: org.restflow.beans.TextScanner
   properties: 
