@@ -20,6 +20,7 @@ imports:
 - classpath:org/restflow/addons/WebiceProcessing/reports.yaml
 - classpath:org/restflow/addons/WebiceProcessing/scala.yaml
 - classpath:org/restflow/addons/WebiceProcessing/ModelRefine.yaml
+- classpath:/org/restflow/addons/MolecularReplacement/workflows/MolecularReplacement.yaml
 
 components:
 
@@ -60,17 +61,10 @@ components:
         description: type of Refmac refinement; REST - restrained refinement; RIGI - rigid body refinement
     nodes:
     - !lref SetEnvironment
-    - !lref InputFileName
-    - !lref InputFirstImgNum
-    - !lref InputLastImgNum
-    - !lref InputPDBFile
+    - !lref Inputs
     - !lref SetPDBFile
-    - !lref InputResolution
-    - !lref InputISigma
     #- !lref InputIdentity
     #- !lref InputMolecWt
-    - !lref InputRefmacNumCycles
-    - !lref InputRefmacRefiType
     - !lref ExtractFromFileName
     - !lref FindFirstImg
     - !lref FindFirstImgNum
@@ -129,13 +123,13 @@ components:
   type: Node
   properties:
     stepsOnce: true
-    actor: !ref ModelRefine.WebiceProcessing.Workflow
+    actor: !ref MolecularReplacement.NoCutoff.Workflow
     nestedUriPrefix: /modelrefine/
     inflows: 
-      RefmacNumCycles: /refmac/cycles/
-      RefmacRefiType: /refmac/refitype/
-      PDBFile: file:/molrep/mr.pdb
-      MTZFile: file:/molrep/mr.mtz
+      numCycles: /refmac/cycles/
+      refiType: /refmac/refitype/
+      pdb: file:/molrep/mr.pdb
+      mtz: file:/molrep/mr.mtz
     outflows: 
       mtzfile: file:/refmac/refmac_1.mtz
       pdbfile: file:/refmac/refmac_1.pdb
@@ -158,7 +152,6 @@ components:
       outmtz: file:/enant/mr.mtz
       mtzoutfile: file:/enant/refmac_1.mtz
       pdboutfile: file:/enant/refmac_1.pdb
-      refout: /enant/outtext
     exceptions:
       java.lang.Exception: stderr:/noenant/
       
@@ -179,7 +172,6 @@ components:
       outmtz: file:/enant.mtz
       mtzoutfile: file:/refmac_1.mtz
       pdboutfile: file:/refmac_1.pdb
-      refout: /outtext
 
 - id: EnantWorkflow
   type: Workflow
@@ -209,17 +201,16 @@ components:
   type: Node
   properties:
     stepsOnce: true
-    actor: !ref ModelRefine.WebiceProcessing.Workflow
+    actor: !ref MolecularReplacement.NoCutoff.Workflow
     nestedUriPrefix: /enantmr/
     inflows: 
-      RefmacNumCycles: /cycles/
-      RefmacRefiType: /refitype/
-      PDBFile: file:/mr.pdb
-      MTZFile: file:/enant.mtz
+      numCycles: /cycles/
+      refiType: /refitype/
+      pdb: file:/mr.pdb
+      mtz: file:/enant.mtz
     outflows: 
       mtzfile: file:/refmac_1.mtz
       pdbfile: file:/refmac_1.pdb
-      refout: /outtext
      
 - id: Scala1
   type: Node

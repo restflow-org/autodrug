@@ -34,29 +34,18 @@ components:
     outflows:
       env: /env/set/
 
-- id: InputFileName
+- id: Inputs
   type: InPortal
   properties:
     outflows:
       FileName: /img/imagePathName/
-
-- id: InputFirstImgNum
-  type: InPortal
-  properties: 
-    outflows: 
       FirstImgNum: /img/InputFirstImgNum/
-
-- id: InputLastImgNum
-  type: InPortal
-  properties:
-    outflows:
       LastImgNum: /img/InputLastImgNum/
-
-- id: InputPDBFile
-  type: InPortal
-  properties:
-    outflows:
       PDBFile: /protein/pdbfile/
+      Resolution: /input/resolution/
+      ISigma: /input/isigma/
+      RefmacNumCycles: /refmac/cycles/
+      RefmacRefiType: /refmac/refitype/
 
 - id: SetPDBFile
   type: GroovyActorStep
@@ -73,18 +62,6 @@ components:
       mrpdb = cmd1.execute(null, new File(mtzIn.parent)).text
     outflows:
       mrpdb: file:/molrep/mr.pdb
-
-- id: InputResolution
-  type: InPortal
-  properties:
-    outflows:
-      Resolution: /input/resolution/
-
-- id: InputISigma
-  type: InPortal
-  properties:
-    outflows:
-      ISigma: /input/isigma/
 
 - id: InputAASeqPirFile
   type: InPortal
@@ -115,18 +92,6 @@ components:
   properties:
     outflows:
       MolecWt: /protein/molecwt/
-
-- id: InputRefmacNumCycles
-  type: InPortal
-  properties:
-    outflows:
-      RefmacNumCycles: /refmac/cycles/
-
-- id: InputRefmacRefiType
-  type: InPortal
-  properties:
-    outflows:
-      RefmacRefiType: /refmac/refitype/
 
 - id: FindFirstImg
   type: Step

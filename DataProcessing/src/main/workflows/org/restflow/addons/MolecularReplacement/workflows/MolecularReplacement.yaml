@@ -62,7 +62,7 @@ components:
   properties: 
     director: !ref PublishSubscribeDirector
     nodes:
-    - !ref MolecularReplacement.RunRefmac
+    - !ref MolecularReplacement.NoCutoff.RunRefmac
     mixins:
     - !ref MolecularReplacement.Base.Workflow
 
@@ -75,11 +75,10 @@ components:
       rcutoff: 
         description: resolution cutoff
     nodes:
-    - !ref MolecularReplacement.NoCutoff.RunRefmac
+    - !ref MolecularReplacement.RunRefmac
+    - !ref MolecularReplacement.Rcutoff.Inputs
     mixins:
     - !ref MolecularReplacement.Base.Workflow
-    nodes:
-    - !ref refmac.Rcutoff.Inputs
 
 
 - id: Inputs
@@ -90,8 +89,14 @@ components:
       refiType: /refmac/refitype/
       pdb: file:/molrep/mr.pdb
       mtz: file:/molrep/mr.mtz
-      rcutoff: /rcutoff
       cif: file:/in/refmac/cif
+
+- id: Rcutoff.Inputs
+  type: InPortal
+  properties: 
+    outflows: 
+      rcutoff: /rcutoff
+
 
 - id: Outputs
   type: OutPortal
@@ -112,6 +117,20 @@ components:
       mtzfile: file:/refmac/mr.mtz
       pdbfile: file:/refmac/molrep.pdb
 
+- id: NoCutoff.RunRefmac
+  type: Step 
+  properties:
+    nestedUriPrefix: /refmac/
+    inflows:
+      mtz: file:/refmac/mr.mtz
+      pdb: file:/refmac/molrep.pdb
+      numCycles: /refmac/cycles/
+      refiType: /refmac/refitype/
+      cif: file:/in/refmac/cif
+    actor: !ref refmac.Workflow
+    outflows:
+      mtzfile: file:/refmac/refmac_1.mtz
+      pdbfile: file:/refmac/refmac_1.pdb
 
 - id: RunRefmac
   type: Step 
