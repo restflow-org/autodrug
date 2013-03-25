@@ -33,6 +33,7 @@ components:
       
       variable collect_default
       set defaultAttenuation [lindex $collect_default 2]      
+      set rasterOn false
       puts "Raster on: $rasterOn"
       if {$rasterOn == "true"} {
         puts "wait_for_good beam"
@@ -246,14 +247,16 @@ components:
       set op_runsConfig [start_waitable_operation runsConfig [get_user_name] deleteRun $runNumber]
       wait_for_operation_to_finish $op_runsConfig
       
-      set lastImage [lindex [$runCalculator returnLastFrame] 0]
-      set firstImage [lindex [$runCalculator getMotorPositionsAtIndex 0] 0]
+      set lastImage [lindex [$runCalculator returnLastFrame] 4]
+      set firstImage [lindex [$runCalculator getMotorPositionsAtIndex 0] 4]
+      set lastImageStr [lindex [$runCalculator returnLastFrame] 0]
+      set firstImageStr [lindex [$runCalculator getMotorPositionsAtIndex 0] 0]
       
       puts "LAST FRAME: ${lastImage}.${extension}"
-      wait_for_file_exists ${dir}/${lastImage}.${extension}
+      wait_for_file_exists ${dir}/${lastImageStr}.${extension}
       
       set dataset $dir
-      set firstImageFullPath $dir/${firstImage}.${extension}
+      set firstImageFullPath $dir/${firstImageStr}.${extension}
     outputs:
       firstImageFullPath:    
       lastImage: 
