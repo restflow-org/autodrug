@@ -15,7 +15,7 @@ components:
 - id: Workflow
   type: Workflow
   properties:
-    director: !ref PublishSubscribeDirector
+    director: !ref MTDataDrivenDirector
     inputs:
       spreadsheetId:
         default: 
@@ -108,7 +108,7 @@ components:
 - id: DataProcessing
   type: Node
   properties:
-    maxConcurrency: 1
+    maxConcurrency: 2
     nestedUriPrefix: /{spreadsheetId_a}/{sampleName_a}/processing/   
     actor: !ref ProcessSample.A.Workflow
     inflows:
