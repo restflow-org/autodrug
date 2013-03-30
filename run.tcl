@@ -45,42 +45,111 @@ proc searchDir {dir text} {
         }
 }
 
-switch $command {
-    build {
-        cd $dpProjectDir
-        puts "ant"
-        puts [exec mvn package -DskiptTests]
+proc testWorkflow {name} {
+    switch $name {
+        freeR {
+            puts [exec mvn test -DfailIfNoTests=false -Dtest=TestFreeR]
+        }
+        fftMap {
+            puts [exec mvn test -DfailIfNoTests=false -Dtest=TestFftMap]
+        }
+        getImgHeader {
+            puts [exec mvn test -DfailIfNoTests=false -Dtest=TestGetImgHeader]
+        }
+        labelit {
+            puts [exec mvn test -DfailIfNoTests=false -Dtest=TestLabelit]
+        }
+        MolecularReplacement {
+            puts [exec mvn test -DfailIfNoTests=false -Dtest=TestMolecularReplacement]
+        }
+        molrep {
+            puts [exec mvn test -DfailIfNoTests=false -Dtest=TestMolrep]
+        }
+        mosflm {
+            puts [exec mvn test -DfailIfNoTests=false -Dtest=TestMosflm]
+        }
+        peakMax {
+            puts [exec mvn test -DfailIfNoTests=false -Dtest=TestPeakMax]
+        }
+        pointless {
+            puts [exec mvn test -DfailIfNoTests=false -Dtest=TestPointless]
+        }
+        ProcessImages {
+            puts [exec mvn test -DfailIfNoTests=false -Dtest=TestProcessImages]
+        }
+        raddose {
+            puts [exec mvn test -DfailIfNoTests=false -Dtest=TestRaddose]
+        }
+        refmac {
+            puts [exec mvn test -DfailIfNoTests=false -Dtest=TestRefmac]
+        }
+        scala {
+            puts [exec mvn test -DfailIfNoTests=false -Dtest=TestScala]
+        }
+        ScoreSample {
+            puts [exec mvn test -DfailIfNoTests=false -Dtest=TestScoreSample]
+        }
+        Strategy {
+            puts [exec mvn test -DfailIfNoTests=false -Dtest=TestStrategy]
+        }
+        truncate {
+            puts [exec mvn test -DfailIfNoTests=false -Dtest=TestTruncate]
+        }
+        xds {
+            puts [exec mvn test -DfailIfNoTests=false -Dtest=TestXds]
+        }
+        xtriage {
+            puts [exec mvn test -DfailIfNoTests=false -Dtest=TestXtriage]
+        }
+        CollectTwoImages {
+            puts [exec mvn test -DfailIfNoTests=false -Dtest=TestCollectTwoImages]
+        }
+        ProcessSample {
+            puts [exec mvn test -DfailIfNoTests=false -Dtest=TestProcessSample]
+        }
+        CollectSample {
+            puts [exec mvn test -DfailIfNoTests=false -Dtest=TestCollectSample]
+        }
+        CollectRun {
+            puts [exec mvn test -DfailIfNoTests=false -Dtest=TestCollectRun]
+        }
+        ScreenSample {
+            puts [exec mvn test -DfailIfNoTests=false -Dtest=TestScreenSample] 
+        }
+        IndexSample {
+            puts [exec mvn test -DfailIfNoTests=false -Dtest=TestIndexSample]
+        }
+        VisualizeWorkflows {
+            puts [exec mvn test -DfailIfNoTests=false -Dtest=TestVisualizeWorkflows] 
+        }
+        AutoDrug {
+            puts [exec mvn test -DfailIfNoTests=false -Dtest=TestAutoDrug]
+        }
     }
-    publish {
-        cd $dpProjectDir
+}
+
+switch $command {
+    package {
+        puts [exec mvn package -DskipTests]
+    }
+    install {
         puts "publish"
-        puts [exec mvn install -DskiptTests]
+        puts [exec mvn install -DskipTests]
     }
 
     visualize {
-        cd $dpProjectDir
-        #puts "ant"
-        #exec ant compile-test
         puts "visualize"
-        if { $argc < 2} {
-            foreach workflowName $workflowNames {
-                puts "visualize $workflowName"
-                visualizeDpWorkflow $workflowName
-            }
-            return
+        if {! [info exists env(HOST_DATA)]  } {
+            error "must set HOST_DATA environment variable"
         }
-        set workflowName [lindex $argv 1]
-        visualizeWorkflow $workflowName
+        puts [exec mvn -Dtest=TestVisualizeWorkflows test -DfailIfNoTests=false]
     }
     test {
-        #puts "ant"
-        #exec ant compile-test
-        puts "build done"
+        if {! [info exists env(TEST_DATA)]  } {
+            error "must set TEST_DATA environment variable"
+        }
         if { $argc < 2} {
-            foreach workflowName $testNames {
-                puts "test $workflowName"
-                testDpWorkflow $workflowName
-            }
+            puts [exec mvn test]
             return
         }
         set workflowName [lindex $argv 1]
@@ -141,7 +210,7 @@ switch $command {
         searchDir . $text
     }
 }
-    
+
 
 
 
