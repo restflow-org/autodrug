@@ -76,9 +76,9 @@
 
 
     <dependency>
-      <groupId>ssrl-px</groupId>
+      <groupId>ssrl</groupId>
       <artifactId>WebiceLib</artifactId>
-      <version>1.6</version>
+      <version>1.7.1</version>
       <scope>compile</scope>
     </dependency>
 
